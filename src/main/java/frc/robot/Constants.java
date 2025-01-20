@@ -27,6 +27,22 @@ public final class Constants {
     public static final int commandController = 0;
     public static final double kDeadband =0.1 ;
   }
+  public static class alageaIntakeSubsystemConstants{
+    public static final int angleMotorID = 0;
+    public static final int PowerMotorID = 1;
+    public static final int angleEncoderID = 2;
+    public static final int ballDetectorID = 3;
+    public static final int limitSwitchID = 4;
+    public static final int initAngle = 90;
+    public static final double restAngle = 0;
+    public static final double holdAngle = 0;
+    public static final double collectingAngle = 0;
+    public static final double maxAngle = 180;
+    public static final double minAngle = 90;
+    public static final double ballDetectorThreshold = 0;
+
+        
+  }
 
   public static class OVCameraUtilConstants {
     public static final double kValidArea =10;
@@ -159,7 +175,10 @@ public final class Constants {
           config = DEFAUL_ROBOT_CONFIG;
         }
         return config;
+
       }
+      
   }
+  
 }
 
