@@ -38,6 +38,8 @@ public final class Constants {
     public static final int KAngleSpeed = 0;
     public static final int KPowerSpeed = 0;
     public static final int KThreshold = 0;
+    public static final int TargetDropAngle = 0;// Target angle for drop position
+    public static final int TargetIntakeAngle = 0;
 
 
 

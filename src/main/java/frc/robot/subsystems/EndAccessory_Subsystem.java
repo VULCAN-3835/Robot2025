@@ -27,10 +27,6 @@ public class EndAccessory_Subsystem extends SubsystemBase {
     private DutyCycleEncoder angleEncoder;
     private AnalogInput pieceDetector; 
 
-
-    // Joystick
-    private Joystick joystick;
-
     // Constructor
     public EndAccessory_Subsystem() {
       angleMotor = new TalonFX(EndAccessory_SubsystemConstants.AngleMotorPort);  // Motor to control the angle
@@ -39,9 +35,6 @@ public class EndAccessory_Subsystem extends SubsystemBase {
       highLimitSwitch  = new DigitalInput(EndAccessory_SubsystemConstants.HighLimitSwitchPort);// Switch for the high position
       angleEncoder = new DutyCycleEncoder(EndAccessory_SubsystemConstants.AngleEncoderPort);// Sensor to measure the angle
       pieceDetector = new AnalogInput(EndAccessory_SubsystemConstants.PieceDetectorPort);// Sensor to detect the piece
-      joystick = new Joystick(EndAccessory_SubsystemConstants.JoystickPort);// Joystick to control the motors
-
-
     }
 // PID constants
 private static final double kP = 0;// Proportional constant
@@ -51,11 +44,10 @@ private static final double kP = 0;// Proportional constant
 private PIDController pidController = new PIDController(kP, 0, 0);
 
 // Target angle for drop position
-private static final double targetDropAngle = 0.0;// Adjust this value as needed
 
   public void setDropAngle() {
     // Set the PID controller's setpoint to the target drop angle
-    pidController.setSetpoint(targetDropAngle);
+    pidController.setSetpoint(EndAccessory_SubsystemConstants.TargetDropAngle);
   
     // Use the PID controller to calculate the output value to the motor
     double pidOutput = pidController.calculate(getAngle());
@@ -66,7 +58,14 @@ private static final double targetDropAngle = 0.0;// Adjust this value as needed
 
     // Set the angle for intake (sets motor to intake position)
     public void setIntakeAngle() {
-        angleMotor.set(EndAccessory_SubsystemConstants.KAngleSpeed);// Set motor speed for intake
+        // Set the PID controller's setpoint to the target intake angle
+        pidController.setSetpoint(EndAccessory_SubsystemConstants.TargetIntakeAngle);
+
+        // Use the PID controller to calculate the output value to the motor
+        double pidOutput = pidController.calculate(getAngle());
+
+        // Apply the PID output to the motor
+        angleMotor.set(pidOutput * EndAccessory_SubsystemConstants.KAngleSpeed);
     }
 
     // Turn on the gripper to take the piece
@@ -80,13 +79,13 @@ private static final double targetDropAngle = 0.0;// Adjust this value as needed
     }
 
     // Stop the gripper
-    public void gripperRest() {
+    public void gripperRest() {//TODO: return the gripper to its rest position
         powerMotor.set(0);// Stop the power motor
     }
 
     // Get the current angle from the angle sensor
     public double getAngle() {
-        return angleEncoder.get();// Get the angle from the sensor
+        return angleEncoder.get()/360;// Get the angle from the sensor
     }
 
     // Check if the high position switch is pressed
@@ -106,19 +105,13 @@ private static final double targetDropAngle = 0.0;// Adjust this value as needed
 
     @Override
     public void periodic() {
-        // Get sensor values
-        double angle = getAngle();// Get the angle from the sensor
-        double infraredValue = pieceDetector.getVoltage();// Get the value from the infrared sensor
+
 
         // Control the angle motor with limit switches
         if (getLowLimitSwitch()) {
             angleMotor.set(0);// Stop motor if low position is reached
         } else if (getHighLimitSwitch()) {
             angleMotor.set(0);// Stop motor if high position is reached
-        } else {
-            // Otherwise, control the angle motor with the joystick input
-            double joystickInput = joystick.getY();// Get joystick Y-axis input for motor control
-            angleMotor.set(joystickInput * EndAccessory_SubsystemConstants.KAngleSpeed);
         }
 
         // Set the release angle (min or max position)
