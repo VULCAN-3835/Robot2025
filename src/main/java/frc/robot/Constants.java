@@ -27,6 +27,24 @@ public final class Constants {
     public static final int commandController = 0;
     public static final double kDeadband =0.1 ;
   }
+  public static class EndAccessory_SubsystemConstants {
+    public static final int AngleMotorPort = 0;//TODO: change value
+    public static final int PowerMotorPort = 0;
+    public static final int LowLimitSwitchPort = 0;
+    public static final int HighLimitSwitchPort = 0;
+    public static final int AngleEncoderPort = 0;
+    public static final int PieceDetectorPort = 0;
+    public static final int JoystickPort = 0;
+    public static final int KAngleSpeed = 0;
+    public static final int KPowerSpeed = 0;
+    public static final int KThreshold = 0;
+
+
+
+
+  
+    
+  }
 
   public static class OVCameraUtilConstants {
     public static final double kValidArea =10;
