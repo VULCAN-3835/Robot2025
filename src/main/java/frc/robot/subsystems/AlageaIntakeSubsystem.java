@@ -4,6 +4,8 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degrees;
+
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -36,52 +38,61 @@ public class AlageaIntakeSubsystem extends SubsystemBase {
   }
 
   public boolean hasBall() {
+    // checks if the system detects the ball
 
     return ballDetector.getVoltage() > Constants.alageaIntakeSubsystemConstants.ballDetectorThreshold;
 
   }
 
-  public double getAngle() {
-    return getPosition.getValueAsDouble();
+  public Angle getAngle() {
+    // gets the current angle
+    return getPosition.getValue();
 
   }
 
   private void setAngle(double targetAngle) {
+    // sets the desired robot angle
     if (targetAngle >= Constants.alageaIntakeSubsystemConstants.minAngle && targetAngle <= Constants.alageaIntakeSubsystemConstants.maxAngle) {
       pidController.setSetpoint(targetAngle); 
     }
   }
 
   public void setRestAngle() {
+    // sets the robot in the predefined resting angle
     setAngle(Constants.alageaIntakeSubsystemConstants.restAngle);
 
   }
 
   public void setCollectAngle() {
+    //  sets the robot in the predefined collecting angle
     setAngle(Constants.alageaIntakeSubsystemConstants.collectingAngle);
 
   }
 
   public void setHoldAngle() {
+    //  sets the robot in the predefined holding angle
     setAngle(Constants.alageaIntakeSubsystemConstants.holdAngle);
 
   }
 
   public void setPower(double power) {
-    if (limitSwitch.get() && pidController.calculate(getAngle()) < 0){
+    // checkes if the system is trying to go past the limitSwitch and if so, stops the motor
+    if (limitSwitch.get() && pidController.calculate(getAngle().in(Degrees)) < 0){
       powerMotor.set(0);
    } else {
     powerMotor.set(power);
    }
-
   }
-
+  
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    // checks if limitSwitch is true and if so, sets the angle to the intalizing position
+    // also constantly checkes and updates the desired settings for the motor
     if(limitSwitch.get()){
-      powerMotor.set(Constants.alageaIntakeSubsystemConstants.initAngle);
+      angleMotor.set(Constants.alageaIntakeSubsystemConstants.initAngle);
     }
-    setPower((pidController.calculate(getAngle())));
+    setPower((pidController.calculate(getAngle().in(Degrees))));
   }
 }
+
