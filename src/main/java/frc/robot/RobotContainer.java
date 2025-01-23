@@ -6,7 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DefaultTeleopCommand;
-import frc.robot.subsystems.AlageaIntakeSubsystem;
+import frc.robot.subsystems.AlageaSubsystem;
 import frc.robot.subsystems.ChassisSubsystem;
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -27,7 +27,7 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
-  private final AlageaIntakeSubsystem alageaIntakeSubsystem = new AlageaIntakeSubsystem();
+  private final AlageaSubsystem alageaSubsystem = new AlageaSubsystem();
   private final Joystick joystic = new Joystick(0);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -64,10 +64,10 @@ public class RobotContainer {
       this.chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(this.chassisSubsystem,
        () -> -xboxControllerDrive.getLeftY(),
        () -> -xboxControllerDrive.getLeftX(),
-       () -> -xboxControllerDrive.getRightX()));
-    
+       () -> -xboxControllerDrive.getRightX())
+      );}
+    }
 
-  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
