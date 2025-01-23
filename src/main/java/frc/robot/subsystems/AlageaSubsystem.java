@@ -80,6 +80,13 @@ public class AlageaSubsystem extends SubsystemBase {
     setAngle(Constants.alageaSubsystemConstants.shootingAngle);
   }
 
+  public boolean isSystemAtShootingAngle(){
+      double currentAngle = getAngle().in(Degrees);
+      double targetAngle = Constants.alageaSubsystemConstants.shootingAngle;
+      return Math.abs(currentAngle - targetAngle) <= pidController.getPositionTolerance();
+  }
+
+
   public void setPower(double power) {
     // checkes if the system is trying to go past the limitSwitch and if so, stops
     // the motor

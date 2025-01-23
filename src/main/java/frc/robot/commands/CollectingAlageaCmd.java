@@ -18,16 +18,16 @@ public class CollectingAlageaCmd extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-    // 1. sets the subsystem in the predefined collecting angle
-    new InstantCommand(()-> alageaSubsystem.setCollectAngle()),
-    // 2. starts to collect the piece
-    new InstantCommand(()-> alageaSubsystem.setCollectingPower()),
-    // 3. waits until the sensor feels the piece 
-    new WaitUntilCommand(()-> alageaSubsystem.hasBall()),
-    // 4. stops the motor
-    new InstantCommand(()-> alageaSubsystem.setPower(0)),
-    // 5. sets the subsystem in the predefined resting angle
-    new InstantCommand(()-> alageaSubsystem.setRestAngle())
-    );
+        // 1. sets the subsystem in the predefined collecting angle
+        new InstantCommand(() -> alageaSubsystem.setCollectAngle()),
+        // 2. starts to collect the piece
+        new InstantCommand(() -> alageaSubsystem.setCollectingPower()),
+        // 3. waits until the sensor feels the piece
+        new WaitUntilCommand(() -> alageaSubsystem.hasBall()),
+        // 4. stops the motor and sets the subsystem in the predefined resting angle
+        new InstantCommand(() -> {
+          alageaSubsystem.setPower(0);
+          alageaSubsystem.setRestAngle();
+        }));
   }
 }
