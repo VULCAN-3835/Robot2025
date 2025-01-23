@@ -165,8 +165,10 @@ public final class Constants {
       }
   }
   public static class ClimbSubsystemConstants {
-  public static final int climbMotorPort = 0;  
-  public static final int LimitSwitchPort = 0;
+  public static final int climbMotorPort = 0;  // to be continued
+  public static final int LimitSwitchPort = 0;//to be continued 
+  public static final int workingMotorSpeed =0;//to be continued
+  public static final int stoppingMotorSpeed =0;//final
   }
 }
 
