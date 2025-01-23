@@ -14,8 +14,8 @@ public class ClimbSubsytem extends SubsystemBase {
   DigitalInput ClimbLimitSwitch;
   
   public ClimbSubsytem() {
-  this.climbMotor= new TalonFX(Constants.ClimbConstants.climbMotorPort);
-  this.ClimbLimitSwitch = new DigitalInput(Constants.ClimbConstants.LimitSwitchPort);
+  this.climbMotor= new TalonFX(Constants.ClimbSubsystemConstants.climbMotorPort);
+  this.ClimbLimitSwitch = new DigitalInput(Constants.ClimbSubsystemConstants.LimitSwitchPort);
 }
 //sets climbMotor to the desired power
 public void setMotor(double power){
