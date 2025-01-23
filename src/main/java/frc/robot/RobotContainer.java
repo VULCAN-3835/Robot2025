@@ -6,10 +6,12 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DefaultTeleopCommand;
+import frc.robot.subsystems.AlageaIntakeSubsystem;
 import frc.robot.subsystems.ChassisSubsystem;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
+import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -25,6 +27,8 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
+  private final AlageaIntakeSubsystem alageaIntakeSubsystem = new AlageaIntakeSubsystem();
+  private final Joystick joystic = new Joystick(0);
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xboxControllerDrive =
@@ -41,7 +45,9 @@ public class RobotContainer {
 
     SmartDashboard.putData("Auto Chooser",autoChooser);
     // Configure the trigger bindings
-    configureBindings();
+    configureBindings(
+      
+    );
   }
 
   /**
@@ -59,7 +65,7 @@ public class RobotContainer {
        () -> -xboxControllerDrive.getLeftY(),
        () -> -xboxControllerDrive.getLeftX(),
        () -> -xboxControllerDrive.getRightX()));
-    }
+    
 
   }
 

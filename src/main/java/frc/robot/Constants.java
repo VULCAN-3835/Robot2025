@@ -19,6 +19,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 
 public final class Constants {
 
@@ -27,7 +28,7 @@ public final class Constants {
     public static final int commandController = 0;
     public static final double kDeadband =0.1 ;
   }
-  public static class alageaIntakeSubsystemConstants{
+  public static class alageaSubsystemConstants{
     public static final int angleMotorID = 0;
     public static final int PowerMotorID = 1;
     public static final int angleEncoderID = 2;
@@ -40,6 +41,10 @@ public final class Constants {
     public static final double maxAngle = 180;
     public static final double minAngle = 90;
     public static final double ballDetectorThreshold = 0;
+    public static final double collectingPower = -0.5;
+    public static final double shootingPower = 0.5;
+    public static final double shootingAngle = 90;
+
 
         
   }
