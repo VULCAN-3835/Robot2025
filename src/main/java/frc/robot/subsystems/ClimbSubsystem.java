@@ -23,6 +23,7 @@ public class ClimbSubsystem extends SubsystemBase {
   // sets the power of climbMotor
   public void setMotor(double power){
     climbMotor.set(power);
+    getLimitswitch();
   }
   //returns the value of the limit switch
   public boolean getLimitswitch(){
@@ -32,5 +33,12 @@ public class ClimbSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
+    boolean valueOfLimitSwitch = ClimbLimitSwitch.get();
+    getLimitswitch();
+    if  ( valueOfLimitSwitch = true){
+      setMotor(0.0);
+
+    }
+
   }
 }
