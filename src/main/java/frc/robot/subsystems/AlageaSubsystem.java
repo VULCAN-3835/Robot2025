@@ -86,6 +86,10 @@ public class AlageaSubsystem extends SubsystemBase {
     }
   }
 
+  public void setCollectingPower() {
+    setPower(Constants.alageaSubsystemConstants.collectingPower);
+  }
+
   public void shootAlagea() {
     setAngle(Constants.alageaSubsystemConstants.collectingAngle);
     setPower(Constants.alageaSubsystemConstants.shootingPower);

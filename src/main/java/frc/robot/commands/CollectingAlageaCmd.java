@@ -7,7 +7,6 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.Constants;
 import frc.robot.subsystems.AlageaSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
@@ -15,16 +14,20 @@ import frc.robot.subsystems.AlageaSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class CollectingAlageaCmd extends SequentialCommandGroup {
   /** Creates a new CollectingAlageaCmd. */
-  public CollectingAlageaCmd(AlageaSubsystem alageaIntakeSubsystem) {
+  public CollectingAlageaCmd(AlageaSubsystem alageaSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-    // 1. starts to collect the piece
-    new InstantCommand(()-> alageaIntakeSubsystem.setPower(Constants.alageaSubsystemConstants.collectingPower)),
-    // 2. waits until the sensor feels the piece 
-    new WaitUntilCommand(()-> alageaIntakeSubsystem.hasBall()),
-    // 3. stops the motor
-    new InstantCommand(()-> alageaIntakeSubsystem.setPower(0))
+    // 1. sets the subsystem in the predefined collecting angle
+    new InstantCommand(()-> alageaSubsystem.setCollectAngle()),
+    // 2. starts to collect the piece
+    new InstantCommand(()-> alageaSubsystem.setCollectingPower()),
+    // 3. waits until the sensor feels the piece 
+    new WaitUntilCommand(()-> alageaSubsystem.hasBall()),
+    // 4. stops the motor
+    new InstantCommand(()-> alageaSubsystem.setPower(0)),
+    // 5. sets the subsystem in the predefined resting angle
+    new InstantCommand(()-> alageaSubsystem.setRestAngle())
     );
   }
 }
