@@ -11,6 +11,8 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.System_StateValue;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.RobotConfig;
 
@@ -19,6 +21,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public final class Constants {
 
@@ -161,9 +164,9 @@ public final class Constants {
         return config;
       }
   }
-  public final class ClimbSubsystemConstants{
-    public static final int climbMotorPort = 0;
-    public static final int climbLimitSwitchPort =0;
+  public static class ClimbSubsystemConstants {
+  public static final int climbMotorPort = 0;  
+  public static final int LimitSwitchPort = 0;
   }
 }
 
