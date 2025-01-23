@@ -161,5 +161,9 @@ public final class Constants {
         return config;
       }
   }
+  public final class ClimbSubsystemConstants{
+    public static final int climbMotorPort = 0;
+    public static final int climbLimitSwitchPort =0;
+  }
 }
 
