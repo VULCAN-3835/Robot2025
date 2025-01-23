@@ -15,16 +15,18 @@ import frc.robot.subsystems.AlageaSubsystem;
 public class ShootingAlageaCmd extends SequentialCommandGroup {
   /** Creates a new ShootingAlageaCmd. */
   public ShootingAlageaCmd(AlageaSubsystem alageaSubsystem) {
-    // Add your commands in the addCommands() call, e.g.
+    // Add your commands in the addCommands() call, e.g
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      // 1. sets the subsystem in the shooting angle and shoots the alagea
+      // 1. sets the subsystem in the predefined shooting angle
+      new InstantCommand(()-> alageaSubsystem.setShootingAngle()),
+      // 2. shoots the alagea
       new InstantCommand(()-> alageaSubsystem.shootAlagea()),
-      // 2. checkes if the alagea was shot
+      // 3. checkes if the alagea was shot
       new WaitUntilCommand(() -> !alageaSubsystem.hasBall()),
-      // 3. stops the motor
+      // 4. stops the motor
       new InstantCommand(()-> alageaSubsystem.setPower(0)),
-      // 4. sets the subsystem in the resting angle
+      // 5. sets the subsystem in the predefined resting angle
       new InstantCommand(()-> alageaSubsystem.setRestAngle())
     );
   }

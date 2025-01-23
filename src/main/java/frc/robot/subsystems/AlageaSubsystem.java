@@ -75,7 +75,10 @@ public class AlageaSubsystem extends SubsystemBase {
     setAngle(Constants.alageaSubsystemConstants.holdAngle);
 
   }
- 
+
+  public void setShootingAngle() {
+    setAngle(Constants.alageaSubsystemConstants.shootingAngle);
+  }
 
   public void setPower(double power) {
     // checkes if the system is trying to go past the limitSwitch and if so, stops
@@ -90,10 +93,8 @@ public class AlageaSubsystem extends SubsystemBase {
   public void setCollectingPower() {
     setPower(Constants.alageaSubsystemConstants.collectingPower);
   }
-  
 
   public void shootAlagea() {
-    setAngle(Constants.alageaSubsystemConstants.collectingAngle);
     setPower(Constants.alageaSubsystemConstants.shootingPower);
   }
 
