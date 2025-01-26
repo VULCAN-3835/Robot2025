@@ -6,12 +6,18 @@
 package frc.robot;
 
 
+import static edu.wpi.first.units.Units.Centimeter;
+import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Rotation;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+
+import java.util.Map;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.pathplanner.lib.config.ModuleConfig;
+import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -19,6 +25,14 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.DistanceUnit;
+import edu.wpi.first.units.Unit;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.MutPer;
+import edu.wpi.first.units.measure.Per;
+import frc.robot.Util.ElevatorStates;
 
 public final class Constants {
 
@@ -160,6 +174,44 @@ public final class Constants {
         }
         return config;
       }
+  }
+
+  public static class ElevatorConstant {
+
+    public static Distance coralL1 = Centimeter.of(1); // I will add the real measurments later on
+    public static Distance coralL2 = Centimeter.of(6);
+    public static Distance coralL3 = Centimeter.of(6);
+    public static Distance coralL4 = Centimeter.of(6);
+    public static Distance restDistance = Centimeter.of(0);
+    public static Distance sourceDistance = Centimeter.of(0);
+    public static double kP = 0;
+    public static double kI = 0;
+    public static double kD = 0;
+    public static double restPower = 0;
+    
+    // We'll need to know how much we get for every rotation, and use that number here:
+    public static Per<DistanceUnit, AngleUnit> distancePerRotation = Centimeters.of(20).div(Rotation.of(1)); 
+    
+
+    public static Distance enumDistance (ElevatorStates elevatorStates){
+      switch (elevatorStates) {
+        case coralL1:
+        return coralL1;
+        case coralL2:
+        return coralL2;
+        case coralL3:
+        return coralL3;
+        case coralL4:
+        return coralL4;
+        case source:
+        return sourceDistance;
+        case rest:
+        return restDistance;
+       
+      }
+            return null;
+    }
+  
   }
 }
 
