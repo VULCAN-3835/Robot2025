@@ -164,11 +164,11 @@ public final class Constants {
         return config;
       }
   }
-  public static class ClimbConstants {
-  TalonFX climbMotor = new TalonFX(10);
-  DigitalInput ClimbLimitSwitch = new DigitalInput(12);
-  public static final int climbMotorPort = 0;  
-  public static final int LimitSwitchPort = 0;
+  public static class ClimbSubsystemConstants {
+  public static final int climbMotorPort = 0;  // to be continued
+  public static final int LimitSwitchPort = 0;//to be continued 
+  public static final int workingMotorSpeed =0;//to be continued
+  public static final int stoppingMotorSpeed =0;//final
   }
 }
 
