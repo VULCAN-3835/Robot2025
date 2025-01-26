@@ -15,6 +15,8 @@ import static edu.wpi.first.units.Units.RotationsPerSecond;
 import java.util.Map;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.System_StateValue;
 import com.pathplanner.lib.config.ModuleConfig;
 import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
@@ -214,5 +216,11 @@ public final class Constants {
       return null;
     }
 
+  }
+  public static class ClimbSubsystemConstants {
+  public static final int climbMotorPort = 0;  // to be continued
+  public static final int LimitSwitchPort = 0;//to be continued 
+  public static final int workingMotorSpeed =0;//to be continued
+  public static final int stoppingMotorSpeed =0;//final
   }
 }
