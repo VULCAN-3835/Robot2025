@@ -5,7 +5,6 @@
 package frc.robot.subsystems;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -13,22 +12,21 @@ import frc.robot.Constants;
 public class ClimbSubsystem extends SubsystemBase {
   /** Creates a new ClimbSubsystem. */
   TalonFX climbMotor;
-  DigitalInput ClimbLimitSwitch;
+  DigitalInput climbLimitSwitch;
 
   public ClimbSubsystem() {
     this.climbMotor = new TalonFX(Constants.ClimbSubsystemConstants.climbMotorPort);
-    this.ClimbLimitSwitch = new DigitalInput(Constants.ClimbSubsystemConstants.LimitSwitchPort);
+    this.climbLimitSwitch = new DigitalInput(Constants.ClimbSubsystemConstants.limitSwitchPort);
   }
 
   // sets the power of climbMotor
   public void setMotor(double power) {
     climbMotor.set(power);
-    getLimitswitch();
   }
 
   // returns the value of the limit switch
   public boolean getLimitswitch() {
-    boolean valueOfLimitSwitch = ClimbLimitSwitch.get();
+    boolean valueOfLimitSwitch = climbLimitSwitch.get();
     return valueOfLimitSwitch;
   }
 
@@ -36,7 +34,7 @@ public class ClimbSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
     if (getLimitswitch()) {
-      setMotor(0.0);
+      setMotor(Constants.ClimbSubsystemConstants.stoppingMotorSpeed);
 
     }
 

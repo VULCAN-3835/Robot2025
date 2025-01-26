@@ -9,6 +9,7 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants;
 import frc.robot.subsystems.ClimbSubsystem;
+
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
@@ -18,12 +19,11 @@ public class Climbing extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      // 1. starts motor at the given speed from Constants
-      new InstantCommand(()-> climbSubsystem.setMotor(Constants.ClimbSubsystemConstants.workingMotorSpeed)),
-      //2.waits until the limit switch is pressed
-      new WaitUntilCommand(()-> climbSubsystem.getLimitswitch()),
-      // 3. stops the motor
-      new InstantCommand(()-> climbSubsystem.setMotor(Constants.ClimbSubsystemConstants.stoppingMotorSpeed))
-    );
+        // 1. starts motor at the given speed from Constants
+        new InstantCommand(() -> climbSubsystem.setMotor(Constants.ClimbSubsystemConstants.workingMotorSpeed)),
+        // 2.waits until the limit switch is pressed
+        new WaitUntilCommand(() -> climbSubsystem.getLimitswitch()),
+        // 3. stops the motor
+        new InstantCommand(() -> climbSubsystem.setMotor(Constants.ClimbSubsystemConstants.stoppingMotorSpeed)));
   }
 }
