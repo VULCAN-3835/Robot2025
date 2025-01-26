@@ -18,7 +18,14 @@ public class ClimbSubsystem extends SubsystemBase {
     this.climbMotor = new TalonFX(Constants.ClimbSubsystemConstants.climbMotorPort);
     this.climbLimitSwitch = new DigitalInput(Constants.ClimbSubsystemConstants.limitSwitchPort);
   }
-
+  // sets the angle of the motor to 0
+  public void setPosition(){
+     climbMotor.setPosition(0);
+  }
+  public int getPosition(){
+    int currentPosition = climbMotor.getPosition();
+    return currentPosition;
+  }
   // sets the power of climbMotor
   public void setMotor(double power) {
     climbMotor.set(power);
