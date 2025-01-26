@@ -6,19 +6,14 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Centimeter;
 
-import java.util.function.ToDoubleBiFunction;
+
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.pathplanner.lib.config.PIDConstants;
-
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstant;
 import frc.robot.Util.ElevatorStates;
