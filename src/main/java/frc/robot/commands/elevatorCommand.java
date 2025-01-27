@@ -12,7 +12,5 @@ import frc.robot.subsystems.ElevatorSubsystem;
 
 public final class ElevatorCommand {
 
-  public static InstantCommand create(ElevatorSubsystem elevatorSubsystem , ElevatorStates elevatorStates) {
-      return new InstantCommand(() -> elevatorSubsystem.setLevel(elevatorStates));
-  }
+
 }

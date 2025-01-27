@@ -66,12 +66,12 @@ public class RobotContainer {
        () -> -xboxControllerDrive.getRightX()));
     }
    
-    xboxControllerDrive.b().whileTrue( ElevatorCommand.create(elevatorSubsystem, elevatorStatescoralL1 ));
-    xboxControllerDrive.a().whileTrue( ElevatorCommand.create(elevatorSubsystem, elevatorStatescoralL2 ));
-    xboxControllerDrive.x().whileTrue( ElevatorCommand.create(elevatorSubsystem, elevatorStatescoralL3 ));
-    xboxControllerDrive.leftStick().whileTrue( ElevatorCommand.create(elevatorSubsystem, elevatorStatescoralL4 ));
-    xboxControllerDrive.y().whileTrue( ElevatorCommand.create(elevatorSubsystem, elevatorStatesRest ));
-    xboxControllerDrive.rightStick().whileTrue( ElevatorCommand.create(elevatorSubsystem, elevatorStatesSource ));
+    xboxControllerDrive.b().whileTrue(elevatorSubsystem.setLevelElevatorCommand(elevatorSubsystem, elevatorStatescoralL1 ));
+    xboxControllerDrive.a().whileTrue( elevatorSubsystem.setLevelElevatorCommand(elevatorSubsystem, elevatorStatescoralL2 ));
+    xboxControllerDrive.x().whileTrue( elevatorSubsystem.setLevelElevatorCommand(elevatorSubsystem, elevatorStatescoralL3 ));
+    xboxControllerDrive.leftStick().whileTrue( elevatorSubsystem.setLevelElevatorCommand(elevatorSubsystem, elevatorStatescoralL4 ));
+    xboxControllerDrive.y().whileTrue( elevatorSubsystem.setLevelElevatorCommand(elevatorSubsystem, elevatorStatesRest ));
+    xboxControllerDrive.rightStick().whileTrue( elevatorSubsystem.setLevelElevatorCommand(elevatorSubsystem, elevatorStatesSource ));
 
   }
 

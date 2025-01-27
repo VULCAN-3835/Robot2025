@@ -14,6 +14,7 @@ import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstant;
 import frc.robot.Util.ElevatorStates;
@@ -52,6 +53,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public boolean getCloseLimitSwitch() {
     return closeLimitSwitch.get();
+  }
+  public static InstantCommand setLevelElevatorCommand(ElevatorSubsystem elevatorSubsystem , ElevatorStates elevatorStates) {
+      return new InstantCommand(() -> elevatorSubsystem.setLevel(elevatorStates));
   }
 
   @Override
