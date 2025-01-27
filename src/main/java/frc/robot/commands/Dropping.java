@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 
-
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
@@ -24,14 +23,14 @@ public class Dropping extends SequentialCommandGroup {
         new InstantCommand(() -> climbSubsystem.setMotor(Constants.ClimbSubsystemConstants.workingMotorSpeed)),
         // 2. checking if the limitswitch is pressed
         new WaitUntilCommand(() -> climbSubsystem.getLimitswitch()),
-        // 3. setting the Endoder's position to 0
-        new InstantCommand(() -> climbSubsystem.setPosition()),
-        // 4. stopping the motor
+        // 3. stopping the motor
         new InstantCommand(() -> climbSubsystem.setMotor(Constants.ClimbSubsystemConstants.stoppingMotorSpeed)),
-        // 5. starting to drop from the cage at certain degrees -> to be continued
+        // 4. setting the Endoder's position to 0
+        new InstantCommand(() -> climbSubsystem.setPosition()),
+        // 5. starting to drop from the cage at certain degrees 
         new InstantCommand(() -> climbSubsystem.setMotor(Constants.ClimbSubsystemConstants.droppingMotorSpeed)),
-        //6.  waiting until the motor is at the rigth degrees
-        new WaitUntilCommand(() -> climbSubsystem.getPosition() == Constants.ClimbSubsystemConstants.degreesForDropping),
+        // 6. waiting until the motor is at the right degrees
+        new WaitUntilCommand(() -> climbSubsystem.getPosition().getValue().gt(Constants.ClimbSubsystemConstants.degreesForDropping)),
         // 7. stopping the motor
         new InstantCommand(() -> climbSubsystem.setMotor(Constants.ClimbSubsystemConstants.stoppingMotorSpeed)));
   }
