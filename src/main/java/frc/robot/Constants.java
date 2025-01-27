@@ -63,6 +63,7 @@ public final class Constants {
     public static final double shootingPower = 0.5;
     public static final Angle shootingAngle = Degrees.of(90);;
     public static final double pidTolerence =  0.5;
+    public static final double restingPower = 0;
 
 
         

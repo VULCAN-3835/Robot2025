@@ -99,16 +99,8 @@ public class AlageaSubsystem extends SubsystemBase {
     return Math.abs(currentAngle - targetAngle) <= pidController.getPositionTolerance();
   }
 
-  
-
   public void setPower(double power) {
-    // checkes if the system is trying to go past the limitSwitch and if so, stops
-    // the motor
-    if (limitSwitch.get() && power < 0) {
-      powerMotor.set(0);
-    } else {
-      powerMotor.set(power);
-    }
+    powerMotor.set(power);
   }
 
   public void setCollectingPower() {
@@ -125,10 +117,12 @@ public class AlageaSubsystem extends SubsystemBase {
     // checks if limitSwitch is true and if so, sets the angle to the intalizing
     // position
     // also constantly checkes and updates the desired settings for the motor
-    
-    if (limitSwitch.get()) {
-      angleMotor.set(Constants.alageaSubsystemConstants.initAngle.in(Degrees));
+    double voltage = pidController.calculate(getAngle().in(Degrees));
+    if (limitSwitch.get() && voltage < 0) {
+      angleMotor.set(voltage);
     }
-    setPower((pidController.calculate(getAngle().in(Degrees))));
+    if (hasBall() && powerMotor.get() < 0) {
+      setPower(Constants.alageaSubsystemConstants.restingPower);
+    }
   }
 }
