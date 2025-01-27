@@ -10,6 +10,7 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -24,6 +25,7 @@ public class AlageaSubsystem extends SubsystemBase {
   private final AnalogInput ballDetector;
   private PIDController pidController;
   private final DigitalInput limitSwitch;
+  private Angle currentSetpoint;
 
   public AlageaSubsystem() {
     angleMotor = new TalonFX(Constants.alageaSubsystemConstants.angleMotorID);
@@ -33,7 +35,8 @@ public class AlageaSubsystem extends SubsystemBase {
     this.getPosition = this.angleMotor.getPosition();
 
     pidController = new PIDController(0, 0, 0);
-    pidController.setTolerance(0.5);
+    pidController.setTolerance(Constants.alageaSubsystemConstants.pidTolerence);
+    currentSetpoint = Constants.alageaSubsystemConstants.restAngle;
 
   }
 
@@ -50,11 +53,15 @@ public class AlageaSubsystem extends SubsystemBase {
 
   }
 
-  private void setAngle(double targetAngle) {
+  private void setAngle(Angle targetAngle) {
     // sets the desired robot angle
-    if (targetAngle >= Constants.alageaSubsystemConstants.minAngle
-        && targetAngle <= Constants.alageaSubsystemConstants.maxAngle) {
-      pidController.setSetpoint(targetAngle);
+    double targetDegrees = targetAngle.in(Degrees);
+    if (targetDegrees >= Constants.alageaSubsystemConstants.minAngle.in(Degrees)
+        && targetDegrees <= Constants.alageaSubsystemConstants.maxAngle.in(Degrees)) {
+      currentSetpoint = targetAngle;
+      pidController.setSetpoint(targetDegrees);
+    } else {
+      System.out.println("Invalid angle, please enter a valid angle");
     }
   }
 
@@ -80,17 +87,24 @@ public class AlageaSubsystem extends SubsystemBase {
     setAngle(Constants.alageaSubsystemConstants.shootingAngle);
   }
 
-  public boolean isSystemAtShootingAngle(){
-      double currentAngle = getAngle().in(Degrees);
-      double targetAngle = Constants.alageaSubsystemConstants.shootingAngle;
-      return Math.abs(currentAngle - targetAngle) <= pidController.getPositionTolerance();
+  public boolean isSystemAtShootingAngle() {
+    double currentAngle = getAngle().in(Degrees);
+    double targetAngle = Constants.alageaSubsystemConstants.shootingAngle.in(Degrees);
+    return Math.abs(currentAngle - targetAngle) <= pidController.getPositionTolerance();
   }
 
+  public boolean isSystemAtCollectingAngle() {
+    double currentAngle = getAngle().in(Degrees);
+    double targetAngle = Constants.alageaSubsystemConstants.collectingAngle.in(Degrees);
+    return Math.abs(currentAngle - targetAngle) <= pidController.getPositionTolerance();
+  }
+
+  
 
   public void setPower(double power) {
     // checkes if the system is trying to go past the limitSwitch and if so, stops
     // the motor
-    if (limitSwitch.get() && pidController.calculate(getAngle().in(Degrees)) < 0) {
+    if (limitSwitch.get() && power < 0) {
       powerMotor.set(0);
     } else {
       powerMotor.set(power);
@@ -111,8 +125,9 @@ public class AlageaSubsystem extends SubsystemBase {
     // checks if limitSwitch is true and if so, sets the angle to the intalizing
     // position
     // also constantly checkes and updates the desired settings for the motor
+    
     if (limitSwitch.get()) {
-      angleMotor.set(Constants.alageaSubsystemConstants.initAngle);
+      angleMotor.set(Constants.alageaSubsystemConstants.initAngle.in(Degrees));
     }
     setPower((pidController.calculate(getAngle().in(Degrees))));
   }

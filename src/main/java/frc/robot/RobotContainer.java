@@ -5,13 +5,16 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.CollectingAlageaCmd;
 import frc.robot.commands.DefaultTeleopCommand;
+import frc.robot.commands.ShootingAlageaCmd;
 import frc.robot.subsystems.AlageaSubsystem;
 import frc.robot.subsystems.ChassisSubsystem;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -47,6 +50,7 @@ public class RobotContainer {
     // Configure the trigger bindings
     configureBindings(
       
+      
     );
   }
 
@@ -66,6 +70,9 @@ public class RobotContainer {
        () -> -xboxControllerDrive.getLeftX(),
        () -> -xboxControllerDrive.getRightX())
       );}
+      
+      xboxControllerDrive.b().whileTrue(new ShootingAlageaCmd(alageaSubsystem));
+      xboxControllerDrive.x().whileTrue(new CollectingAlageaCmd(alageaSubsystem));
     }
 
 
