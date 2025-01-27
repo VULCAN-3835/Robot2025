@@ -4,7 +4,10 @@
 
 package frc.robot.subsystems;
 
+import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants;
@@ -22,8 +25,9 @@ public class ClimbSubsystem extends SubsystemBase {
   public void setPosition(){
      climbMotor.setPosition(0);
   }
-  public int getPosition(){
-    int currentPosition = climbMotor.getPosition();
+  //returns the angle of the motor 
+  public StatusSignal<Angle> getPosition(){
+    StatusSignal<Angle> currentPosition = climbMotor.getPosition();
     return currentPosition;
   }
   // sets the power of climbMotor
