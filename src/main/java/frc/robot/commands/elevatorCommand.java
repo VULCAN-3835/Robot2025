@@ -6,22 +6,22 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Util.ElevatorStates;
 import frc.robot.subsystems.ElevatorSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class elevatorCommand extends SequentialCommandGroup {
+public class ElevatorCommand extends SequentialCommandGroup {
   /** Creates a new elevatorCommand. */
-  public elevatorCommand(ElevatorSubsystem elevatorSubsystem , ElevatorStates elevatorStates) {
+  public ElevatorCommand(ElevatorSubsystem elevatorSubsystem , ElevatorStates elevatorStates) {
     
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
-      new InstantCommand(() -> elevatorSubsystem.setLevel(elevatorStates))
-      
-
+      new InstantCommand(() -> elevatorSubsystem.setLevel(elevatorStates)),
+     
     );
   }
 }

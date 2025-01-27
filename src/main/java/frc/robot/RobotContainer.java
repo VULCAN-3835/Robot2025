@@ -5,8 +5,13 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Util.ElevatorStates;
 import frc.robot.commands.DefaultTeleopCommand;
+import frc.robot.commands.elevatorCommand;
 import frc.robot.subsystems.ChassisSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem;
+
+import java.lang.Thread.State;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 
@@ -15,6 +20,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.button.Trigger;
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -25,6 +31,13 @@ import edu.wpi.first.wpilibj2.command.button.Trigger;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
+  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  private final ElevatorStates elevatorStatescoralL1 =  ElevatorStates.coralL1 ;
+  private final ElevatorStates elevatorStatescoralL2 =  ElevatorStates.coralL2 ;
+  private final ElevatorStates elevatorStatescoralL3 =  ElevatorStates.coralL3 ;
+  private final ElevatorStates elevatorStatescoralL4 =  ElevatorStates.coralL4 ;
+  private final ElevatorStates elevatorStatesRest =  ElevatorStates.rest ;
+  private final ElevatorStates elevatorStatesSource =  ElevatorStates.source ;
 
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final CommandXboxController xboxControllerDrive =
@@ -34,6 +47,7 @@ public class RobotContainer {
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
+    
     
     autoChooser = AutoBuilder.buildAutoChooser();
 
@@ -60,6 +74,13 @@ public class RobotContainer {
        () -> -xboxControllerDrive.getLeftX(),
        () -> -xboxControllerDrive.getRightX()));
     }
+   
+    xboxControllerDrive.b().whileTrue(new elevatorCommand(elevatorSubsystem, elevatorStatescoralL1 ));
+    xboxControllerDrive.a().whileTrue(new elevatorCommand(elevatorSubsystem, elevatorStatescoralL2 ));
+    xboxControllerDrive.x().whileTrue(new elevatorCommand(elevatorSubsystem, elevatorStatescoralL3 ));
+    xboxControllerDrive.leftStick().whileTrue(new elevatorCommand(elevatorSubsystem, elevatorStatescoralL4 ));
+    xboxControllerDrive.y().whileTrue(new elevatorCommand(elevatorSubsystem, elevatorStatesRest ));
+    xboxControllerDrive.rightStick().whileTrue(new elevatorCommand(elevatorSubsystem, elevatorStatesSource ));
 
   }
 
