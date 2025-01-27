@@ -20,7 +20,7 @@ public class CollectingAlageaCmd extends SequentialCommandGroup {
     addCommands(
         // 1. sets the subsystem in the predefined collecting angle
         new InstantCommand(() -> alageaSubsystem.setCollectAngle()),
-        // 2. waits until system is at collecting angle
+        // 2. waits until system is at the collecting angle
         new WaitUntilCommand(()-> alageaSubsystem.isSystemAtCollectingAngle()),
         // 3. starts to collect the piece
         new InstantCommand(() -> alageaSubsystem.setCollectingPower()),
