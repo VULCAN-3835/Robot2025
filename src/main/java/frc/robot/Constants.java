@@ -5,10 +5,7 @@
 
 package frc.robot;
 
-
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RPM;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Degrees;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 import com.pathplanner.lib.config.ModuleConfig;
@@ -19,6 +16,7 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 
 public final class Constants {
 
@@ -27,19 +25,19 @@ public final class Constants {
     public static final int commandController = 0;
     public static final double kDeadband =0.1 ;
   }
-  public static class EndAccessory_SubsystemConstants {
-    public static final int AngleMotorPort = 0;//TODO: change value
-    public static final int PowerMotorPort = 0;
-    public static final int LowLimitSwitchPort = 0;
-    public static final int HighLimitSwitchPort = 0;
-    public static final int AngleEncoderPort = 0;
-    public static final int PieceDetectorPort = 0;
-    public static final int JoystickPort = 0;
-    public static final int KAngleSpeed = 0;
-    public static final int KPowerSpeed = 0;
-    public static final int KThreshold = 0;
-    public static final int TargetDropAngle = 0;// Target angle for drop position
-    public static final int TargetIntakeAngle = 0;
+  public static class EndAccessorySubsystemConstants {
+    public static final int angleMotorPort = 0;
+    public static final int powerMotorPort = 0;
+    public static final int lowLimitSwitchPort = 0;
+    public static final int highLimitSwitchPort = 0;
+    public static final int angleEncoderPort = 0;
+    public static final int pieceDetectorPort = 0;
+    public static final int joystickPort = 0;
+    public static final int kAngleSpeed = 0;
+    public static final int kPowerSpeed = 0;
+    public static final int kThreshold = 0;
+    public static final Angle targetDropAngle = Degrees.of(0);// Target angle for drop position
+    public static final Angle targetIntakeAngle = Degrees.of(0);//TODO: chane the degrees
 
 
 
