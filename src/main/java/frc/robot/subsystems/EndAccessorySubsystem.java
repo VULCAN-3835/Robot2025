@@ -49,16 +49,12 @@ public class EndAccessorySubsystem extends SubsystemBase {
     public void setDropAngle() {
         pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngle.in(Degree)); // Set the target drop
                                                                                               // angle
-        double pidOutput = pidController.calculate(getAngle()); // Calculate PID output based on current angle
-        angleMotor.set(pidOutput * EndAccessorySubsystemConstants.kAngleSpeed); // Apply the PID output to the motor
     }
 
     // Set the angle to intake position using PID control
     public void setIntakeAngle() {
         pidController.setSetpoint(EndAccessorySubsystemConstants.targetIntakeAngle.in(Degree)); // Set the target intake
                                                                                                 // angle
-        double pidOutput = pidController.calculate(getAngle()); // Calculate PID output based on current angle
-        angleMotor.set(pidOutput * EndAccessorySubsystemConstants.kAngleSpeed); // Apply the PID output to the motor
     }
 
     // Turn on the gripper motor to intake a piece
@@ -106,14 +102,20 @@ public class EndAccessorySubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
-
+    
+        // Calculate PID output based on current angle
+        double pidOutput = pidController.calculate(getAngle()); 
+        
+        // Apply the PID output to the motor
+        angleMotor.set(pidOutput * EndAccessorySubsystemConstants.kAngleSpeed); 
+    
         // Control the angle motor with limit switches
         if (getLowLimitSwitch()) {
-            angleMotor.set(0);// Stop motor if low position is reached
+            angleMotor.set(0); // Stop motor if low position is reached
         } else if (getHighLimitSwitch()) {
-            angleMotor.set(0);// Stop motor if high position is reached
+            angleMotor.set(0); // Stop motor if high position is reached
         }
-
+    
         if (!hasPiece()) {
             gripperRest(); // Stop the gripper if no piece is detected
         }
