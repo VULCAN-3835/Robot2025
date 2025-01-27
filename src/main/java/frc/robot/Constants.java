@@ -198,8 +198,6 @@ public final class Constants {
     // here:
     public static Per<DistanceUnit, AngleUnit> distancePerRotation = Centimeters.of(20).div(Rotation.of(1));
 
-  
-
     public static Distance enumDistance(ElevatorStates elevatorStates) {
       switch (elevatorStates) {
         case coralL1:

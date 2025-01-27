@@ -54,8 +54,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   public boolean getCloseLimitSwitch() {
     return closeLimitSwitch.get();
   }
-  public static InstantCommand setLevelElevatorCommand(ElevatorSubsystem elevatorSubsystem , ElevatorStates elevatorStates) {
-      return new InstantCommand(() -> elevatorSubsystem.setLevel(elevatorStates));
+  public InstantCommand setLevelElevatorCommand(ElevatorStates elevatorStates) {
+      return new InstantCommand(() -> this.setLevel(elevatorStates));
   }
 
   @Override

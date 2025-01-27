@@ -7,15 +7,9 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Util.ElevatorStates;
 import frc.robot.commands.DefaultTeleopCommand;
-import frc.robot.commands.ElevatorCommand;
-
 import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
-
-
-
 import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -33,12 +27,8 @@ public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
-  private final ElevatorStates elevatorStatescoralL1 =  ElevatorStates.coralL1 ;
-  private final ElevatorStates elevatorStatescoralL2 =  ElevatorStates.coralL2 ;
-  private final ElevatorStates elevatorStatescoralL3 =  ElevatorStates.coralL3 ;
-  private final ElevatorStates elevatorStatescoralL4 =  ElevatorStates.coralL4 ;
-  private final ElevatorStates elevatorStatesRest =  ElevatorStates.rest ;
-  private final ElevatorStates elevatorStatesSource =  ElevatorStates.source ;
+  
+  
 
   private final CommandXboxController xboxControllerDrive =
       new CommandXboxController(OperatorConstants.driverController);
@@ -66,15 +56,14 @@ public class RobotContainer {
        () -> -xboxControllerDrive.getRightX()));
     }
    
-    xboxControllerDrive.b().whileTrue(elevatorSubsystem.setLevelElevatorCommand(elevatorSubsystem, elevatorStatescoralL1 ));
-    xboxControllerDrive.a().whileTrue( elevatorSubsystem.setLevelElevatorCommand(elevatorSubsystem, elevatorStatescoralL2 ));
-    xboxControllerDrive.x().whileTrue( elevatorSubsystem.setLevelElevatorCommand(elevatorSubsystem, elevatorStatescoralL3 ));
-    xboxControllerDrive.leftStick().whileTrue( elevatorSubsystem.setLevelElevatorCommand(elevatorSubsystem, elevatorStatescoralL4 ));
-    xboxControllerDrive.y().whileTrue( elevatorSubsystem.setLevelElevatorCommand(elevatorSubsystem, elevatorStatesRest ));
-    xboxControllerDrive.rightStick().whileTrue( elevatorSubsystem.setLevelElevatorCommand(elevatorSubsystem, elevatorStatesSource ));
+    xboxControllerDrive.b().toggleOnTrue(elevatorSubsystem.setLevelElevatorCommand( ElevatorStates.coralL1 ));
+    xboxControllerDrive.a().toggleOnTrue( elevatorSubsystem.setLevelElevatorCommand( ElevatorStates.coralL2 ));
+    xboxControllerDrive.x().toggleOnTrue( elevatorSubsystem.setLevelElevatorCommand( ElevatorStates.coralL3 ));
+    xboxControllerDrive.leftStick().toggleOnTrue( elevatorSubsystem.setLevelElevatorCommand( ElevatorStates.coralL4 ));
+    xboxControllerDrive.y().toggleOnTrue( elevatorSubsystem.setLevelElevatorCommand( ElevatorStates.rest ));
+    xboxControllerDrive.rightStick().toggleOnTrue( elevatorSubsystem.setLevelElevatorCommand( ElevatorStates.source ));
 
   }
-
  
   public Command getAutonomousCommand() {
 
