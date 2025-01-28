@@ -48,15 +48,13 @@ public class EndAccessorySubsystem extends SubsystemBase {
     // Set the angle to drop position using PID control
     public void setDropAngle() {
         pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngle.in(Degree)); // Set the target drop
-                                                                                              // angle
-        double pidOutput = pidController.calculate(getAngle()); // Calculate PID output based on current angle
-        angleMotor.set(pidOutput * EndAccessorySubsystemConstants.kAngleSpeed); // Apply the PID output to the motor
+                                                                                             
     }
 
     // Set the angle to intake position using PID control
     public void setIntakeAngle() {
         pidController.setSetpoint(EndAccessorySubsystemConstants.targetIntakeAngle.in(Degree)); // Set the target intake
-                                                                                                // angle
+                                                                                                
     }
 
     // Turn on the gripper motor to intake a piece
@@ -66,7 +64,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
 
     public void gripperRelease() {
         powerMotor.set(-EndAccessorySubsystemConstants.kPowerSpeed); // Run the power motor in reverse to release the
-                                                                     // piece
+                                                                   
     }
 
     // Stop the gripper
@@ -92,7 +90,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
     // Check if a piece is detected by the sensor
     public boolean hasPiece() {
         return pieceDetector.getVoltage() > EndAccessorySubsystemConstants.kThreshold;// Return true if the sensor //
-                                                                                      // detects a piece
+                                                                                   
     }
 
     // Stop the motor after each operation
