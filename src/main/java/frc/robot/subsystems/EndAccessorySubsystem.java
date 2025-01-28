@@ -112,6 +112,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
         } else {
             timer.stop();  
             timer.reset();  
+            }
         }
     }
 }
