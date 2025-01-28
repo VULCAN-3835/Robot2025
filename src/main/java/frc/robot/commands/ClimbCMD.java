@@ -18,13 +18,17 @@ public class ClimbCMD extends SequentialCommandGroup {
   public ClimbCMD(ClimbSubsystem climbSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
+    
     addCommands(
       // 1. setting the motor to its desired speed so it will climb
-      new InstantCommand(() -> climbSubsystem.setMotor(ClimbSubsystemConstants.workingMotorSpeed)),
+      new InstantCommand(() -> climbSubsystem.setMotor(ClimbSubsystemConstants.climbMotorPower)),
+
       //2. waiting until we finish to climb
       new WaitUntilCommand(()-> climbSubsystem.getLimitswitch()),
+
       //3. stopping the motor when we finish to climb
       new InstantCommand(()-> climbSubsystem.setMotor(0)),
+
       //4. resets the position of the endcoder
       new InstantCommand(()-> climbSubsystem.resetPosition())
     );

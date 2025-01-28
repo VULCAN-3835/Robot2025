@@ -20,18 +20,15 @@ public class ResetClimbing extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
         // 1. starting the motor
-        new InstantCommand(() -> climbSubsystem.setMotor(Constants.ClimbSubsystemConstants.workingMotorSpeed)),
-        // 2. checking if the limitswitch is pressed
-        new WaitUntilCommand(() -> climbSubsystem.getLimitswitch()),
-        // 3. stopping the motor
-        new InstantCommand(() -> climbSubsystem.setMotor(Constants.ClimbSubsystemConstants.stoppingMotorSpeed)),
-        // 4. setting the Endoder's position to 0
-        new InstantCommand(() -> climbSubsystem.resetPosition()),
-        // 5. starting to drop from the cage at certain degrees 
-        new InstantCommand(() -> climbSubsystem.setMotor(Constants.ClimbSubsystemConstants.droppingMotorSpeed)),
-        // 6. waiting until the motor is at the right degrees
-        new WaitUntilCommand(() -> climbSubsystem.getPosition().getValue().gt(Constants.ClimbSubsystemConstants.degreesForDropping)),
-        // 7. stopping the motor
-        new InstantCommand(() -> climbSubsystem.setMotor(Constants.ClimbSubsystemConstants.stoppingMotorSpeed)));
+        new ClimbCMD(climbSubsystem),
+
+        // 2. starting to drop from the cage at certain degrees 
+        new InstantCommand(() -> climbSubsystem.setMotor(-Constants.ClimbSubsystemConstants.closeClimbMotorPower)),
+
+        // 3. waiting until the motor is at the right degrees
+        new WaitUntilCommand(() -> climbSubsystem.getPositionAngle().gt(Constants.ClimbSubsystemConstants.degreesForOpen)),
+
+        // 4. stopping the motor
+        new InstantCommand(() -> climbSubsystem.setMotor(0)));
   }
 }
