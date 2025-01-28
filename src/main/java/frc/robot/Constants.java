@@ -5,6 +5,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Centimeter;
 import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -41,6 +42,26 @@ public final class Constants {
     public static final int driverController = 0;
     public static final int commandController = 0;
     public static final double kDeadband = 0.1;
+  }
+  public static class EndAccessorySubsystemConstants {
+    public static final int angleMotorID = 0;
+    public static final int powerMotorID = 0;
+    public static final int lowLimitSwitchID = 0;
+    public static final int highLimitSwitchID = 0;
+    public static final int angleEncoderID = 0;
+    public static final int pieceDetectorID = 0;
+    public static final int joystickPort = 0;
+    public static final int kAngleSpeed = 0;
+    public static final int kPowerSpeed = 0;
+    public static final int kThreshold = 0;
+    public static final Angle targetDropAngle = Degrees.of(0);// Target angle for drop position
+    public static final Angle targetIntakeAngle = Degrees.of(0);//TODO: chane the degrees
+
+
+
+
+  
+    
   }
 
   public static class OVCameraUtilConstants {
