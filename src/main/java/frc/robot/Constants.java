@@ -48,26 +48,28 @@ public final class Constants {
     public static final double kDeadband = 0.1;
   }
   public static class alageaSubsystemConstants{
+    //TODO: change the values to the actual values
+
     public static final int angleMotorID = 0;
-    public static final int PowerMotorID = 1;
-    public static final int angleEncoderID = 2;
-    public static final int ballDetectorID = 3;
-    public static final int limitSwitchID = 4;
-    public static final Angle initAngle = Degrees.of(90);
+    public static final int PowerMotorID = 0;
+    public static final int ballDetectorID = 0;
+    public static final int limitSwitchID = 0;
+    public static final int angleEncoderID = 0;
+
     public static final Angle restAngle = Degrees.of(0);
     public static final Angle holdAngle = Degrees.of(0);
-    public static final Angle collectingAngle = Degrees.of(0);;
-    public static final Angle maxAngle = Degrees.of(180);;
-    public static final Angle minAngle = Degrees.of(90);;
+    public static final Angle collectingAngle = Degrees.of(0);
+    public static final Angle maxAngle = Degrees.of(0);
+    public static final Angle minAngle = Degrees.of(0);
+    public static final Angle shootingAngle = Degrees.of(0);
+
     public static final double ballDetectorThreshold = 0;
-    public static final double collectingPower = -0.5;
-    public static final double shootingPower = 0.5;
-    public static final Angle shootingAngle = Degrees.of(90);;
-    public static final double pidTolerence =  0.5;
-    public static final double restingPower = 0;
+    public static final double pidTolerence =  0;
 
+    public static final double collectingPower = 0;
+    public static final double shootingPower = 0;
 
-        
+     public static final double collectTime = 0.1;
   }
 
   public static class OVCameraUtilConstants {
@@ -209,12 +211,6 @@ public final class Constants {
       
   }
   
-  public static class ClimbConstants {
-    TalonFX climbMotor = new TalonFX(10);
-    DigitalInput ClimbLimitSwitch = new DigitalInput(12);
-    public static final int climbMotorPort = 0;  
-    public static final int LimitSwitchPort = 0;
-  }
 
   public static class ElevatorConstant {
 
