@@ -6,18 +6,20 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.ClimbCMD;
+import frc.robot.Util.ElevatorStates;
 import frc.robot.commands.DefaultTeleopCommand;
 import frc.robot.commands.ResetClimbing;
 import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 
+import frc.robot.subsystems.ElevatorSubsystem;
 import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.button.Trigger;
+
+
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -30,6 +32,10 @@ public class RobotContainer {
   private final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
   ClimbSubsystem climbSubsystem;
   // Replace with CommandPS4Controller or CommandJoystick if needed
+  private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  
+  
+
   private final CommandXboxController xboxControllerDrive =
       new CommandXboxController(OperatorConstants.driverController);
 
@@ -37,24 +43,15 @@ public class RobotContainer {
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     
+    
     autoChooser = AutoBuilder.buildAutoChooser();
 
     autoChooser.setDefaultOption("EMPTY", null);
     SmartDashboard.putData("Auto Chooser",autoChooser);
-    // Configure the trigger bindings
     configureBindings();
   }
 
-  /**
-   * Use this method to define your trigger->command mappings. Triggers can be created via the
-   * {@link Trigger#Trigger(java.util.function.BooleanSupplier)} constructor with an arbitrary
-   * predicate, or via the named factories in {@link
-   * edu.wpi.first.wpilibj2.command.button.CommandGenericHID}'s subclasses for {@link
-   * CommandXboxController Xbox}/{@link edu.wpi.first.wpilibj2.command.button.CommandPS4Controller
-   * PS4} controllers or {@link edu.wpi.first.wpilibj2.command.button.CommandJoystick Flight
-   * joysticks}.
-   */
-
+  
   private void configureBindings() {
     if(xboxControllerDrive.isConnected()){
       this.chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(this.chassisSubsystem,
@@ -62,18 +59,20 @@ public class RobotContainer {
        () -> -xboxControllerDrive.getLeftX(),
        () -> -xboxControllerDrive.getRightX()));
     }
-    this.climbSubsystem = new ClimbSubsystem();
     xboxControllerDrive.y().toggleOnTrue(new ClimbCMD(climbSubsystem));
     xboxControllerDrive.b().toggleOnTrue( new ResetClimbing(climbSubsystem));
-  }
+   
+    xboxControllerDrive.b().toggleOnTrue(elevatorSubsystem.setLevelElevatorCommand( ElevatorStates.coralL1 ));
+    xboxControllerDrive.a().toggleOnTrue( elevatorSubsystem.setLevelElevatorCommand( ElevatorStates.coralL2 ));
+    xboxControllerDrive.x().toggleOnTrue( elevatorSubsystem.setLevelElevatorCommand( ElevatorStates.coralL3 ));
+    xboxControllerDrive.leftStick().toggleOnTrue( elevatorSubsystem.setLevelElevatorCommand( ElevatorStates.coralL4 ));
+    xboxControllerDrive.y().toggleOnTrue( elevatorSubsystem.setLevelElevatorCommand( ElevatorStates.rest ));
+    xboxControllerDrive.rightStick().toggleOnTrue( elevatorSubsystem.setLevelElevatorCommand( ElevatorStates.source ));
 
-  /**
-   * Use this to pass the autonomous command to the main {@link Robot} class.
-   *
-   * @return the command to run in autonomous
-   */
+  }
+ 
   public Command getAutonomousCommand() {
-    // An example command will be run in autonomous
+
     return autoChooser.getSelected();
   }
 }
