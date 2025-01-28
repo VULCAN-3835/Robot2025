@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Rotations;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -33,7 +34,7 @@ public class AlageaSubsystem extends SubsystemBase {
 
   public AlageaSubsystem() {
     this.angleMotor = new TalonFX(alageaSubsystemConstants.angleMotorID);
-    this.powerMotor = new TalonFX(alageaSubsystemConstants.PowerMotorID);
+    this.powerMotor = new TalonFX(alageaSubsystemConstants.powerMotorID);
 
     this.ballDetector = new AnalogInput(alageaSubsystemConstants.ballDetectorID);
     this.lowLimitSwitch = new DigitalInput(alageaSubsystemConstants.limitSwitchID);
@@ -53,7 +54,7 @@ public class AlageaSubsystem extends SubsystemBase {
 
   // gets the current angle
   public Angle getAngle() {
-    return Degrees.of(angleEncoder.get() / 360);
+    return Rotations.of(angleEncoder.get());
 
   }
 
@@ -95,15 +96,13 @@ public class AlageaSubsystem extends SubsystemBase {
   public boolean isSystemAtShootingAngle() {
     double currentAngle = getAngle().in(Degrees);
     double targetAngle = alageaSubsystemConstants.shootingAngle.in(Degrees);
-    return Math.abs(Math.max(currentAngle, targetAngle) - Math.min(currentAngle, targetAngle)) <= pidController
-        .getPositionTolerance();
+    return Math.abs(currentAngle -  targetAngle) <= pidController.getPositionTolerance();
   }
 
   public boolean isSystemAtCollectingAngle() {
     double currentAngle = getAngle().in(Degrees);
     double targetAngle = alageaSubsystemConstants.collectingAngle.in(Degrees);
-    return Math.abs(Math.max(currentAngle, targetAngle) - Math.min(currentAngle, targetAngle)) <= pidController
-        .getPositionTolerance();
+    return Math.abs(currentAngle - targetAngle) <= pidController.getPositionTolerance();
   }
 
   public void setPower(double power) {
@@ -114,7 +113,7 @@ public class AlageaSubsystem extends SubsystemBase {
     return new WaitUntilCommand(() -> hasBallTimer.get() > alageaSubsystemConstants.collectTime);
   }
 
-  public void CollectingAlgea() {
+  public void collectingAlgea() {
     setPower(alageaSubsystemConstants.collectingPower);
   }
 

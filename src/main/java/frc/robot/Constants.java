@@ -51,7 +51,7 @@ public final class Constants {
     //TODO: change the values to the actual values
 
     public static final int angleMotorID = 0;
-    public static final int PowerMotorID = 0;
+    public static final int powerMotorID = 0;
     public static final int ballDetectorID = 0;
     public static final int limitSwitchID = 0;
     public static final int angleEncoderID = 0;

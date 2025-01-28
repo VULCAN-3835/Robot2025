@@ -27,7 +27,7 @@ public class CollectingAlageaCmd extends SequentialCommandGroup {
         new WaitUntilCommand(()-> alageaSubsystem.isSystemAtCollectingAngle()),
 
         // 3. starts to collect the piece
-        new InstantCommand(() -> alageaSubsystem.CollectingAlgea()),
+        new InstantCommand(() -> alageaSubsystem.collectingAlgea()),
 
         // 4. waits until the sensor feels the piece
         alageaSubsystem.waitForCollectionCommand(),
