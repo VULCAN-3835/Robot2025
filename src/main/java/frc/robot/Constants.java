@@ -188,6 +188,11 @@ public final class Constants {
     public static Distance coralL4 = Centimeter.of(6);
     public static Distance restDistance = Centimeter.of(0);
     public static Distance sourceDistance = Centimeter.of(0);
+
+    public static int motorLeftID = 0;//TODO: needs to change the values of the ports to actual values
+    public static int motorRightID = 0;
+    public static int limitSwitchID = 0;
+
     public static double kP = 0;
     public static double kI = 0;
     public static double kD = 0;
