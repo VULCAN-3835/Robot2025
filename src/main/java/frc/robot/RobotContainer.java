@@ -7,7 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.Climbing;
 import frc.robot.commands.DefaultTeleopCommand;
-import frc.robot.commands.Dropping;
+import frc.robot.commands.ResetClimbing;
 import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 
@@ -64,7 +64,7 @@ public class RobotContainer {
     }
     this.climbSubsystem = new ClimbSubsystem();
     xboxControllerDrive.y().toggleOnTrue(new Climbing(climbSubsystem));
-    xboxControllerDrive.b().toggleOnTrue( new Dropping(climbSubsystem));
+    xboxControllerDrive.b().toggleOnTrue( new ResetClimbing(climbSubsystem));
   }
 
   /**
