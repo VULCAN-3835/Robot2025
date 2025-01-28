@@ -22,7 +22,7 @@ public class ClimbSubsystem extends SubsystemBase {
     this.climbLimitSwitch = new DigitalInput(Constants.ClimbSubsystemConstants.limitSwitchPort);
   }
   // sets the angle of the motor to 0
-  public void setPosition(){
+  public void resetPosition(){
      climbMotor.setPosition(0);
   }
   //returns the angle of the motor 
@@ -35,6 +35,7 @@ public class ClimbSubsystem extends SubsystemBase {
     climbMotor.set(power);
   }
 
+
   // returns the value of the limit switch
   public boolean getLimitswitch() {
     boolean valueOfLimitSwitch = climbLimitSwitch.get();
@@ -43,11 +44,8 @@ public class ClimbSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // This method will be called once per scheduler run
-    if (getLimitswitch()) {
-      setMotor(Constants.ClimbSubsystemConstants.stoppingMotorSpeed);
-
+    if(getLimitswitch()&& climbMotor.get()<0){
+      setMotor(0);
     }
-
   }
 }

@@ -26,7 +26,7 @@ public class Dropping extends SequentialCommandGroup {
         // 3. stopping the motor
         new InstantCommand(() -> climbSubsystem.setMotor(Constants.ClimbSubsystemConstants.stoppingMotorSpeed)),
         // 4. setting the Endoder's position to 0
-        new InstantCommand(() -> climbSubsystem.setPosition()),
+        new InstantCommand(() -> climbSubsystem.resetPosition()),
         // 5. starting to drop from the cage at certain degrees 
         new InstantCommand(() -> climbSubsystem.setMotor(Constants.ClimbSubsystemConstants.droppingMotorSpeed)),
         // 6. waiting until the motor is at the right degrees

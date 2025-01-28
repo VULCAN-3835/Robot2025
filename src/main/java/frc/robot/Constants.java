@@ -174,6 +174,8 @@ public final class Constants {
   public static final int stoppingMotorSpeed = 0;//final
   public static final int droppingMotorSpeed = 0;//to be continued 
   public static final Angle degreesForDropping = Degrees.of(0) ;//to be continued
+  
+  public static final double closeClimbMotorSpeed = 0;//TODO: change value to its actual value
   }
 }
 
