@@ -26,30 +26,29 @@ public class EndAccessorySubsystem extends SubsystemBase {
     private AnalogInput pieceDetector;
 
     public EndAccessorySubsystem() {
-        angleMotor = new TalonFX(EndAccessorySubsystemConstants.angleMotorID); // Motor to control the angle
-        powerMotor = new TalonFX(EndAccessorySubsystemConstants.powerMotorID); // Motor to control the power
-        lowLimitSwitch = new DigitalInput(EndAccessorySubsystemConstants.lowLimitSwitchID);// Switch for the low
+        angleMotor = new TalonFX(EndAccessorySubsystemConstants.angleMotorID);
+        powerMotor = new TalonFX(EndAccessorySubsystemConstants.powerMotorID);
+        lowLimitSwitch = new DigitalInput(EndAccessorySubsystemConstants.lowLimitSwitchID);
                                                                                   
-        highLimitSwitch = new DigitalInput(EndAccessorySubsystemConstants.highLimitSwitchID);// Switch for the high
+        highLimitSwitch = new DigitalInput(EndAccessorySubsystemConstants.highLimitSwitchID);
                                                                                        
-        angleEncoder = new DutyCycleEncoder(EndAccessorySubsystemConstants.angleEncoderID);// Sensor to measure the
+        angleEncoder = new DutyCycleEncoder(EndAccessorySubsystemConstants.angleEncoderID);
                                                                                            
-        pieceDetector = new AnalogInput(EndAccessorySubsystemConstants.pieceDetectorID);// Sensor to detect the piece
+        pieceDetector = new AnalogInput(EndAccessorySubsystemConstants.pieceDetectorID);
     }
 
-    // PID
-    private static final double kP = 0;// Proportional constant
+  
+    private static final double kP = 0;
     private PIDController pidController = new PIDController(kP, 0, 0);
 
-    // Set the angle to drop position using PID control
     public void setDropAngle() {
-        pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngle.in(Degree)); // Set the target drop
+        pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngle.in(Degree));
                                                                                              
     }
 
 
     public void setIntakeAngle() {
-        pidController.setSetpoint(EndAccessorySubsystemConstants.targetIntakeAngle.in(Degree)); // Set the target intake
+        pidController.setSetpoint(EndAccessorySubsystemConstants.targetIntakeAngle.in(Degree));
                                                                                                 
     }
 
@@ -66,17 +65,17 @@ public class EndAccessorySubsystem extends SubsystemBase {
         powerMotor.set(0);
     }
 
-    // Get the current angle from the angle sensor
+
     public double getAngle() {
         return angleEncoder.get() * 360;// Get the angle from the sensor
     }
 
     public boolean getHighLimitSwitch() {
-        return highLimitSwitch.get();// Return true if the high position switch is pressed
+        return highLimitSwitch.get();
     }
 
     public boolean getLowLimitSwitch() {
-        return lowLimitSwitch.get();// Return true if the low position switch is pressed
+        return lowLimitSwitch.get();
     }
 
     // Check if a piece is detected by the sensor
@@ -94,13 +93,12 @@ public class EndAccessorySubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        double pidOutput = pidController.calculate(getAngle()); // Calculate PID output based on current angle
+        double pidOutput = pidController.calculate(getAngle());
 
-        // Control the angle motor with limit switches
         if (getLowLimitSwitch() && pidOutput < 0) {
-            angleMotor.set(0); // Stop motor if low position is reached and motor is trying to move downward
+            angleMotor.set(0);
         } else if (getHighLimitSwitch() && pidOutput > 0) {
-            angleMotor.set(0); // Stop motor if high position is reached and motor is trying to move upward
+            angleMotor.set(0);
         } else {
             angleMotor.set(pidOutput);
         }
