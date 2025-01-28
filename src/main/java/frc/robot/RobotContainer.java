@@ -78,18 +78,4 @@ public class RobotContainer {
     // An example command will be run in autonomous
     return autoChooser.getSelected();
   }
-  
-  public Command createAndScheduleCommand(Command command) {
-    CommandScheduler.getInstance().schedule(command);
-    return command;
-  }
-
-  public Command CollectCommand() {
-      return createAndScheduleCommand(new CollectorCommand(endAccessorySubsystem));
-  }
-
-  public Command ReleasePieceCommand() {
-      return createAndScheduleCommand(new ReleasePieceCommand(endAccessorySubsystem));
-  }
-
 }

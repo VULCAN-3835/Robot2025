@@ -26,12 +26,12 @@ public final class Constants {
     public static final double kDeadband =0.1 ;
   }
   public static class EndAccessorySubsystemConstants {
-    public static final int angleMotorPort = 0;
-    public static final int powerMotorPort = 0;
-    public static final int lowLimitSwitchPort = 0;
-    public static final int highLimitSwitchPort = 0;
-    public static final int angleEncoderPort = 0;
-    public static final int pieceDetectorPort = 0;
+    public static final int angleMotorID = 0;
+    public static final int powerMotorID = 0;
+    public static final int lowLimitSwitchID = 0;
+    public static final int highLimitSwitchID = 0;
+    public static final int angleEncoderID = 0;
+    public static final int pieceDetectorID = 0;
     public static final int joystickPort = 0;
     public static final int kAngleSpeed = 0;
     public static final int kPowerSpeed = 0;
