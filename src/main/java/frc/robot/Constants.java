@@ -5,6 +5,7 @@
 
 package frc.robot;
 
+
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Centimeter;
 import static edu.wpi.first.units.Units.Centimeters;
@@ -45,6 +46,30 @@ public final class Constants {
     public static final int driverController = 0;
     public static final int commandController = 0;
     public static final double kDeadband = 0.1;
+  }
+  public static class alageaSubsystemConstants{
+    //TODO: change the values to the actual values
+
+    public static final int angleMotorID = 0;
+    public static final int powerMotorID = 0;
+    public static final int ballDetectorID = 0;
+    public static final int limitSwitchID = 0;
+    public static final int angleEncoderID = 0;
+
+    public static final Angle restAngle = Degrees.of(0);
+    public static final Angle holdAngle = Degrees.of(0);
+    public static final Angle collectingAngle = Degrees.of(0);
+    public static final Angle maxAngle = Degrees.of(0);
+    public static final Angle minAngle = Degrees.of(0);
+    public static final Angle shootingAngle = Degrees.of(0);
+
+    public static final double ballDetectorThreshold = 0;
+    public static final double pidTolerence =  0;
+
+    public static final double collectingPower = 0;
+    public static final double shootingPower = 0;
+
+     public static final double collectTime = 0.1;
   }
 
   public static class OVCameraUtilConstants {
@@ -172,17 +197,20 @@ public final class Constants {
             ModuleConstants.kDriveCurrentLimit, 1),
         kDriveKinematics.getModules());
 
-    public static RobotConfig getConfig() {
-      RobotConfig config;
-      try {
-        config = RobotConfig.fromGUISettings();
-      } catch (Exception e) {
-        e.printStackTrace();
-        config = DEFAUL_ROBOT_CONFIG;
+      public static RobotConfig getConfig(){
+        RobotConfig config;
+        try{
+          config = RobotConfig.fromGUISettings();
+        } catch (Exception e){
+          e.printStackTrace();
+          config = DEFAUL_ROBOT_CONFIG;
+        }
+        return config;
+
       }
-      return config;
-    }
+      
   }
+  
 
   public static class ElevatorConstant {
 
