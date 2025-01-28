@@ -30,15 +30,15 @@ public class EndAccessorySubsystem extends SubsystemBase {
 
     // Constructor
     public EndAccessorySubsystem() {
-        angleMotor = new TalonFX(EndAccessorySubsystemConstants.angleMotorPort); // Motor to control the angle
-        powerMotor = new TalonFX(EndAccessorySubsystemConstants.powerMotorPort); // Motor to control the power
-        lowLimitSwitch = new DigitalInput(EndAccessorySubsystemConstants.lowLimitSwitchPort);// Switch for the low
+        angleMotor = new TalonFX(EndAccessorySubsystemConstants.angleMotorID); // Motor to control the angle
+        powerMotor = new TalonFX(EndAccessorySubsystemConstants.powerMotorID); // Motor to control the power
+        lowLimitSwitch = new DigitalInput(EndAccessorySubsystemConstants.lowLimitSwitchID);// Switch for the low
                                                                                              // position
-        highLimitSwitch = new DigitalInput(EndAccessorySubsystemConstants.highLimitSwitchPort);// Switch for the high
+        highLimitSwitch = new DigitalInput(EndAccessorySubsystemConstants.highLimitSwitchID);// Switch for the high
                                                                                                // position
-        angleEncoder = new DutyCycleEncoder(EndAccessorySubsystemConstants.angleEncoderPort);// Sensor to measure the
+        angleEncoder = new DutyCycleEncoder(EndAccessorySubsystemConstants.angleEncoderID);// Sensor to measure the
                                                                                              // angle
-        pieceDetector = new AnalogInput(EndAccessorySubsystemConstants.pieceDetectorPort);// Sensor to detect the piece
+        pieceDetector = new AnalogInput(EndAccessorySubsystemConstants.pieceDetectorID);// Sensor to detect the piece
     }
 
     // PID
@@ -49,6 +49,8 @@ public class EndAccessorySubsystem extends SubsystemBase {
     public void setDropAngle() {
         pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngle.in(Degree)); // Set the target drop
                                                                                               // angle
+        double pidOutput = pidController.calculate(getAngle()); // Calculate PID output based on current angle
+        angleMotor.set(pidOutput * EndAccessorySubsystemConstants.kAngleSpeed); // Apply the PID output to the motor
     }
 
     // Set the angle to intake position using PID control
@@ -62,7 +64,6 @@ public class EndAccessorySubsystem extends SubsystemBase {
         powerMotor.set(EndAccessorySubsystemConstants.kPowerSpeed);
     }
 
-    // Release the piece using the gripper motor
     public void gripperRelease() {
         powerMotor.set(-EndAccessorySubsystemConstants.kPowerSpeed); // Run the power motor in reverse to release the
                                                                      // piece
@@ -75,7 +76,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
 
     // Get the current angle from the angle sensor
     public double getAngle() {
-        return angleEncoder.get() / 360;// Get the angle from the sensor
+        return angleEncoder.get() * 360;// Get the angle from the sensor
     }
 
     // Check if the high position switch is pressed
@@ -95,28 +96,25 @@ public class EndAccessorySubsystem extends SubsystemBase {
     }
 
     // Stop the motor after each operation
-    private void stopMotor() {
+    private void stopMotors() {
         angleMotor.set(0); // Stop the angle motor
         powerMotor.set(0); // Stop the power motor
     }
 
     @Override
     public void periodic() {
-    
-        // Calculate PID output based on current angle
-        double pidOutput = pidController.calculate(getAngle()); 
-        
-        // Apply the PID output to the motor
-        angleMotor.set(pidOutput * EndAccessorySubsystemConstants.kAngleSpeed); 
-    
+
+        double pidOutput = pidController.calculate(getAngle()); // Calculate PID output based on current angle
+
         // Control the angle motor with limit switches
-        if (getLowLimitSwitch()) {
-            angleMotor.set(0); // Stop motor if low position is reached
-        } else if (getHighLimitSwitch()) {
-            angleMotor.set(0); // Stop motor if high position is reached
+        if (getLowLimitSwitch() && pidOutput < 0) {
+            angleMotor.set(0); // Stop motor if low position is reached and motor is trying to move downward
+        } else if (getHighLimitSwitch() && pidOutput > 0) {
+            angleMotor.set(0); // Stop motor if high position is reached and motor is trying to move upward
+        } else {
+            angleMotor.set(pidOutput);
         }
-    
-        if (!hasPiece()) {
+        if (hasPiece()) {
             gripperRest(); // Stop the gripper if no piece is detected
         }
     }
