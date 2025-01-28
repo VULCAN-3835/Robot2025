@@ -27,10 +27,10 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final PIDController pidController;
 
   public ElevatorSubsystem() {
-    ElevatorMotorLeft = new TalonFX(0); // no id yet
-    ElevatorMotorRight = new TalonFX(0);
-    closeLimitSwitch = new DigitalInput(0);
-    pidController = new PIDController(ElevatorConstant.kP, ElevatorConstant.kI, ElevatorConstant.kD);
+    this.ElevatorMotorLeft = new TalonFX(ElevatorConstant.motorLeftPort); 
+    this.ElevatorMotorRight = new TalonFX(ElevatorConstant.motorRightPort);
+    this.closeLimitSwitch = new DigitalInput(ElevatorConstant.limitSwitchPort);
+    this.pidController = new PIDController(ElevatorConstant.kP, ElevatorConstant.kI, ElevatorConstant.kD);
   }
 
   public void setLevel(ElevatorStates state) {
@@ -47,8 +47,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void setRest() {
-    ElevatorMotorLeft.set(ElevatorConstant.restPower);
-    ElevatorMotorRight.set(ElevatorConstant.restPower);
+    pidController.setSetpoint(0);
   }
 
   public boolean getCloseLimitSwitch() {
@@ -61,7 +60,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   @Override
   public void periodic() {
     double power = pidController.calculate(getDistance().in(Centimeter));
-
     if (getCloseLimitSwitch() && power < 0) {
       ElevatorMotorLeft.set(0);
       ElevatorMotorRight.set(0);
