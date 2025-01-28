@@ -16,19 +16,15 @@ import edu.wpi.first.wpilibj.AnalogInput;
 
 public class EndAccessorySubsystem extends SubsystemBase {
 
-    // Motors
     private TalonFX angleMotor;
     private TalonFX powerMotor;
 
-    // Switches
     private DigitalInput lowLimitSwitch;
     private DigitalInput highLimitSwitch;
 
-    // Sensors
     private DutyCycleEncoder angleEncoder;
     private AnalogInput pieceDetector;
 
-    // Constructor
     public EndAccessorySubsystem() {
         angleMotor = new TalonFX(EndAccessorySubsystemConstants.angleMotorID); // Motor to control the angle
         powerMotor = new TalonFX(EndAccessorySubsystemConstants.powerMotorID); // Motor to control the power
@@ -51,25 +47,23 @@ public class EndAccessorySubsystem extends SubsystemBase {
                                                                                              
     }
 
-    // Set the angle to intake position using PID control
+
     public void setIntakeAngle() {
         pidController.setSetpoint(EndAccessorySubsystemConstants.targetIntakeAngle.in(Degree)); // Set the target intake
                                                                                                 
     }
 
-    // Turn on the gripper motor to intake a piece
     public void gripperIntake() {
         powerMotor.set(EndAccessorySubsystemConstants.kPowerSpeed);
     }
 
     public void gripperRelease() {
-        powerMotor.set(-EndAccessorySubsystemConstants.kPowerSpeed); // Run the power motor in reverse to release the
+        powerMotor.set(-EndAccessorySubsystemConstants.kPowerSpeed);
                                                                    
     }
 
-    // Stop the gripper
     public void gripperRest() {
-        powerMotor.set(0);// Stop the power motor
+        powerMotor.set(0);
     }
 
     // Get the current angle from the angle sensor
@@ -77,26 +71,24 @@ public class EndAccessorySubsystem extends SubsystemBase {
         return angleEncoder.get() * 360;// Get the angle from the sensor
     }
 
-    // Check if the high position switch is pressed
     public boolean getHighLimitSwitch() {
         return highLimitSwitch.get();// Return true if the high position switch is pressed
     }
 
-    // Check if the low position switch is pressed
     public boolean getLowLimitSwitch() {
         return lowLimitSwitch.get();// Return true if the low position switch is pressed
     }
 
     // Check if a piece is detected by the sensor
     public boolean hasPiece() {
-        return pieceDetector.getVoltage() > EndAccessorySubsystemConstants.kThreshold;// Return true if the sensor //
+        return pieceDetector.getVoltage() > EndAccessorySubsystemConstants.kThreshold;
                                                                                    
     }
 
     // Stop the motor after each operation
     private void stopMotors() {
-        angleMotor.set(0); // Stop the angle motor
-        powerMotor.set(0); // Stop the power motor
+        angleMotor.set(0);
+        powerMotor.set(0);
     }
 
     @Override
@@ -113,7 +105,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
             angleMotor.set(pidOutput);
         }
         if (hasPiece()) {
-            gripperRest(); // Stop the gripper if no piece is detected
+            gripperRest();
         }
     }
  }
