@@ -53,7 +53,7 @@ public final class Constants {
     public static final int joystickPort = 0;
     public static final int kAngleSpeed = 0;
     public static final int kPowerSpeed = 0;
-    public static final int kThreshold = 0;
+    public static final int khHasPieceVoltageThreshold = 0;
     public static final Angle targetDropAngle = Degrees.of(0);// Target angle for drop position
     public static final Angle targetIntakeAngle = Degrees.of(0);//TODO: chane the degrees
 

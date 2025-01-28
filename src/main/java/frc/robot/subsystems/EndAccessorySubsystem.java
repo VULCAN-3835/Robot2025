@@ -5,13 +5,17 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degree;
-
+import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Rotations;
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.EndAccessorySubsystemConstants;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.units.AngleUnit;
+import edu.wpi.first.units.Measure;
 import edu.wpi.first.wpilibj.AnalogInput;
 
 public class EndAccessorySubsystem extends SubsystemBase {
@@ -24,6 +28,9 @@ public class EndAccessorySubsystem extends SubsystemBase {
 
     private DutyCycleEncoder angleEncoder;
     private AnalogInput pieceDetector;
+
+    private Timer timer = new Timer();
+    private static final double waitTime = 2.0;
 
     public EndAccessorySubsystem() {
         angleMotor = new TalonFX(EndAccessorySubsystemConstants.angleMotorID);
@@ -66,8 +73,8 @@ public class EndAccessorySubsystem extends SubsystemBase {
     }
 
 
-    public double getAngle() {
-        return angleEncoder.get() * 360;// Get the angle from the sensor
+    public Measure<AngleUnit> getAngle() {
+        return Rotations.of(angleEncoder.get());
     }
 
     public boolean getHighLimitSwitch() {
@@ -78,22 +85,15 @@ public class EndAccessorySubsystem extends SubsystemBase {
         return lowLimitSwitch.get();
     }
 
-    // Check if a piece is detected by the sensor
     public boolean hasPiece() {
-        return pieceDetector.getVoltage() > EndAccessorySubsystemConstants.kThreshold;
+        return pieceDetector.getVoltage() > EndAccessorySubsystemConstants.khHasPieceVoltageThreshold;
                                                                                    
-    }
-
-    // Stop the motor after each operation
-    private void stopMotors() {
-        angleMotor.set(0);
-        powerMotor.set(0);
     }
 
     @Override
     public void periodic() {
 
-        double pidOutput = pidController.calculate(getAngle());
+        double pidOutput = pidController.calculate(getAngle().in(Degrees));
 
         if (getLowLimitSwitch() && pidOutput < 0) {
             angleMotor.set(0);
@@ -102,9 +102,16 @@ public class EndAccessorySubsystem extends SubsystemBase {
         } else {
             angleMotor.set(pidOutput);
         }
+
         if (hasPiece()) {
-            gripperRest();
+            if (timer.get() == 0) {
+                timer.start();
+            }
+            if (timer.get() > waitTime) {
+                gripperRest();  
+        } else {
+            timer.stop();  
+            timer.reset();  
         }
     }
- }
-
+}
