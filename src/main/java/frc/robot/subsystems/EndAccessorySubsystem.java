@@ -29,11 +29,11 @@ public class EndAccessorySubsystem extends SubsystemBase {
         angleMotor = new TalonFX(EndAccessorySubsystemConstants.angleMotorID); // Motor to control the angle
         powerMotor = new TalonFX(EndAccessorySubsystemConstants.powerMotorID); // Motor to control the power
         lowLimitSwitch = new DigitalInput(EndAccessorySubsystemConstants.lowLimitSwitchID);// Switch for the low
-                                                                                             // position
+                                                                                  
         highLimitSwitch = new DigitalInput(EndAccessorySubsystemConstants.highLimitSwitchID);// Switch for the high
-                                                                                               // position
+                                                                                       
         angleEncoder = new DutyCycleEncoder(EndAccessorySubsystemConstants.angleEncoderID);// Sensor to measure the
-                                                                                             // angle
+                                                                                           
         pieceDetector = new AnalogInput(EndAccessorySubsystemConstants.pieceDetectorID);// Sensor to detect the piece
     }
 
