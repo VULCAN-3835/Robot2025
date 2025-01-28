@@ -5,6 +5,7 @@
 
 package frc.robot;
 
+import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Centimeter;
 import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -12,6 +13,7 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Rotation;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import com.ctre.phoenix6.StatusSignal;
 import java.util.Map;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -26,6 +28,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Unit;
@@ -222,10 +226,17 @@ public final class Constants {
     }
 
   }
+
   public static class ClimbSubsystemConstants {
-  public static final int climbMotorPort = 0;  // to be continued
-  public static final int LimitSwitchPort = 0;//to be continued 
-  public static final int workingMotorSpeed =0;//to be continued
-  public static final int stoppingMotorSpeed =0;//final
+    //TODO: change values to actual values
+
+    public static final int climbMotorPort = 0; 
+    public static final int limitSwitchPort = 0;
+    public static final int climbMotorPower = 0;
+    public static final double motorRatio =0;
+    // the degrees of the arm closed
+    public static final Angle degreesForOpen = Degrees.of(0);
+
+    public static final double closeClimbMotorPower = 0;
   }
 }

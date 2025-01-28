@@ -5,9 +5,13 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.ClimbCMD;
 import frc.robot.Util.ElevatorStates;
 import frc.robot.commands.DefaultTeleopCommand;
+import frc.robot.commands.ResetClimbing;
 import frc.robot.subsystems.ChassisSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
+
 import frc.robot.subsystems.ElevatorSubsystem;
 import com.pathplanner.lib.auto.AutoBuilder;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -26,6 +30,8 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
+  ClimbSubsystem climbSubsystem;
+  // Replace with CommandPS4Controller or CommandJoystick if needed
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
   
   
@@ -34,15 +40,13 @@ public class RobotContainer {
       new CommandXboxController(OperatorConstants.driverController);
 
   private SendableChooser<Command> autoChooser = new SendableChooser<>();
-
-
+  /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
     
     
     autoChooser = AutoBuilder.buildAutoChooser();
 
     autoChooser.setDefaultOption("EMPTY", null);
-
     SmartDashboard.putData("Auto Chooser",autoChooser);
     configureBindings();
   }
@@ -55,6 +59,8 @@ public class RobotContainer {
        () -> -xboxControllerDrive.getLeftX(),
        () -> -xboxControllerDrive.getRightX()));
     }
+    xboxControllerDrive.y().toggleOnTrue(new ClimbCMD(climbSubsystem));
+    xboxControllerDrive.b().toggleOnTrue( new ResetClimbing(climbSubsystem));
    
     xboxControllerDrive.b().toggleOnTrue(elevatorSubsystem.setLevelElevatorCommand( ElevatorStates.coralL1 ));
     xboxControllerDrive.a().toggleOnTrue( elevatorSubsystem.setLevelElevatorCommand( ElevatorStates.coralL2 ));
