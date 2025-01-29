@@ -13,6 +13,7 @@ import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Rotation;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 
+import com.ctre.phoenix6.StatusSignal;
 import java.util.Map;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
@@ -27,6 +28,8 @@ import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Unit;
@@ -194,17 +197,20 @@ public final class Constants {
             ModuleConstants.kDriveCurrentLimit, 1),
         kDriveKinematics.getModules());
 
-    public static RobotConfig getConfig() {
-      RobotConfig config;
-      try {
-        config = RobotConfig.fromGUISettings();
-      } catch (Exception e) {
-        e.printStackTrace();
-        config = DEFAUL_ROBOT_CONFIG;
+      public static RobotConfig getConfig(){
+        RobotConfig config;
+        try{
+          config = RobotConfig.fromGUISettings();
+        } catch (Exception e){
+          e.printStackTrace();
+          config = DEFAUL_ROBOT_CONFIG;
+        }
+        return config;
+
       }
-      return config;
-    }
+      
   }
+  
 
   public static class ElevatorConstant {
 
@@ -214,6 +220,11 @@ public final class Constants {
     public static Distance coralL4 = Centimeter.of(6);
     public static Distance restDistance = Centimeter.of(0);
     public static Distance sourceDistance = Centimeter.of(0);
+
+    public static int motorLeftID = 0;//TODO: needs to change the values of the ports to actual values
+    public static int motorRightID = 0;
+    public static int limitSwitchID = 0;
+
     public static double kP = 0;
     public static double kI = 0;
     public static double kD = 0;
@@ -243,10 +254,17 @@ public final class Constants {
     }
 
   }
+
   public static class ClimbSubsystemConstants {
-  public static final int climbMotorPort = 0;  // to be continued
-  public static final int LimitSwitchPort = 0;//to be continued 
-  public static final int workingMotorSpeed =0;//to be continued
-  public static final int stoppingMotorSpeed =0;//final
+    //TODO: change values to actual values
+
+    public static final int climbMotorPort = 0; 
+    public static final int limitSwitchPort = 0;
+    public static final int climbMotorPower = 0;
+    public static final double motorRatio =0;
+    // the degrees of the arm closed
+    public static final Angle degreesForOpen = Degrees.of(0);
+
+    public static final double closeClimbMotorPower = 0;
   }
 }

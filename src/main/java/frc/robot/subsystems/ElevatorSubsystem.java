@@ -14,6 +14,7 @@ import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ElevatorConstant;
 import frc.robot.Util.ElevatorStates;
@@ -26,10 +27,10 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final PIDController pidController;
 
   public ElevatorSubsystem() {
-    ElevatorMotorLeft = new TalonFX(0); // no id yet
-    ElevatorMotorRight = new TalonFX(0);
-    closeLimitSwitch = new DigitalInput(0);
-    pidController = new PIDController(ElevatorConstant.kP, ElevatorConstant.kI, ElevatorConstant.kD);
+    this.ElevatorMotorLeft = new TalonFX(ElevatorConstant.motorLeftID); 
+    this.ElevatorMotorRight = new TalonFX(ElevatorConstant.motorRightID);
+    this.closeLimitSwitch = new DigitalInput(ElevatorConstant.limitSwitchID);
+    this.pidController = new PIDController(ElevatorConstant.kP, ElevatorConstant.kI, ElevatorConstant.kD);
   }
 
   public void setLevel(ElevatorStates state) {
@@ -46,18 +47,19 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void setRest() {
-    ElevatorMotorLeft.set(ElevatorConstant.restPower);
-    ElevatorMotorRight.set(ElevatorConstant.restPower);
+    pidController.setSetpoint(ElevatorConstant.restDistance.in(Centimeter));
   }
 
   public boolean getCloseLimitSwitch() {
     return closeLimitSwitch.get();
   }
+  public InstantCommand setLevelElevatorCommand(ElevatorStates elevatorStates) {
+      return new InstantCommand(() -> this.setLevel(elevatorStates));
+  }
 
   @Override
   public void periodic() {
     double power = pidController.calculate(getDistance().in(Centimeter));
-
     if (getCloseLimitSwitch() && power < 0) {
       ElevatorMotorLeft.set(0);
       ElevatorMotorRight.set(0);
