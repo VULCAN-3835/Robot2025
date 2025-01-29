@@ -20,17 +20,16 @@ import edu.wpi.first.wpilibj.AnalogInput;
 
 public class EndAccessorySubsystem extends SubsystemBase {
 
-    private TalonFX angleMotor;
-    private TalonFX powerMotor;
+    private static TalonFX angleMotor;
+    private static TalonFX powerMotor;
 
-    private DigitalInput lowLimitSwitch;
-    private DigitalInput highLimitSwitch;
+    private static DigitalInput lowLimitSwitch;
+    private static DigitalInput highLimitSwitch;
 
-    private DutyCycleEncoder angleEncoder;
-    private AnalogInput pieceDetector;
+    private static DutyCycleEncoder angleEncoder;
+    private static AnalogInput pieceDetector;
 
-    private Timer timer = new Timer();
-    
+    private static Timer timer = new Timer();
 
     public EndAccessorySubsystem() {
         angleMotor = new TalonFX(EndAccessorySubsystemConstants.angleMotorID);
@@ -44,24 +43,26 @@ public class EndAccessorySubsystem extends SubsystemBase {
         pieceDetector = new AnalogInput(EndAccessorySubsystemConstants.pieceDetectorID);
     }
 
-    
-    private PIDController pidController = new PIDController(EndAccessorySubsystemConstants.kP, 0, 0);
+    private static PIDController pidController = new PIDController(EndAccessorySubsystemConstants.kP, 0, 0);
 
-    public void setDropAngleL1() {
-        pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngleL1.in(Degree));
+    public enum srtDropAngle {
+        setDropAngleL1, setDropAngleL2L3, setDropAngleL4;
 
+        public void applyDropAngle(PIDController pidController) {
+            switch (this) {
+                case setDropAngleL1:
+                    pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngleL1.in(Degree));
+                    break;
+                case setDropAngleL2L3:
+                    pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngleL2L3.in(Degree));
+                    break;
+                case setDropAngleL4:
+                    pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngleL4.in(Degree));
+                    break;
+                default:
+            }
+        }
     }
-
-    public void setDropAngleL2L3() {
-        pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngleL2L3.in(Degree));
-
-    }
-
-    public void setDropAngleL4() {
-        pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngleL4.in(Degree));
-
-    }
-
     public void setIntakeAngle() {
         pidController.setSetpoint(EndAccessorySubsystemConstants.targetIntakeAngle.in(Degree));
 
@@ -76,9 +77,9 @@ public class EndAccessorySubsystem extends SubsystemBase {
 
     }
 
-    public void gripperRest() {
+     public void gripperRest() {
         pidController.setSetpoint(EndAccessorySubsystemConstants.targetAngleRest.in(Degree));
-   }
+    }
 
     public Measure<AngleUnit> getAngle() {
         return Rotations.of(angleEncoder.get());
@@ -120,6 +121,6 @@ public class EndAccessorySubsystem extends SubsystemBase {
                 timer.stop();
                 timer.reset();
             }
-        }
+        }    
     }
 }
