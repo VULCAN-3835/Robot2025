@@ -44,18 +44,23 @@ public final class Constants {
     public static final double kDeadband = 0.1;
   }
   public static class EndAccessorySubsystemConstants {
+    //TODO: change all values to actual values
     public static final int angleMotorID = 0;
     public static final int powerMotorID = 0;
     public static final int lowLimitSwitchID = 0;
     public static final int highLimitSwitchID = 0;
     public static final int angleEncoderID = 0;
     public static final int pieceDetectorID = 0;
-    public static final int joystickPort = 0;
-    public static final int kAngleSpeed = 0;
-    public static final int kPowerSpeed = 0;
+
+    public static final int kMotorSpeed = 0;
     public static final int khHasPieceVoltageThreshold = 0;
-    public static final Angle targetDropAngle = Degrees.of(0);// Target angle for drop position
-    public static final Angle targetIntakeAngle = Degrees.of(0);//TODO: chane the degrees
+    public static final Angle targetDropAngleL1 = Degrees.of(0);
+    public static final Angle targetDropAngleL2L3 = Degrees.of(0);
+    public static final Angle targetDropAngleL4 = Degrees.of(0);
+    public static final Angle targetAngleRest = Degrees.of(0);
+    public static final Angle targetIntakeAngle = Degrees.of(0);
+    public static final double waitTime = 0;
+    public static final double kP = 0;
 
 
 
