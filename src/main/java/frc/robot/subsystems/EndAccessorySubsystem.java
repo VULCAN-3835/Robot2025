@@ -47,6 +47,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
         pieceDetector = new AnalogInput(EndAccessorySubsystemConstants.pieceDetectorID);
 
         pidController = new PIDController(EndAccessorySubsystemConstants.kP, 0, EndAccessorySubsystemConstants.kD);
+        pidController.setTolerance(EndAccessorySubsystemConstants.armAngleTolerence);
     }
 
     public enum DropAngles { 
@@ -70,7 +71,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
 
     }
 
-    public void setDropAngle(DropAngles dropingLevel) { 
+    public void setAngle(DropAngles dropingLevel) { 
         switch (dropingLevel) {
             case setDropAngleL1:
                 pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngleL1.in(Degree));
@@ -84,6 +85,8 @@ public class EndAccessorySubsystem extends SubsystemBase {
             case setDropAngleL4:
                 pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngleL4.in(Degree));
                 break;
+            case restingAngle:
+            pidController.setSetpoint(EndAccessorySubsystemConstants.targetAngleRest.in(Degree));
             default:
         }
     }
@@ -111,11 +114,6 @@ public class EndAccessorySubsystem extends SubsystemBase {
 
  
     public boolean isAtSetpoint(){
-        pidController.setTolerance(1);
-
-        double restingAngle = EndAccessorySubsystemConstants.targetAngleRest.in(Degree);
-        pidController.setSetpoint(restingAngle);
-
         return pidController.atSetpoint();
     }
 

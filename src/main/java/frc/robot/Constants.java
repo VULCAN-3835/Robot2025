@@ -67,6 +67,7 @@ public final class Constants {
     public static final double waitTime = 0;
     public static final double kP = 0;
     public static final double kD = 0;
+    public static final double armAngleTolerence = 0;
 
 
 

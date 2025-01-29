@@ -6,9 +6,9 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.EndAccessorySubsystem;
 
-public class CollectorOfCoralCommand extends SequentialCommandGroup {
+public class CoralCollectCommand extends SequentialCommandGroup {
 
-    public CollectorOfCoralCommand(EndAccessorySubsystem endAccessorySubsystem) {
+    public CoralCollectCommand(EndAccessorySubsystem endAccessorySubsystem) {
 
         addCommands(
             
