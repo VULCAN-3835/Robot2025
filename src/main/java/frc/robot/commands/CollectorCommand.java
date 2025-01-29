@@ -15,10 +15,8 @@ public class CollectorCommand extends SequentialCommandGroup {
             // 1. Activate the gripper to start the intake process
             new InstantCommand(() -> endAccessorySubsystem.gripperIntake()),
 
-            new WaitCommand(0.2),
-
             // 2. Wait until the piece is detected by the piece sensor
-            new WaitUntilCommand(() -> endAccessorySubsystem.hasPiece()),
+            endAccessorySubsystem.waitForCoral(),
     
             // 3. Stop the gripper once the piece is successfully collected
             new InstantCommand(() -> endAccessorySubsystem.gripperRest())

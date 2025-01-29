@@ -8,7 +8,10 @@ import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Rotations;
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.EndAccessorySubsystemConstants;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
@@ -20,16 +23,16 @@ import edu.wpi.first.wpilibj.AnalogInput;
 
 public class EndAccessorySubsystem extends SubsystemBase {
 
-    private static TalonFX angleMotor;
-    private static TalonFX powerMotor;
+    private TalonFX angleMotor;
+    private TalonFX powerMotor;
 
-    private static DigitalInput lowLimitSwitch;
-    private static DigitalInput highLimitSwitch;
+    private DigitalInput lowLimitSwitch;
+    private DigitalInput highLimitSwitch;
 
-    private static DutyCycleEncoder angleEncoder;
-    private static AnalogInput pieceDetector;
+    private DutyCycleEncoder angleEncoder;
+    private AnalogInput pieceDetector;
 
-    private static Timer timer = new Timer();
+    private Timer timer = new Timer();
 
     public EndAccessorySubsystem() {
         angleMotor = new TalonFX(EndAccessorySubsystemConstants.angleMotorID);
@@ -45,27 +48,16 @@ public class EndAccessorySubsystem extends SubsystemBase {
 
     private static PIDController pidController = new PIDController(EndAccessorySubsystemConstants.kP, 0, 0);
 
-    public enum srtDropAngle {
+    public enum SrtDropAngle {
         setDropAngleL1, setDropAngleL2L3, setDropAngleL4;
-
-        public void applyDropAngle(PIDController pidController) {
-            switch (this) {
-                case setDropAngleL1:
-                    pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngleL1.in(Degree));
-                    break;
-                case setDropAngleL2L3:
-                    pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngleL2L3.in(Degree));
-                    break;
-                case setDropAngleL4:
-                    pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngleL4.in(Degree));
-                    break;
-                default:
-            }
-        }
     }
+
+    public Command waitForCoral() {
+        return new WaitUntilCommand(() -> timer.get() > EndAccessorySubsystemConstants.waitTime);
+    }
+
     public void setIntakeAngle() {
         pidController.setSetpoint(EndAccessorySubsystemConstants.targetIntakeAngle.in(Degree));
-
     }
 
     public void gripperIntake() {
@@ -77,7 +69,22 @@ public class EndAccessorySubsystem extends SubsystemBase {
 
     }
 
-     public void gripperRest() {
+    public void applyDropAngle(SrtDropAngle dropingLevel) {
+        switch (dropingLevel) {
+            case setDropAngleL1:
+                pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngleL1.in(Degree));
+                break;
+            case setDropAngleL2L3:
+                pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngleL2L3.in(Degree));
+                break;
+            case setDropAngleL4:
+                pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngleL4.in(Degree));
+                break;
+            default:
+        }
+    }
+
+    public void gripperRest() {
         pidController.setSetpoint(EndAccessorySubsystemConstants.targetAngleRest.in(Degree));
     }
 
@@ -117,10 +124,10 @@ public class EndAccessorySubsystem extends SubsystemBase {
             }
             if (timer.get() > EndAccessorySubsystemConstants.waitTime) {
                 gripperRest();
-            } else {
-                timer.stop();
-                timer.reset();
             }
-        }    
+        } else {
+            timer.stop();
+            timer.reset();
+        }
     }
 }
