@@ -58,12 +58,15 @@ public final class Constants {
     public static final int kMotorSpeed = 0;
     public static final int khHasPieceVoltageThreshold = 0;
     public static final Angle targetDropAngleL1 = Degrees.of(0);
-    public static final Angle targetDropAngleL2L3 = Degrees.of(0);
+    public static final Angle targetDropAngleL2 = Degrees.of(0);
+    public static final Angle targetDropAngleL3 = Degrees.of(0);
     public static final Angle targetDropAngleL4 = Degrees.of(0);
     public static final Angle targetAngleRest = Degrees.of(0);
     public static final Angle targetIntakeAngle = Degrees.of(0);
+    public static final Angle restingAngle = Degrees.of(0);
     public static final double waitTime = 0;
     public static final double kP = 0;
+    public static final double kD = 0;
 
 
 

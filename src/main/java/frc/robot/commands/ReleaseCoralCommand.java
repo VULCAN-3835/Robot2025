@@ -5,9 +5,9 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.subsystems.EndAccessorySubsystem;
 
-public class ReleasePieceCommand extends SequentialCommandGroup {
+public class ReleaseCoralCommand extends SequentialCommandGroup {
 
-    public ReleasePieceCommand(EndAccessorySubsystem endAccessorySubsystem) {
+    public ReleaseCoralCommand(EndAccessorySubsystem endAccessorySubsystem) {
 
         addCommands(
             // 1. Activate the gripper to release the piece

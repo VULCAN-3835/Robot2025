@@ -5,9 +5,9 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.CollectorCommand;
+import frc.robot.commands.CollectorOfCoralCommand;
 import frc.robot.commands.DefaultTeleopCommand;
-import frc.robot.commands.ReleasePieceCommand;
+import frc.robot.commands.ReleaseCoralCommand;
 import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem;
 import frc.robot.commands.CollectingAlageaCmd;
