@@ -29,18 +29,10 @@ public class ElevatorSubsystem extends SubsystemBase {
   private Distance disSetLevel;
 
   public ElevatorSubsystem() {
-<<<<<<< Updated upstream
     this.ElevatorMotorLeft = new TalonFX(ElevatorConstant.motorLeftID); 
     this.ElevatorMotorRight = new TalonFX(ElevatorConstant.motorRightID);
     this.closeLimitSwitch = new DigitalInput(ElevatorConstant.limitSwitchID);
     this.pidController = new PIDController(ElevatorConstant.kP, ElevatorConstant.kI, ElevatorConstant.kD);
-=======
-    this.ElevatorMotorLeft = new TalonFX(ElevatorConstant.motorLeftID);
-    this.ElevatorMotorRight = new TalonFX(ElevatorConstant.motorRightID);
-    this.closeLimitSwitch = new DigitalInput(ElevatorConstant.limitSwitchID);
-    this.pidController = new PIDController(ElevatorConstant.kP, ElevatorConstant.kI, ElevatorConstant.kD);
-
->>>>>>> Stashed changes
   }
 
   public void setLevel(ElevatorStates state) {
