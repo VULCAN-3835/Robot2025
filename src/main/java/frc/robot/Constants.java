@@ -229,6 +229,7 @@ public final class Constants {
     public static double kI = 0;
     public static double kD = 0;
     public static double restPower = 0;
+    public static Distance errorTollerance = Centimeter.of(0.3);
 
     // We'll need to know how much we get for every rotation, and use that number
     // here:
