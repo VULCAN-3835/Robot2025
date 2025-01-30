@@ -13,6 +13,7 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Util.ElevatorStates;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem;
+import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -29,7 +30,15 @@ public class PrepareCollectCoralFromSource extends SequentialCommandGroup {
 
       new WaitUntilCommand(() -> elevatorSubsystem.isAtSetHeight()),
 
-      new CoralCollectCommand(endAccessorySubsystem) 
+      new CoralCollectCommand(endAccessorySubsystem),
+      
+      new InstantCommand(() -> endAccessorySubsystem.setAngle(DropAngles.restingAngle)),
+
+      new InstantCommand(() -> elevatorSubsystem.setRest()),
+
+      new WaitUntilCommand(() -> endAccessorySubsystem.isAtSetpoint()),
+
+      new WaitUntilCommand(() -> elevatorSubsystem.isAtSetHeight())
     );
   }
 }
