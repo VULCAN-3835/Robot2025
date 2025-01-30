@@ -58,7 +58,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
         return new WaitUntilCommand(() -> timer.get() > EndAccessorySubsystemConstants.waitTime);
     }
 
-    private void setIntakeAngle() { 
+    public void setIntakeAngle() { 
         pidController.setSetpoint(EndAccessorySubsystemConstants.targetIntakeAngle.in(Degree));
     }
 

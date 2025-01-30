@@ -6,8 +6,6 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Centimeter;
 
-
-
 import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.DistanceUnit;
@@ -27,7 +25,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final PIDController pidController;
 
   public ElevatorSubsystem() {
-    this.ElevatorMotorLeft = new TalonFX(ElevatorConstant.motorLeftID); 
+    this.ElevatorMotorLeft = new TalonFX(ElevatorConstant.motorLeftID);
     this.ElevatorMotorRight = new TalonFX(ElevatorConstant.motorRightID);
     this.closeLimitSwitch = new DigitalInput(ElevatorConstant.limitSwitchID);
     this.pidController = new PIDController(ElevatorConstant.kP, ElevatorConstant.kI, ElevatorConstant.kD);
@@ -40,7 +38,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   // current height.
   public Measure<DistanceUnit> getDistance() {
-    Angle angle1= (this.ElevatorMotorLeft.getPosition().getValue());
+    Angle angle1 = (this.ElevatorMotorLeft.getPosition().getValue());
     Angle angle2 = (this.ElevatorMotorRight.getPosition().getValue());
     Angle avg = angle1.minus(angle2).div(2);
     return ElevatorConstant.distancePerRotation.timesDivisor(avg);
@@ -53,8 +51,13 @@ public class ElevatorSubsystem extends SubsystemBase {
   public boolean getCloseLimitSwitch() {
     return closeLimitSwitch.get();
   }
+
   public InstantCommand setLevelElevatorCommand(ElevatorStates elevatorStates) {
-      return new InstantCommand(() -> this.setLevel(elevatorStates));
+    return new InstantCommand(() -> this.setLevel(elevatorStates));
+  }
+
+  public boolean isAtSetHeight() {
+    return pidController.atSetpoint();
   }
 
   @Override
