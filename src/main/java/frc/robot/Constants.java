@@ -25,6 +25,8 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -67,26 +69,15 @@ public final class Constants {
     public static final double pidTolerence =  0;
 
     public static final double collectingPower = 0;
-    public static final double shootingPower = 0;
+    public static final double shootingPower = 0.6;
 
-     public static final double collectTime = 0.1;
+     public static final double collectTime = 0.3;
   }
 
   public static class OVCameraUtilConstants {
-    public static final double kValidArea = 10;
+    // TODO: change value to actual value
 
-    // camera height from the ground in meters
-    public static final double kCameraHeight = 0;// TODO: change value to actual value
 
-    // camera degrees from upper view(should be zero if the camera is straight)
-    public static final double kCameraDegrees = 0;
-
-    // camera pitch in degrees
-    public static final double kCameraPitch = 0;// TODO: change value to actual value
-
-    public static final int kCameraAprilTagPipeLine = 0;// TODO: change value to actual value
-    public static final double kCameraXAcordingToRobot = 0;// TODO: change value to actual value in inches
-    public static final double kCameraYAcordingToRobot = 0;// TODO: change value to actual value in inches
 
   }
 
@@ -182,6 +173,17 @@ public final class Constants {
     public static final double kMassKG = 0;
     // the moment of inertia of the robot
     public static final double kMOI = 0;
+
+    public static final double kCameraYaw = 0;
+    public static final double kCameraPitch = 0;
+    public static final double kCameraRoll =0;
+
+    public static final double kCameraZ = 0;
+    public static final double kCameraY = 0;
+    public static final double kCameraX = 0;
+
+    public static final Rotation3d CAM_ROTATION3D = new Rotation3d(kCameraRoll,kCameraPitch,kCameraYaw);
+    public static final Pose3d CAMERA_POSE3D = new Pose3d(kCameraX, kCameraY, kCameraZ, CAM_ROTATION3D);
 
     // Swerve Kinematics:
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
