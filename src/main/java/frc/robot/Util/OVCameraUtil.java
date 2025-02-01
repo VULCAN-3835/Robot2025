@@ -82,6 +82,14 @@ public class OVCameraUtil {
         return -1;
     }
 
+    public double getAprilTagX(){
+        PhotonPipelineResult result = OVCamera.getLatestResult();
+        if (result.hasTargets()) {
+            return result.getBestTarget().getBestCameraToTarget().getX(); // Returns X position
+        }
+        return -1; // Default value for no target detected
+    }
+
     public double getDistance() {
         if (!hasTarget()) {
             return -1; // No target detected
