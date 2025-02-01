@@ -66,15 +66,24 @@ public class RobotContainer {
   private void configureBindings() {
     if(xboxControllerDrive.isConnected()){
       this.chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(this.chassisSubsystem,
-       () -> -xboxControllerDrive.getLeftY(),
-       () -> -xboxControllerDrive.getLeftX(),
-       () -> -xboxControllerDrive.getRightX())
-      );}
-      
-      xboxControllerDrive.b().whileTrue(new ShootingAlageaCmd(alageaSubsystem));
-      xboxControllerDrive.x().whileTrue(new CollectingAlageaCmd(alageaSubsystem));
+          () -> -xboxControllerDrive.getLeftY(),
+          () -> -xboxControllerDrive.getLeftX(),
+          () -> -xboxControllerDrive.getRightX()));
     }
 
+    xboxControllerDrive.b().toggleOnTrue(new ShootingAlageaCmd(alageaSubsystem));
+    xboxControllerDrive.x().toggleOnTrue(new CollectingAlageaCmd(alageaSubsystem));
+
+    xboxControllerDrive.y().toggleOnTrue(new ClimbCMD(climbSubsystem));
+    xboxControllerDrive.b().toggleOnTrue(new ResetClimbing(climbSubsystem));
+
+    xboxControllerDrive.b().toggleOnTrue(elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL1));
+    xboxControllerDrive.a().toggleOnTrue(elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL2));
+    xboxControllerDrive.x().toggleOnTrue(elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL3));
+    xboxControllerDrive.leftStick().toggleOnTrue(elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL4));
+    xboxControllerDrive.y().toggleOnTrue(elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.rest));
+    xboxControllerDrive.rightStick().toggleOnTrue(elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.source));
+  }
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
