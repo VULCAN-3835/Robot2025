@@ -20,12 +20,12 @@ public class CenterRobotCmd extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new InstantCommand(() -> {
-        double xError = ovCameraUtil.getAprilTagX(); 
+        double xError = ovCameraUtil.getAprilTagX().orElse(0.0); // Use 0.0 if no target found
         double turnSpeed = 0.02 * xError; // sets the speed based on the distance error
         turnSpeed = Math.max(-0.5, Math.min(0.5, turnSpeed)); // limits the turning speed
         chassisSubsystem.drive(0, 0, turnSpeed, true); // sets the turning speed in the drive
       }),
-      new WaitUntilCommand(() -> Math.abs(ovCameraUtil.getAprilTagX()) < 1.5), // waits until the robot is centered enough
+      new WaitUntilCommand(() -> ovCameraUtil.getAprilTagX().map(Math::abs).orElse(Double.MAX_VALUE) < 1.5), // Waits until the robot is centered enough
       new InstantCommand(() -> chassisSubsystem.drive(0, 0, 0, true))// stops the robot in place
     );
   }
