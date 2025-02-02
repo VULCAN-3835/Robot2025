@@ -37,6 +37,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     pidController.setSetpoint(ElevatorConstant.enumDistance(state).in(Centimeter));
 
   }
+  public void setPower(double power){
+    ElevatorMotorLeft.set(power);
+    ElevatorMotorRight.set(-power);
+
+  }
 
   // current height.
   public Measure<DistanceUnit> getDistance() {
@@ -59,14 +64,14 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    double power = pidController.calculate(getDistance().in(Centimeter));
-    if (getCloseLimitSwitch() && power < 0) {
-      ElevatorMotorLeft.set(0);
-      ElevatorMotorRight.set(0);
-    } else {
-      ElevatorMotorLeft.set(power);
-      ElevatorMotorRight.set(-power);
+    // double power = pidController.calculate(getDistance().in(Centimeter));
+    // if (getCloseLimitSwitch() && power < 0) {
+    //   ElevatorMotorLeft.set(0);
+    //   ElevatorMotorRight.set(0);
+    // } else {
+    //   ElevatorMotorLeft.set(power);
+    //   ElevatorMotorRight.set(-power);
 
-    }
+    // }
   }
 }
