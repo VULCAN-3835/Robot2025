@@ -18,6 +18,7 @@ import frc.robot.subsystems.ClimbSubsystem;
 
 import frc.robot.subsystems.ElevatorSubsystem;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -55,8 +56,21 @@ public class RobotContainer {
    */
   public RobotContainer() {
 
-    autoChooser = AutoBuilder.buildAutoChooser();
+    NamedCommands.registerCommand("CollectingAlagea", new CollectingAlageaCmd(alageaSubsystem));
+    NamedCommands.registerCommand("ShootingAlagea", new ShootingAlageaCmd(alageaSubsystem));
+    NamedCommands.registerCommand("Climb", new ClimbCMD(climbSubsystem));
+    NamedCommands.registerCommand("ResetClimbing", new ResetClimbing(climbSubsystem));
+    NamedCommands.registerCommand("elevator to L4", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL4));
+    NamedCommands.registerCommand("elevator to L3", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL3));
+    NamedCommands.registerCommand("elevator to L2", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL2));
+    NamedCommands.registerCommand("elevator to L1", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL1));
+    NamedCommands.registerCommand("elevator to rest", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.rest));
+    NamedCommands.registerCommand("elevator to source", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.source));
 
+
+
+
+    autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.setDefaultOption("EMPTY", null);
     SmartDashboard.putData("Auto Chooser", autoChooser);
     configureBindings();
@@ -70,8 +84,8 @@ public class RobotContainer {
           () -> -xboxControllerDrive.getRightX()));
     }
 
-    xboxControllerDrive.b().whileTrue(new ShootingAlageaCmd(alageaSubsystem));
-    xboxControllerDrive.x().whileTrue(new CollectingAlageaCmd(alageaSubsystem));
+    xboxControllerDrive.b().toggleOnTrue(new ShootingAlageaCmd(alageaSubsystem));
+    xboxControllerDrive.x().toggleOnTrue(new CollectingAlageaCmd(alageaSubsystem));
 
     xboxControllerDrive.y().toggleOnTrue(new ClimbCMD(climbSubsystem));
     xboxControllerDrive.b().toggleOnTrue(new ResetClimbing(climbSubsystem));
