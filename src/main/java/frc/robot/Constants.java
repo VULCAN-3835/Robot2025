@@ -54,7 +54,6 @@ public final class Constants {
     public static final int highLimitSwitchID = 0;
     public static final int angleEncoderID = 0;
     public static final int pieceDetectorID = 0;
-
     public static final int kMotorSpeed = 0;
     public static final int khHasPieceVoltageThreshold = 0;
     public static final Angle targetDropAngleL1 = Degrees.of(0);
@@ -68,12 +67,6 @@ public final class Constants {
     public static final double kP = 0;
     public static final double kD = 0;
     public static final double armAngleTolerence = 0;
-
-
-
-
-  
-    
   }
 
   public static class OVCameraUtilConstants {

@@ -20,7 +20,7 @@ import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.Constants.alageaSubsystemConstants;
+import frc.robot.Constants;
 
 public class AlageaSubsystem extends SubsystemBase {
   /** Creates a new AlageaIntakeSubsystem. */
