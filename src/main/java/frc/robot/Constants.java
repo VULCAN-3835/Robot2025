@@ -46,17 +46,18 @@ public final class Constants {
 
   public static class OperatorConstants {
     public static final int driverController = 0;
-    public static final int commandController = 0;
     public static final double kDeadband = 0.1;
   }
   public static class alageaSubsystemConstants{
     //TODO: change the values to the actual values
 
-    public static final int angleMotorID = 0;
-    public static final int powerMotorID = 0;
-    public static final int ballDetectorID = 0;
-    public static final int limitSwitchID = 0;
-    public static final int angleEncoderID = 0;
+    public static final int angleMotorID = 41;
+    public static final int powerMotorID = 40;
+
+    //TODO: change the IDs of the sensors
+    public static final int ballDetectorID = 4;
+    public static final int limitSwitchID = 5;
+    public static final int angleEncoderID = 6;
 
     public static final Angle restAngle = Degrees.of(0);
     public static final Angle holdAngle = Degrees.of(0);
@@ -224,9 +225,9 @@ public final class Constants {
     public static Distance restDistance = Centimeter.of(0);
     public static Distance sourceDistance = Centimeter.of(0);
 
-    public static int motorLeftID = 0;//TODO: needs to change the values of the ports to actual values
-    public static int motorRightID = 0;
-    public static int limitSwitchID = 0;
+    public static int motorLeftID = 51;//TODO: needs to change the values of the ports to actual values
+    public static int motorRightID = 50;
+    public static int limitSwitchID = 9;
 
     public static double kP = 0;
     public static double kI = 0;
@@ -261,13 +262,14 @@ public final class Constants {
   public static class ClimbSubsystemConstants {
     //TODO: change values to actual values
 
-    public static final int climbMotorPort = 0; 
+    public static final int climbMotorPort = 55; 
+    public static final double climbMotorPower = 0.2;
+
     public static final int limitSwitchPort = 0;
-    public static final int climbMotorPower = 0;
-    public static final double motorRatio =0;
+    public static final double motorRatio = 125;
     // the degrees of the arm closed
     public static final Angle degreesForOpen = Degrees.of(0);
-
+    public static final Angle degreesForClose = Degrees.of(0);
     public static final double closeClimbMotorPower = 0;
   }
 }
