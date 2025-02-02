@@ -231,6 +231,11 @@ public final class Constants {
     public static double kP = 0;
     public static double kI = 0;
     public static double kD = 0;
+
+    public static double Ks = 0;
+    public static double Kg = 0;
+    public static double Kv = 0; 
+
     public static double restPower = 0;
 
     // We'll need to know how much we get for every rotation, and use that number

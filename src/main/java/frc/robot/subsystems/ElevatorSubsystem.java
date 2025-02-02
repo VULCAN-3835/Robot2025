@@ -9,7 +9,10 @@ import static edu.wpi.first.units.Units.Centimeter;
 
 
 import com.ctre.phoenix6.hardware.TalonFX;
+
+import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
@@ -25,12 +28,14 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final TalonFX ElevatorMotorLeft;
   private final DigitalInput closeLimitSwitch;
   private final PIDController pidController;
+  private final ElevatorFeedforward elevatorFeedforward;
 
   public ElevatorSubsystem() {
     this.ElevatorMotorLeft = new TalonFX(ElevatorConstant.motorLeftID); 
     this.ElevatorMotorRight = new TalonFX(ElevatorConstant.motorRightID);
     this.closeLimitSwitch = new DigitalInput(ElevatorConstant.limitSwitchID);
     this.pidController = new PIDController(ElevatorConstant.kP, ElevatorConstant.kI, ElevatorConstant.kD);
+    this.elevatorFeedforward = new ElevatorFeedforward(ElevatorConstant.Ks, ElevatorConstant.Kg, ElevatorConstant.Kv);
   }
 
   public void setLevel(ElevatorStates state) {
