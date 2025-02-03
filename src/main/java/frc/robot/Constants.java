@@ -24,6 +24,8 @@ import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Pose3d;
+import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.system.plant.DCMotor;
@@ -43,17 +45,18 @@ public final class Constants {
 
   public static class OperatorConstants {
     public static final int driverController = 0;
-    public static final int commandController = 0;
     public static final double kDeadband = 0.1;
   }
-  public static class EndAccessorySubsystemConstants {
-    //TODO: change all values to actual values
-    public static final int angleMotorID = 0;
-    public static final int powerMotorID = 0;
-    public static final int lowLimitSwitchID = 0;
-    public static final int highLimitSwitchID = 0;
-    public static final int angleEncoderID = 0;
-    public static final int pieceDetectorID = 0;
+  public static class alageaSubsystemConstants{
+    //TODO: change the values to the actual values
+
+    public static final int angleMotorID = 41;
+    public static final int powerMotorID = 40;
+
+    //TODO: change the IDs of the sensors
+    public static final int ballDetectorID = 4;
+    public static final int limitSwitchID = 5;
+    public static final int angleEncoderID = 6;
 
     public static final int kMotorSpeed = 0;
     public static final int khHasPieceVoltageThreshold = 0;
@@ -70,27 +73,16 @@ public final class Constants {
     public static final double armAngleTolerence = 0;
 
 
+    public static final double collectingPower = 0;
+    public static final double shootingPower = 0.6;
 
-
-  
-    
+     public static final double collectTime = 0.3;
   }
 
   public static class OVCameraUtilConstants {
-    public static final double kValidArea = 10;
+    // TODO: change value to actual value
 
-    // camera height from the ground in meters
-    public static final double kCameraHeight = 0;// TODO: change value to actual value
 
-    // camera degrees from upper view(should be zero if the camera is straight)
-    public static final double kCameraDegrees = 0;
-
-    // camera pitch in degrees
-    public static final double kCameraPitch = 0;// TODO: change value to actual value
-
-    public static final int kCameraAprilTagPipeLine = 0;// TODO: change value to actual value
-    public static final double kCameraXAcordingToRobot = 0;// TODO: change value to actual value in inches
-    public static final double kCameraYAcordingToRobot = 0;// TODO: change value to actual value in inches
 
   }
 
@@ -187,6 +179,17 @@ public final class Constants {
     // the moment of inertia of the robot
     public static final double kMOI = 0;
 
+    public static final double kCameraYaw = 0;
+    public static final double kCameraPitch = 0;
+    public static final double kCameraRoll =0;
+
+    public static final double kCameraZ = 0;
+    public static final double kCameraY = 0;
+    public static final double kCameraX = 0;
+
+    public static final Rotation3d CAM_ROTATION3D = new Rotation3d(kCameraRoll,kCameraPitch,kCameraYaw);
+    public static final Pose3d CAMERA_POSE3D = new Pose3d(kCameraX, kCameraY, kCameraZ, CAM_ROTATION3D);
+
     // Swerve Kinematics:
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2), // Left front
@@ -225,9 +228,9 @@ public final class Constants {
     public static Distance restDistance = Centimeter.of(0);
     public static Distance sourceDistance = Centimeter.of(0);
 
-    public static int motorLeftID = 0;//TODO: needs to change the values of the ports to actual values
-    public static int motorRightID = 0;
-    public static int limitSwitchID = 0;
+    public static int motorLeftID = 51;//TODO: needs to change the values of the ports to actual values
+    public static int motorRightID = 50;
+    public static int limitSwitchID = 9;
 
     public static double kP = 0;
     public static double kI = 0;
@@ -262,13 +265,14 @@ public final class Constants {
   public static class ClimbSubsystemConstants {
     //TODO: change values to actual values
 
-    public static final int climbMotorPort = 0; 
+    public static final int climbMotorPort = 55; 
+    public static final double climbMotorPower = 0.2;
+
     public static final int limitSwitchPort = 0;
-    public static final int climbMotorPower = 0;
-    public static final double motorRatio =0;
+    public static final double motorRatio = 125;
     // the degrees of the arm closed
     public static final Angle degreesForOpen = Degrees.of(0);
-
+    public static final Angle degreesForClose = Degrees.of(0);
     public static final double closeClimbMotorPower = 0;
   }
 }
