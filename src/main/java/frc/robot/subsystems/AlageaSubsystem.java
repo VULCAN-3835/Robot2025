@@ -9,8 +9,9 @@ import static edu.wpi.first.units.Units.Rotations;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
-import edu.wpi.first.math.controller.PIDController;
-import edu.wpi.first.units.Measure;
+import edu.wpi.first.math.controller.ArmFeedforward;
+import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
@@ -26,7 +27,8 @@ public class AlageaSubsystem extends SubsystemBase {
   private final TalonFX angleMotor;
   private final TalonFX powerMotor;
   private final AnalogInput ballDetector;
-  private final PIDController pidController;
+  private final ProfiledPIDController pidController;
+  private final ArmFeedforward armFeedForward;
   private final DigitalInput lowLimitSwitch;
   private final DutyCycleEncoder angleEncoder;
   private final Timer hasBallTimer;
@@ -38,8 +40,15 @@ public class AlageaSubsystem extends SubsystemBase {
     this.ballDetector = new AnalogInput(alageaSubsystemConstants.ballDetectorID);
     this.lowLimitSwitch = new DigitalInput(alageaSubsystemConstants.limitSwitchID);
     this.angleEncoder = new DutyCycleEncoder(alageaSubsystemConstants.angleEncoderID);
-
-    pidController = new PIDController(0, 0, 0);
+    this.pidController = new ProfiledPIDController(
+        0, 0, 0, // PID values (tune these)
+    new TrapezoidProfile.Constraints(
+        alageaSubsystemConstants.maxVelocity, 
+        alageaSubsystemConstants.maxAcceleration
+    ));
+    
+   
+    armFeedForward = new ArmFeedforward(0, 0, 0);
     pidController.setTolerance(alageaSubsystemConstants.pidTolerence);
 
     this.hasBallTimer = new Timer();
@@ -66,7 +75,7 @@ public class AlageaSubsystem extends SubsystemBase {
     double targetDegrees = targetAngle.in(Degrees);
     if (targetDegrees >= alageaSubsystemConstants.minAngle.in(Degrees)
         && targetDegrees <= alageaSubsystemConstants.maxAngle.in(Degrees)) {
-      pidController.setSetpoint(targetAngle.in(Degrees));
+      pidController.setGoal(targetAngle.in(Degrees));
     }
   }
 
@@ -124,7 +133,7 @@ public class AlageaSubsystem extends SubsystemBase {
   public void periodic() {
     // This method will be called once per scheduler run
 
-    double voltage = pidController.calculate(getAngle().in(Degrees));
+    double voltage = pidController.calculate(getAngle().in(Degrees)) + armFeedForward.calculate(getAngle().in(Degrees), 0);
     if (getLowLimitSwitch() && voltage > 0) {
       angleMotor.set(0);
     } else {

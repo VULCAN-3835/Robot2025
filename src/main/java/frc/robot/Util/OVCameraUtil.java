@@ -90,6 +90,15 @@ public class OVCameraUtil {
         return Optional.empty(); // Default value for no target detected
     }
 
+    public Optional<Double> getAprilTagY(){
+        PhotonPipelineResult result = OVCamera.getLatestResult();
+        if (result.hasTargets()) {
+            return Optional.of(result.getBestTarget().getBestCameraToTarget().getY()); // Returns Y position
+        }
+        return Optional.empty(); // Default value for no target detected
+    }
+
+
     public double getDistance() {
         if (!hasTarget()) {
             return -1; // No target detected

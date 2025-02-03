@@ -69,6 +69,8 @@ public final class Constants {
 
     public static final double ballDetectorThreshold = 0;
     public static final double pidTolerence =  0;
+    public static final double maxVelocity = 0;
+    public static final double maxAcceleration = 0;
 
     public static final double collectingPower = 0;
     public static final double shootingPower = 0.6;

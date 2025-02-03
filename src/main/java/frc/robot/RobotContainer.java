@@ -9,6 +9,7 @@ import frc.robot.commands.CollectingAlageaCmd;
 import frc.robot.commands.DefaultTeleopCommand;
 import frc.robot.commands.ShootingAlageaCmd;
 import frc.robot.subsystems.AlageaSubsystem;
+import frc.robot.commands.CharacterizationCommand;
 import frc.robot.commands.ClimbCMD;
 import frc.robot.commands.CloseClimbCMD;
 import frc.robot.Util.ElevatorStates;
@@ -18,6 +19,8 @@ import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
 
 import frc.robot.subsystems.ElevatorSubsystem;
+
+import com.fasterxml.jackson.core.sym.Name;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -62,6 +65,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("ShootingAlagea", new ShootingAlageaCmd(alageaSubsystem));
     NamedCommands.registerCommand("Climb", new ClimbCMD(climbSubsystem));
     NamedCommands.registerCommand("ResetClimbing", new ResetClimbing(climbSubsystem));
+    NamedCommands.registerCommand("CharacterizationCommand", new CharacterizationCommand(alageaSubsystem, true));
     NamedCommands.registerCommand("elevator to L4", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL4));
     NamedCommands.registerCommand("elevator to L3", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL3));
     NamedCommands.registerCommand("elevator to L2", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL2));
