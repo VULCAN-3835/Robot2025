@@ -27,6 +27,7 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -83,6 +84,11 @@ public class RobotContainer {
 
     xboxControllerDrive.rightBumper().whileTrue(new InstantCommand(()->elevatorSubsystem.setPower(-0.1)));
     xboxControllerDrive.rightBumper().toggleOnFalse(new InstantCommand(()-> elevatorSubsystem.setPower(0)));
+
+    xboxControllerDrive.b().whileTrue(this.chassisSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    xboxControllerDrive.y().whileTrue(this.chassisSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    xboxControllerDrive.x().whileTrue(this.chassisSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    xboxControllerDrive.a().whileTrue(this.chassisSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
   }
 
   /**

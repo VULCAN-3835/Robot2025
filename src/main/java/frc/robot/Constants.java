@@ -142,19 +142,21 @@ public final class Constants {
     public static final int kRightFrontEncID = 33; // CAN ID
     public static final int kLeftBackEncID = 32; // CAN ID
     public static final int kRightBackEncID = 30; // CAN ID
+
     // Offsets for absolute encoders in rotations (i.e: 360 degrees = 1 rotation):
     // public static final double kLeftFrontOffset = -0.029296875;
     // public static final double kRightFrontOffset = -0.4111328125;
     // public static final double kLeftBackOffset = 0.406494140625;
     // public static final double kRightBackOffset = -0.228515625;
-    public static final double kLeftFrontOffset = -0.160888671875;
-    public static final double kRightFrontOffset = -0.423583984375;
-    public static final double kLeftBackOffset = -0.216064453125;
-    public static final double kRightBackOffset = 0.259765625;
+
+    public static final double kLeftFrontOffset = -0.161865234375;
+    public static final double kRightFrontOffset = 0.064453125;
+    public static final double kLeftBackOffset = 0.03125;
+    public static final double kRightBackOffset = -0.00732421875;
     // Which motors are inverted: public static final boolean frontLeftDriveInverted
     // = true;
     public static final boolean kLeftFrontInverted = true;
-    public static final boolean kRightFrontInverted = true;
+    public static final boolean kRightFrontInverted = false;
     public static final boolean kLeftBackInverted = true;
     public static final boolean kRightBackInverted = true;
 
