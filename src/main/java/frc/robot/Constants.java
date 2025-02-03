@@ -81,31 +81,25 @@ public final class Constants {
     public static final int limitSwitchID = 5;
     public static final int angleEncoderID = 6;
 
-    public static final int kMotorSpeed = 0;
-    public static final int khHasPieceVoltageThreshold = 0;
-    public static final Angle targetDropAngleL1 = Degrees.of(0);
-    public static final Angle targetDropAngleL2 = Degrees.of(0);
-    public static final Angle targetDropAngleL3 = Degrees.of(0);
-    public static final Angle targetDropAngleL4 = Degrees.of(0);
-    public static final Angle targetAngleRest = Degrees.of(0);
-    public static final Angle targetIntakeAngle = Degrees.of(0);
-    public static final Angle restingAngle = Degrees.of(0);
-    public static final double waitTime = 0;
-    public static final double kP = 0;
-    public static final double kD = 0;
-    public static final double armAngleTolerence = 0;
+    //TODO: measusre the following constants
+    public static final double ballDetectorThreshold =0;
 
+    public static final Angle minAngle = Degrees.of(0);
+    public static final Angle maxAngle = Degrees.of(0);
+    public static final Angle restAngle = Degrees.of(0);
+    public static final Angle collectAngle = Degrees.of(0);
+    public static final Angle holdAngle = Degrees.of(0);
+    public static final Angle scoreAngle = Degrees.of(0);
+
+    public static final double pidTolerence = 0; 
 
     public static final double collectingPower = 0;
-    public static final double shootingPower = 0.6;
+    public static final double shootingPower = 0;
 
-     public static final double collectTime = 0.3;
+    public static final double collectTime = 0.3;
   }
 
   public static class OVCameraUtilConstants {
-    // TODO: change value to actual value
-
-
 
   }
 
