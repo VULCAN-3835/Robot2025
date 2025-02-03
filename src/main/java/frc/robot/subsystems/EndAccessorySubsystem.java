@@ -51,15 +51,11 @@ public class EndAccessorySubsystem extends SubsystemBase {
     }
 
     public enum DropAngles { 
-        setDropAngleL1, setDropAngleL2, setDropAngleL3, setDropAngleL4, restingAngle;
+        setDropAngleL1, setDropAngleL2, setDropAngleL3, setDropAngleL4, restingAngle, intakeAngle;
     }
 
     public Command waitForCoral() {
         return new WaitUntilCommand(() -> timer.get() > EndAccessorySubsystemConstants.waitTime);
-    }
-
-    private void setIntakeAngle() { 
-        pidController.setSetpoint(EndAccessorySubsystemConstants.targetIntakeAngle.in(Degree));
     }
 
     public void gripperIntake() {
@@ -67,7 +63,12 @@ public class EndAccessorySubsystem extends SubsystemBase {
     }
 
     public void gripperRelease() {
-        powerMotor.set(EndAccessorySubsystemConstants.kMotorSpeed);
+        powerMotor.set(-EndAccessorySubsystemConstants.kMotorSpeed);
+
+    }
+
+    public void gripperStop() {
+        powerMotor.set(0);
 
     }
 
@@ -86,13 +87,12 @@ public class EndAccessorySubsystem extends SubsystemBase {
                 pidController.setSetpoint(EndAccessorySubsystemConstants.targetDropAngleL4.in(Degree));
                 break;
             case restingAngle:
+                pidController.setSetpoint(EndAccessorySubsystemConstants.targetAngleRest.in(Degree));
+                break;
+            case intakeAngle:
             pidController.setSetpoint(EndAccessorySubsystemConstants.targetAngleRest.in(Degree));
             default:
         }
-    }
-
-    public void gripperRest() {
-        pidController.setSetpoint(EndAccessorySubsystemConstants.targetAngleRest.in(Degree));
     }
 
     private Measure<AngleUnit> getAngle() { 
@@ -111,12 +111,10 @@ public class EndAccessorySubsystem extends SubsystemBase {
         return pieceDetector.getVoltage() > EndAccessorySubsystemConstants.khHasPieceVoltageThreshold;
 
     }
-
  
     public boolean isAtSetpoint(){
         return pidController.atSetpoint();
     }
-
 
     @Override
     public void periodic() {
@@ -136,7 +134,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
                 timer.start();
             }
             if (timer.get() > EndAccessorySubsystemConstants.waitTime) {
-                gripperRest();
+                gripperStop();
             }
         } else {
             timer.stop();
