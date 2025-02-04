@@ -79,7 +79,7 @@ public final class Constants {
     //TODO: change the IDs of the sensors
     public static final int ballDetectorID = 4;
     public static final int limitSwitchID = 5;
-    public static final int angleEncoderID = 6;
+    public static final int angleEncoderID = 1;
 
     //TODO: measusre the following constants
     public static final double ballDetectorThreshold =0;
@@ -97,6 +97,16 @@ public final class Constants {
     public static final double shootingPower = 0;
 
     public static final double collectTime = 0.3;
+
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final double kD = 0;
+
+    public static final double profiledkP = 0;
+    public static final double profiledkI = 0;
+    public static final double profiledkD = 0;
+
+
   }
 
   public static class OVCameraUtilConstants {
@@ -238,20 +248,30 @@ public final class Constants {
 
   public static class ElevatorConstant {
 
-    public static Distance coralL1 = Centimeter.of(1); // I will add the real measurments later on
-    public static Distance coralL2 = Centimeter.of(6);
-    public static Distance coralL3 = Centimeter.of(6);
-    public static Distance coralL4 = Centimeter.of(6);
-    public static Distance restDistance = Centimeter.of(0);
-    public static Distance sourceDistance = Centimeter.of(0);
+    public static final Distance coralL1 = Centimeter.of(1); // I will add the real measurments later on
+    public static final Distance coralL2 = Centimeter.of(6);
+    public static final Distance coralL3 = Centimeter.of(6);
+    public static final Distance coralL4 = Centimeter.of(6);
+    public static final Distance restDistance = Centimeter.of(0);
+    public static final Distance sourceDistance = Centimeter.of(0);
 
-    public static int motorLeftID = 51;//TODO: needs to change the values of the ports to actual values
-    public static int motorRightID = 50;
-    public static int limitSwitchID = 9;
+    public static final int motorLeftID = 51;//TODO: needs to change the values of the ports to actual values
+    public static final int motorRightID = 50;
+    public static final int limitSwitchID = 9;
 
-    public static double kP = 0;
-    public static double kI = 0;
-    public static double kD = 0;
+    public static final double kP = 0;
+    public static final double kI = 0;
+    public static final double kD = 0;
+
+    public static final double kS = 0;
+    public static final double kG = 0;
+    public static final double kV = 0;
+
+    public static final double ProfiledkP = 0;
+    public static final double ProfiledkI = 0;
+    public static final double ProfiledkD = 0;
+
+
     public static double restPower = 0;
 
     // We'll need to know how much we get for every rotation, and use that number
