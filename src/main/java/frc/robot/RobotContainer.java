@@ -33,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -46,7 +47,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
-  private final EndAccessorySubsystem endAccessorySubsystem = new EndAccessorySubsystem();
+  // private final EndAccessorySubsystem endAccessorySubsystem = new EndAccessorySubsystem();
 
   private final AlageaSubsystem alageaSubsystem = new AlageaSubsystem();
   private final Joystick joystic = new Joystick(0);
@@ -79,12 +80,13 @@ public class RobotContainer {
           () -> -xboxControllerDrive.getLeftX(),
           () -> -xboxControllerDrive.getRightX()));
     }
+    // xboxControllerDrive.a().whileTrue(new CollectingAlageaCmd(alageaSubsystem));
+    // xboxControllerDrive.a().toggleOnFalse(new InstantCommand(()-> alageaSubsystem.setRestAngle()));
 
-    xboxControllerDrive.povDown().whileTrue(new InstantCommand(()-> climbSubsystem.setMotor(-0.2)));
-    xboxControllerDrive.povDown().toggleOnFalse(new InstantCommand(()-> climbSubsystem.setMotor(0)));
-    
-    xboxControllerDrive.povUp().whileTrue(new InstantCommand(()-> climbSubsystem.setMotor(0.2)));
-    xboxControllerDrive.povUp().toggleOnFalse(new InstantCommand(()-> climbSubsystem.setMotor(0)));
+    xboxControllerDrive.a().whileTrue(alageaSubsystem.sysIdDynamic(Direction.kForward));
+    xboxControllerDrive.b().whileTrue(alageaSubsystem.sysIdDynamic(Direction.kReverse));
+    xboxControllerDrive.y().whileTrue(alageaSubsystem.sysIdQuasistatic(Direction.kForward));
+    xboxControllerDrive.x().whileTrue(alageaSubsystem.sysIdQuasistatic(Direction.kReverse));
 
     xboxControllerDrive.leftBumper().whileTrue(new InstantCommand(()->elevatorSubsystem.setPower(0.1)));
     xboxControllerDrive.leftBumper().toggleOnFalse(new InstantCommand(()-> elevatorSubsystem.setPower(0)));

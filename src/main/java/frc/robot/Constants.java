@@ -49,10 +49,10 @@ public final class Constants {
   }
   public static class EndAccessorySubsystemConstants {
     //TODO: change all values to actual values
-    public static final int angleMotorID = 0;
-    public static final int powerMotorID = 0;
+    public static final int angleMotorID = 60;
+    public static final int powerMotorID = 61;
     public static final int lowLimitSwitchID = 0;
-    public static final int highLimitSwitchID = 0;
+    public static final int highLimitSwitchID = 7;
     public static final int angleEncoderID = 0;
     public static final int pieceDetectorID = 0;
 
