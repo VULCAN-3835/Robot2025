@@ -7,7 +7,7 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Centimeter;
 import static edu.wpi.first.units.Units.Meter;
 
-import java.lang.ModuleLayer.Controller;
+
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
@@ -37,8 +37,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final TalonFX ElevatorMotorLeft;
   private final DigitalInput closeLimitSwitch;
   private ProfiledPIDController profilePIDController;
-  private double kMaxVelocity;
-  private double kMaxAcceleration;
   private ElevatorFeedforward elevatorFeedforward;
   
     public ElevatorSubsystem() {
@@ -47,7 +45,7 @@ public class ElevatorSubsystem extends SubsystemBase {
       this.closeLimitSwitch = new DigitalInput(ElevatorConstant.limitSwitchID);
       this.profilePIDController = new ProfiledPIDController(ElevatorConstant.kP, ElevatorConstant.kI, ElevatorConstant.kD, new TrapezoidProfile.Constraints(5, 10));
       profilePIDController.setGoal(0);
-      new TrapezoidProfile.Constraints(kMaxVelocity, kMaxAcceleration);
+      new TrapezoidProfile.Constraints(ElevatorConstant.kMaxVelocity, ElevatorConstant.kMaxAcceleration);
       this.elevatorFeedforward =  new ElevatorFeedforward(ElevatorConstant.kS, ElevatorConstant.kG, ElevatorConstant.kV);
     
     }
@@ -92,11 +90,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
      double power = profilePIDController.calculate(getDistance().in(Centimeter));
      if (getCloseLimitSwitch() && power < 0) {
-       ElevatorMotorLeft.set(0);
-       ElevatorMotorRight.set(0);
+      setPower(0);
      } else {
-       ElevatorMotorLeft.set(power);
-       ElevatorMotorRight.set(-power);
+      setPower(power);
 
      }
   }
