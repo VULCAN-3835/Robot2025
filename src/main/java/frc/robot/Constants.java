@@ -7,6 +7,7 @@ package frc.robot;
 
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Centimeter;
 import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -232,15 +233,18 @@ public final class Constants {
     public static double kI = 0;
     public static double kD = 0;
 
-    public static double Ks = 0;
-    public static double Kg = 0;
-    public static double Kv = 0; 
+    public static double kS = 0;
+    public static double kG = 0;
+    public static double kV = 0; 
 
     public static double restPower = 0;
+    public static double kMaxAcceleration = 0;
+    public static double kMaxVelocity = 0;
 
     // We'll need to know how much we get for every rotation, and use that number
     // here:
     public static Per<DistanceUnit, AngleUnit> distancePerRotation = Centimeters.of(20).div(Rotation.of(1));
+    public static Per<VelocityUnit, AngleVelocityUnit> velocityPerAngularVelocity = Centimeters.of(20).div(Rotation.of(1));
 
     public static Distance enumDistance(ElevatorStates elevatorStates) {
       switch (elevatorStates) {
