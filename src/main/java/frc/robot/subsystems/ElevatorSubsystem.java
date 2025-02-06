@@ -5,8 +5,10 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Centimeter;
-
-
+import static edu.wpi.first.units.Units.Minute;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.path.ConstraintsZone;
@@ -18,9 +20,13 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.Constants.ElevatorConstant;
 import frc.robot.Util.ElevatorStates;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -29,14 +35,15 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 
 public class ElevatorSubsystem extends SubsystemBase {
   /** Creates a new ElevatorSubsystem. */
-  private final TalonFX ElevatorMotorRight;
-  private final TalonFX ElevatorMotorLeft;
+  private final TalonFX elevatorMotorRight;
+  private final TalonFX elevatorMotorLeft;
   private final DigitalInput closeLimitSwitch;
   private final PIDController pidController;
   private final TrapezoidProfile trapezoidProfile;
   private final ElevatorFeedforward elevatorFeedforward;
   private final ProfiledPIDController profiledPIDController;
   private final Constraints constraints;
+  private final SysIdRoutine sysIdRoutine;
   private final double maxVelocity = 2;
   private final double maxAcceleration = 4;
 
@@ -47,8 +54,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 
   public ElevatorSubsystem() {
-    this.ElevatorMotorLeft = new TalonFX(ElevatorConstant.motorLeftID); 
-    this.ElevatorMotorRight = new TalonFX(ElevatorConstant.motorRightID);
+    this.elevatorMotorLeft = new TalonFX(ElevatorConstant.motorLeftID); 
+    this.elevatorMotorRight = new TalonFX(ElevatorConstant.motorRightID);
     this.closeLimitSwitch = new DigitalInput(ElevatorConstant.limitSwitchID);
 
     this.elevatorFeedforward = new ElevatorFeedforward(ElevatorConstant.kS, ElevatorConstant.kG, ElevatorConstant.kV);
@@ -57,7 +64,30 @@ public class ElevatorSubsystem extends SubsystemBase {
     this.profiledPIDController = new ProfiledPIDController(ElevatorConstant.ProfiledkP, ElevatorConstant.ProfiledkI,
      ElevatorConstant.ProfiledkD, constraints);
     this.trapezoidProfile = new TrapezoidProfile(constraints);
+    
+    this.sysIdRoutine = new SysIdRoutine(new SysIdRoutine.Config(),
+     new SysIdRoutine.Mechanism(this::setVoltage,
+      Log->{
+        elevatorMotorLeft.getMotorVoltage();
+        elevatorMotorLeft.get();
+        getCloseLimitSwitch();
+
+    }, this));
   }
+
+  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+  return this.sysIdRoutine.quasistatic(direction);
+  }
+  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+    return this.sysIdRoutine.dynamic(direction);
+  }
+
+  public void setVoltage(Voltage volts){
+    elevatorMotorLeft.setVoltage(volts.in(Volts));
+    elevatorMotorRight.setVoltage(-volts.in(Volts));
+  }
+
+
 
   public void setLevel(ElevatorStates state) {
     double setPoint = ElevatorConstant.enumDistance(state).in(Centimeter);
@@ -67,15 +97,15 @@ public class ElevatorSubsystem extends SubsystemBase {
     trapzoidSetPoint = new State(setPoint, 0);
   }
   public void setPower(double power){
-    ElevatorMotorLeft.set(power);
-    ElevatorMotorRight.set(-power);
+    elevatorMotorLeft.set(power);
+    elevatorMotorRight.set(-power);
 
   }
 
   // current height.
   public Measure<DistanceUnit> getDistance() {
-    Angle angle1= (this.ElevatorMotorLeft.getPosition().getValue());
-    Angle angle2 = (this.ElevatorMotorRight.getPosition().getValue());
+    Angle angle1= (this.elevatorMotorLeft.getPosition().getValue());
+    Angle angle2 = (this.elevatorMotorRight.getPosition().getValue());
     Angle avg = angle1.minus(angle2).div(2);
     return ElevatorConstant.distancePerRotation.timesDivisor(avg);
   }
@@ -95,7 +125,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   public void periodic() {
     //the current position and the velocity of the elevator
     currentPosition = getDistance().in(Centimeter);
-    currentVelocity = ElevatorMotorLeft.getVelocity().getValueAsDouble();
+    currentVelocity  = elevatorMotorLeft.getVelocity().getValue().in(RotationsPerSecond)*60;
 
     //calculates the controlles output to the motors
     double profiledPIDOutput = profiledPIDController.calculate(currentPosition);
@@ -109,12 +139,16 @@ public class ElevatorSubsystem extends SubsystemBase {
     double power = profiledPIDOutput + pidOutput + feedForwardOutput + trapzoidOutput.velocity;
 
     if (getCloseLimitSwitch() && power < 0) {
-      ElevatorMotorLeft.set(0);
-      ElevatorMotorRight.set(0);
+      elevatorMotorLeft.set(0);
+      elevatorMotorRight.set(0);
     } else {
-      ElevatorMotorLeft.set(power);
-      ElevatorMotorRight.set(-power);
+      elevatorMotorLeft.set(power);
+      elevatorMotorRight.set(-power);
 
     }
+
+    SmartDashboard.putNumber("distance of elevator", getDistance().in(Centimeter));
+    SmartDashboard.putBoolean("low limit switch pressed", getCloseLimitSwitch());
+
   }
 }

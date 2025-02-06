@@ -83,6 +83,9 @@ public class RobotContainer {
     // xboxControllerDrive.a().whileTrue(new CollectingAlageaCmd(alageaSubsystem));
     // xboxControllerDrive.a().toggleOnFalse(new InstantCommand(()-> alageaSubsystem.setRestAngle()));
 
+
+
+    //start with reverse direction becuase gears are flipped
     xboxControllerDrive.a().whileTrue(alageaSubsystem.sysIdDynamic(Direction.kForward));
     xboxControllerDrive.b().whileTrue(alageaSubsystem.sysIdDynamic(Direction.kReverse));
     xboxControllerDrive.y().whileTrue(alageaSubsystem.sysIdQuasistatic(Direction.kForward));

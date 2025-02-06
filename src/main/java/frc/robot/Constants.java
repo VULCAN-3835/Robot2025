@@ -47,17 +47,24 @@ public final class Constants {
     public static final int driverController = 0;
     public static final double kDeadband = 0.1;
   }
-  public static class EndAccessorySubsystemConstants {
+  public static class EndAccessoryConstants {
     //TODO: change all values to actual values
     public static final int angleMotorID = 60;
     public static final int powerMotorID = 61;
-    public static final int lowLimitSwitchID = 0;
-    public static final int highLimitSwitchID = 7;
+
+    public static final double maxVelocity = 0;
+    public static final double maxAcceleration = 0;
+
+
     public static final int angleEncoderID = 0;
     public static final int pieceDetectorID = 0;
 
     public static final int kMotorSpeed = 0;
     public static final int khHasPieceVoltageThreshold = 0;
+    public static final Angle kLowestAngle = Degrees.of(0);
+    public static final Angle kHighestAngle = Degrees.of(0);
+
+
     public static final Angle targetDropAngleL1 = Degrees.of(0);
     public static final Angle targetDropAngleL2 = Degrees.of(0);
     public static final Angle targetDropAngleL3 = Degrees.of(0);
@@ -65,9 +72,17 @@ public final class Constants {
     public static final Angle targetAngleRest = Degrees.of(0);
     public static final Angle targetIntakeAngle = Degrees.of(0);
     public static final Angle restingAngle = Degrees.of(0);
+
     public static final double waitTime = 0;
+
     public static final double kP = 0;
+    public static final double kI = 0;
     public static final double kD = 0;
+
+    public static final double ProfiledkP = 0;
+    public static final double profiledkI = 0;
+    public static final double profiledkD = 0;
+
     public static final double armAngleTolerence = 0;
   }
   public static class alageaSubsystemConstants{

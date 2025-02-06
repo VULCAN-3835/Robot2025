@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Millisecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volt;
@@ -70,7 +71,7 @@ public class AlageaSubsystem extends SubsystemBase {
     angleMotor.setNeutralMode(NeutralModeValue.Brake);
 
     //0.05
-    this.config = new Config( Volts.of(0.2).per(Seconds), Volts.of(1.5), Seconds.of(2));
+    this.config = new Config( Volts.of(0.02).per(Millisecond), Volts.of(1.5), Seconds.of(2));
     this.sysID = new SysIdRoutine(config,
      new SysIdRoutine.Mechanism(this::setVoltage,
     Log->{
