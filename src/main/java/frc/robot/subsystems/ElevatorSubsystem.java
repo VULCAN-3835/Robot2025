@@ -5,9 +5,12 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Centimeter;
+import static edu.wpi.first.units.Units.Millisecond;
+import static edu.wpi.first.units.Units.Milliseconds;
 import static edu.wpi.first.units.Units.Minute;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
+import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -27,6 +30,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.ElevatorConstant;
 import frc.robot.Util.ElevatorStates;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -51,6 +55,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   private double currentVelocity = 0;
 
   private State trapzoidSetPoint = new State();
+  private Config config;
 
 
   public ElevatorSubsystem() {
@@ -64,8 +69,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     this.profiledPIDController = new ProfiledPIDController(ElevatorConstant.ProfiledkP, ElevatorConstant.ProfiledkI,
      ElevatorConstant.ProfiledkD, constraints);
     this.trapezoidProfile = new TrapezoidProfile(constraints);
+
+    this.config = new Config( Volts.of(0.05).per(Millisecond), Volts.of(3), Seconds.of(3));
     
-    this.sysIdRoutine = new SysIdRoutine(new SysIdRoutine.Config(),
+    this.sysIdRoutine = new SysIdRoutine(config,
      new SysIdRoutine.Mechanism(this::setVoltage,
       Log->{
         elevatorMotorLeft.getMotorVoltage();

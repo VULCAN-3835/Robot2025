@@ -63,7 +63,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
                 EndAccessoryConstants.profiledkI,
                 EndAccessoryConstants.profiledkD, constraints);
 
-        this.config = new Config(Volts.of(0.02).per(Millisecond), Volts.of(1.5), Seconds.of(2));
+        this.config = new Config(Volts.of(0.02).per(Millisecond), Volts.of(2), Seconds.of(3));
         this.sysIdRoutine = new SysIdRoutine(config,
             new SysIdRoutine.Mechanism(this::setVoltage,
             Log -> {
