@@ -70,7 +70,9 @@ public class AlageaSubsystem extends SubsystemBase {
     this.hasBallTimer = new Timer();
     angleMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    //0.05
+    angleEncoder.setDutyCycleRange(alageaSubsystemConstants.minAngle.in(Degrees), alageaSubsystemConstants.maxAngle.in(Degrees));
+
+
     this.config = new Config( Volts.of(0.02).per(Millisecond), Volts.of(2), Seconds.of(3));
     this.sysID = new SysIdRoutine(config,
      new SysIdRoutine.Mechanism(this::setVoltage,
@@ -185,7 +187,7 @@ public class AlageaSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("algea intake limit Switch", getLowLimitSwitch());
     SmartDashboard.putNumber("algea intake encoder", getAngle().in(Degrees));
     SmartDashboard.putNumber("piece detector value", ballDetector.getVoltage());
-    SmartDashboard.putNumber("PID output", power);
+    SmartDashboard.putBoolean("has ball?", hasBall());
 
 
     if (getLowLimitSwitch() && power > 0) {

@@ -55,6 +55,7 @@ public class RobotContainer {
   ClimbSubsystem climbSubsystem;
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+  private final EndAccessorySubsystem endAccessorySubsystem = new EndAccessorySubsystem();
 
   private final CommandXboxController xboxControllerDrive = new CommandXboxController(
       OperatorConstants.driverController);
@@ -86,10 +87,10 @@ public class RobotContainer {
 
 
     //start with reverse direction becuase gears are flipped
-    xboxControllerDrive.a().whileTrue(alageaSubsystem.sysIdDynamic(Direction.kForward));
-    xboxControllerDrive.b().whileTrue(alageaSubsystem.sysIdDynamic(Direction.kReverse));
-    xboxControllerDrive.y().whileTrue(alageaSubsystem.sysIdQuasistatic(Direction.kForward));
-    xboxControllerDrive.x().whileTrue(alageaSubsystem.sysIdQuasistatic(Direction.kReverse));
+    // xboxControllerDrive.a().whileTrue(alageaSubsystem.sysIdDynamic(Direction.kForward));
+    // xboxControllerDrive.b().whileTrue(alageaSubsystem.sysIdDynamic(Direction.kReverse));
+    // xboxControllerDrive.y().whileTrue(alageaSubsystem.sysIdQuasistatic(Direction.kForward));
+    // xboxControllerDrive.x().whileTrue(alageaSubsystem.sysIdQuasistatic(Direction.kReverse));
 
     xboxControllerDrive.leftBumper().whileTrue(new InstantCommand(()->elevatorSubsystem.setPower(0.1)));
     xboxControllerDrive.leftBumper().toggleOnFalse(new InstantCommand(()-> elevatorSubsystem.setPower(0)));

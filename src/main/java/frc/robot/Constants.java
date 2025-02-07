@@ -56,11 +56,11 @@ public final class Constants {
     public static final double maxAcceleration = 0;
 
 
-    public static final int angleEncoderID = 0;
-    public static final int pieceDetectorID = 0;
+    public static final int angleEncoderID = 8;
+    public static final int pieceDetectorID = 1;
 
     public static final int kMotorSpeed = 0;
-    public static final int khHasPieceVoltageThreshold = 0;
+    public static final double kHasPieceVoltageThreshold = 2.5;
     public static final Angle kLowestAngle = Degrees.of(0);
     public static final Angle kHighestAngle = Degrees.of(0);
 
@@ -86,25 +86,22 @@ public final class Constants {
     public static final double armAngleTolerence = 0;
   }
   public static class alageaSubsystemConstants{
-    //TODO: change the values to the actual values
 
     public static final int angleMotorID = 41;
     public static final int powerMotorID = 40;
 
-    //TODO: change the IDs of the sensors
-    public static final int ballDetectorID = 4;
-    public static final int limitSwitchID = 5;
-    public static final int angleEncoderID = 1;
+    public static final int ballDetectorID = 0;
+    public static final int limitSwitchID = 6;
+    public static final int angleEncoderID = 7;
 
-    //TODO: measusre the following constants
-    public static final double ballDetectorThreshold =0;
+    public static final double ballDetectorThreshold =1.8;
 
-    public static final Angle minAngle = Degrees.of(0);
-    public static final Angle maxAngle = Degrees.of(0);
-    public static final Angle restAngle = Degrees.of(0);
-    public static final Angle collectAngle = Degrees.of(0);
-    public static final Angle holdAngle = Degrees.of(0);
-    public static final Angle scoreAngle = Degrees.of(0);
+    public static final Angle minAngle = Degrees.of(350);
+    public static final Angle maxAngle = Degrees.of(41.824855045621376);
+    public static final Angle restAngle = Degrees.of(350);
+    public static final Angle collectAngle = Degrees.of(41.824855045621376);
+    public static final Angle holdAngle = Degrees.of(350);
+    public static final Angle scoreAngle = Degrees.of(1);
 
     public static final double pidTolerence = 0; 
 
@@ -188,15 +185,17 @@ public final class Constants {
     public static final int kRightFrontEncID = 33; // CAN ID
     public static final int kLeftBackEncID = 32; // CAN ID
     public static final int kRightBackEncID = 30; // CAN ID
+
     // Offsets for absolute encoders in rotations (i.e: 360 degrees = 1 rotation):
     // public static final double kLeftFrontOffset = -0.029296875;
     // public static final double kRightFrontOffset = -0.4111328125;
     // public static final double kLeftBackOffset = 0.406494140625;
     // public static final double kRightBackOffset = -0.228515625;
-    public static final double kLeftFrontOffset = -0.160888671875;
-    public static final double kRightFrontOffset = -0.423583984375;
-    public static final double kLeftBackOffset = -0.216064453125;
-    public static final double kRightBackOffset = 0.259765625;
+
+    public static final double kLeftFrontOffset = -0.17138671875;
+    public static final double kRightFrontOffset = 0.55767578125;
+    public static final double kLeftBackOffset = 0.05662109375;
+    public static final double kRightBackOffset = 0.00244140625;
     // Which motors are inverted: public static final boolean frontLeftDriveInverted
     // = true;
     public static final boolean kLeftFrontInverted = true;
@@ -263,14 +262,14 @@ public final class Constants {
 
   public static class ElevatorConstant {
 
-    public static final Distance coralL1 = Centimeter.of(1); // I will add the real measurments later on
-    public static final Distance coralL2 = Centimeter.of(6);
-    public static final Distance coralL3 = Centimeter.of(6);
-    public static final Distance coralL4 = Centimeter.of(6);
+    public static final Distance coralL1 = Centimeter.of(0); // I will add the real measurments later on
+    public static final Distance coralL2 = Centimeter.of(0);
+    public static final Distance coralL3 = Centimeter.of(0);
+    public static final Distance coralL4 = Centimeter.of(0);
     public static final Distance restDistance = Centimeter.of(0);
     public static final Distance sourceDistance = Centimeter.of(0);
 
-    public static final int motorLeftID = 51;//TODO: needs to change the values of the ports to actual values
+    public static final int motorLeftID = 51;
     public static final int motorRightID = 50;
     public static final int limitSwitchID = 9;
 

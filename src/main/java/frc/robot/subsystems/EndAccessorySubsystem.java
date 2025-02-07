@@ -136,7 +136,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
     }
 
     public boolean hasPiece() {
-        return pieceDetector.getVoltage() > EndAccessoryConstants.khHasPieceVoltageThreshold;
+        return pieceDetector.getVoltage() > EndAccessoryConstants.kHasPieceVoltageThreshold;
 
     }
 
