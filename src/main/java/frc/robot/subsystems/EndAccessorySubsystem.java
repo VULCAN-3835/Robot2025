@@ -81,6 +81,12 @@ public class EndAccessorySubsystem extends SubsystemBase {
         angleMotor.setVoltage(volts.in(Volts));
     }
 
+    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+        return this.sysIdRoutine.quasistatic(direction);
+    }
+    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+      return this.sysIdRoutine.dynamic(direction);
+    }
     public enum DropAngles {
         setDropAngleL1, setDropAngleL2, setDropAngleL3, setDropAngleL4, restingAngle, intakeAngle;
     }
@@ -94,6 +100,9 @@ public class EndAccessorySubsystem extends SubsystemBase {
     }
 
     public void gripperRelease() {
+        if (getAngle().in(Degree) > EndAccessoryConstants.kReverseSpeedAngle.in(Degree)) {
+            powerMotor.set(EndAccessoryConstants.kMotorSpeed);
+        }
         powerMotor.set(-EndAccessoryConstants.kMotorSpeed);
 
     }
@@ -171,8 +180,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
             timer.reset();
         }
 
-        SmartDashboard.putBoolean("is endAccessory at setPoint?", isAtSetpoint());
-        SmartDashboard.putNumber("current angle", getAngle().in(Degrees));
+        SmartDashboard.putNumber("end current angle", getAngle().in(Degrees));
         SmartDashboard.putBoolean("end has piece?", hasPiece());
         SmartDashboard.putNumber("infrared end value", pieceDetector.getVoltage());
     }

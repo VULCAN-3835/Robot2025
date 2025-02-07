@@ -7,6 +7,7 @@ import frc.robot.subsystems.EndAccessorySubsystem;
 public class CoralCollectCommand extends SequentialCommandGroup {
 
     public CoralCollectCommand(EndAccessorySubsystem endAccessorySubsystem) {
+        addRequirements(endAccessorySubsystem);
 
         addCommands(
             
@@ -18,6 +19,7 @@ public class CoralCollectCommand extends SequentialCommandGroup {
     
             // 3. Stop the gripper once the piece is successfully collected
             new InstantCommand(() -> endAccessorySubsystem.gripperStop())
+                
         );
     }
 }

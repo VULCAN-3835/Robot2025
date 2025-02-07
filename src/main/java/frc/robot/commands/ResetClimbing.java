@@ -18,6 +18,7 @@ public class ResetClimbing extends SequentialCommandGroup {
   public ResetClimbing(ClimbSubsystem climbSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
+    addRequirements(climbSubsystem);
     addCommands(
         // 1. starting the motor
         new ClimbCMD(climbSubsystem),

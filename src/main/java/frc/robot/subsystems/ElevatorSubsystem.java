@@ -49,6 +49,8 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final ProfiledPIDController profiledPIDController;
   private final Constraints constraints;
   private final SysIdRoutine sysIdRoutine;
+  private Config config;
+
   private final double maxVelocity = 2;
   private final double maxAcceleration = 4;
 
@@ -56,7 +58,6 @@ public class ElevatorSubsystem extends SubsystemBase {
   private double currentVelocity = 0;
 
   private State trapzoidSetPoint = new State();
-  private Config config;
 
 
   public ElevatorSubsystem() {
@@ -131,10 +132,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+
     //the current position and the velocity of the elevator
     currentPosition = getDistance().in(Centimeter);
     currentVelocity  = elevatorMotorLeft.getVelocity().getValue().in(RotationsPerSecond)*60;
-    double distance = getDistance().in(Centimeters);
+
 
     //calculates the controlles output to the motors
     double profiledPIDOutput = profiledPIDController.calculate(currentPosition);
@@ -156,9 +158,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     }
     if (getCloseLimitSwitch()) {
-      distance = 0;
+      currentPosition = 0;
     }
-    SmartDashboard.putNumber("distance of elevator", distance);
+    SmartDashboard.putNumber("distance of elevator", currentPosition);
     SmartDashboard.putBoolean("low limit switch pressed", getCloseLimitSwitch());
 
   }

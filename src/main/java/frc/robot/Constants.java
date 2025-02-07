@@ -8,19 +8,13 @@ package frc.robot;
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.Centimeter;
 import static edu.wpi.first.units.Units.Centimeters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Rotation;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
 
-import com.ctre.phoenix6.StatusSignal;
-import java.util.Map;
+
 
 import com.ctre.phoenix6.configs.Slot0Configs;
-import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.System_StateValue;
+
 import com.pathplanner.lib.config.ModuleConfig;
-import com.pathplanner.lib.config.PIDConstants;
 import com.pathplanner.lib.config.RobotConfig;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -34,7 +28,6 @@ import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.DistanceUnit;
-import edu.wpi.first.units.Unit;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.MutPer;
@@ -61,9 +54,10 @@ public final class Constants {
 
     public static final int kMotorSpeed = 0;
     public static final double kHasPieceVoltageThreshold = 2.5;
+
     public static final Angle kLowestAngle = Degrees.of(0);
     public static final Angle kHighestAngle = Degrees.of(0);
-
+    public static final Angle kReverseSpeedAngle = Degrees.of(0);
 
     public static final Angle targetDropAngleL1 = Degrees.of(0);
     public static final Angle targetDropAngleL2 = Degrees.of(0);
@@ -71,7 +65,6 @@ public final class Constants {
     public static final Angle targetDropAngleL4 = Degrees.of(0);
     public static final Angle targetAngleRest = Degrees.of(0);
     public static final Angle targetIntakeAngle = Degrees.of(0);
-    public static final Angle restingAngle = Degrees.of(0);
 
     public static final double waitTime = 0;
 
@@ -85,7 +78,7 @@ public final class Constants {
 
     public static final double armAngleTolerence = 0;
   }
-  public static class alageaSubsystemConstants{
+  public static class algeaSubsystemConstants{
 
     public static final int angleMotorID = 41;
     public static final int powerMotorID = 40;
@@ -103,7 +96,7 @@ public final class Constants {
     public static final Angle holdAngle = Degrees.of(350);
     public static final Angle scoreAngle = Degrees.of(1);
 
-    public static final double pidTolerence = 0; 
+    public static final Angle pidTolerence = Degrees.of(5); 
 
     public static final double collectingPower = 0;
     public static final double shootingPower = 0;

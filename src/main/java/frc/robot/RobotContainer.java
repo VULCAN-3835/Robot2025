@@ -5,25 +5,21 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.Util.ElevatorStates;
 import frc.robot.commands.CoralCollectCommand;
 import frc.robot.commands.DefaultTeleopCommand;
+import frc.robot.commands.ElevatorLevelIntake;
 import frc.robot.commands.CoralReleaseCommand;
 import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem;
-import frc.robot.commands.CollectingAlageaCmd;
-import frc.robot.commands.DefaultTeleopCommand;
-import frc.robot.commands.ShootingAlageaCmd;
-import frc.robot.subsystems.AlageaSubsystem;
-import frc.robot.commands.ClimbCMD;
-import frc.robot.commands.CloseClimbCMD;
-import frc.robot.Util.ElevatorStates;
-import frc.robot.commands.DefaultTeleopCommand;
-import frc.robot.commands.ResetClimbing;
-import frc.robot.subsystems.ChassisSubsystem;
+import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
+import frc.robot.subsystems.AlgeaSubsystem;
+
 import frc.robot.subsystems.ClimbSubsystem;
 
 import frc.robot.subsystems.ElevatorSubsystem;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -34,6 +30,8 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import frc.robot.commands.ElevatorLevelScoreCMD;
+import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -49,8 +47,7 @@ public class RobotContainer {
   private final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
   // private final EndAccessorySubsystem endAccessorySubsystem = new EndAccessorySubsystem();
 
-  private final AlageaSubsystem alageaSubsystem = new AlageaSubsystem();
-  private final Joystick joystic = new Joystick(0);
+  private final AlgeaSubsystem alageaSubsystem = new AlgeaSubsystem();
 
   ClimbSubsystem climbSubsystem;
   // Replace with CommandPS4Controller or CommandJoystick if needed
@@ -71,6 +68,12 @@ public class RobotContainer {
 
     autoChooser.setDefaultOption("EMPTY", null);
     SmartDashboard.putData("Auto Chooser", autoChooser);
+    NamedCommands.registerCommand("score L4", new ElevatorLevelScoreCMD(elevatorSubsystem,endAccessorySubsystem,ElevatorStates.coralL4,DropAngles.setDropAngleL4));
+    NamedCommands.registerCommand("score L3", new ElevatorLevelScoreCMD(elevatorSubsystem,endAccessorySubsystem,ElevatorStates.coralL3,DropAngles.setDropAngleL3));
+    NamedCommands.registerCommand("score L2", new ElevatorLevelScoreCMD(elevatorSubsystem,endAccessorySubsystem,ElevatorStates.coralL2,DropAngles.setDropAngleL2));
+    NamedCommands.registerCommand("score L1", new ElevatorLevelScoreCMD(elevatorSubsystem,endAccessorySubsystem,ElevatorStates.coralL1,DropAngles.setDropAngleL1));
+    NamedCommands.registerCommand("intake from source", new ElevatorLevelIntake(elevatorSubsystem, endAccessorySubsystem));
+
     configureBindings();
   }
 

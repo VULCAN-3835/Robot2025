@@ -34,10 +34,10 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
-import frc.robot.Constants.alageaSubsystemConstants;
+import frc.robot.Constants.algeaSubsystemConstants;
 
-public class AlageaSubsystem extends SubsystemBase {
-  /** Creates a new AlageaIntakeSubsystem. */
+public class AlgeaSubsystem extends SubsystemBase {
+  /** Creates a new AlgeaIntakeSubsystem. */
   private final TalonFX angleMotor;
   private final TalonFX powerMotor;
   private final AnalogInput ballDetector;
@@ -53,24 +53,25 @@ public class AlageaSubsystem extends SubsystemBase {
   private final Config config;
   private final SysIdRoutine sysID;
 
-  public AlageaSubsystem() {
-    this.angleMotor = new TalonFX(alageaSubsystemConstants.angleMotorID);
-    this.powerMotor = new TalonFX(alageaSubsystemConstants.powerMotorID);
+  public AlgeaSubsystem() {
+    this.angleMotor = new TalonFX(algeaSubsystemConstants.angleMotorID);
+    this.powerMotor = new TalonFX(algeaSubsystemConstants.powerMotorID);
 
-    this.ballDetector = new AnalogInput(alageaSubsystemConstants.ballDetectorID);
-    this.lowLimitSwitch = new DigitalInput(alageaSubsystemConstants.limitSwitchID);
-    this.angleEncoder = new DutyCycleEncoder(alageaSubsystemConstants.angleEncoderID);
+    this.ballDetector = new AnalogInput(algeaSubsystemConstants.ballDetectorID);
+    this.lowLimitSwitch = new DigitalInput(algeaSubsystemConstants.limitSwitchID);
+    this.angleEncoder = new DutyCycleEncoder(algeaSubsystemConstants.angleEncoderID);
 
-    this.pidController = new PIDController(alageaSubsystemConstants.kP, alageaSubsystemConstants.kI, alageaSubsystemConstants.kD);
-    pidController.setTolerance(alageaSubsystemConstants.pidTolerence);
+    this.pidController = new PIDController(algeaSubsystemConstants.kP, algeaSubsystemConstants.kI, algeaSubsystemConstants.kD);
+    pidController.setTolerance(algeaSubsystemConstants.pidTolerence.in(Degrees));
 
     this.constraints = new Constraints(maxVelocity, maxAcceleration);
-    this.profiledPIDController = new ProfiledPIDController(alageaSubsystemConstants.profiledkP, alageaSubsystemConstants.profiledkI, alageaSubsystemConstants.profiledkD, constraints);
+    this.profiledPIDController = new ProfiledPIDController(algeaSubsystemConstants.profiledkP, algeaSubsystemConstants.profiledkI, algeaSubsystemConstants.profiledkD, constraints);
+    profiledPIDController.setTolerance(algeaSubsystemConstants.pidTolerence.in(Degrees));
 
     this.hasBallTimer = new Timer();
     angleMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    angleEncoder.setDutyCycleRange(alageaSubsystemConstants.minAngle.in(Degrees), alageaSubsystemConstants.maxAngle.in(Degrees));
+    angleEncoder.setDutyCycleRange(algeaSubsystemConstants.minAngle.in(Degrees), algeaSubsystemConstants.maxAngle.in(Degrees));
 
 
     this.config = new Config( Volts.of(0.02).per(Millisecond), Volts.of(2), Seconds.of(3));
@@ -90,15 +91,15 @@ public class AlageaSubsystem extends SubsystemBase {
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return this.sysID.dynamic(direction);
   }
-
-  // checks if the system detects the ball
-  public boolean hasBall() {
-    return ballDetector.getVoltage() > alageaSubsystemConstants.ballDetectorThreshold;
-
-  }
   public void setVoltage(Voltage volts){
     angleMotor.setVoltage(volts.in(Volts));
   }
+
+  // checks if the system detects the ball
+  public boolean hasBall() {
+    return ballDetector.getVoltage() > algeaSubsystemConstants.ballDetectorThreshold;
+  }
+
 
   // gets the current angle
   public Angle getAngle() {
@@ -114,8 +115,8 @@ public class AlageaSubsystem extends SubsystemBase {
   private void setAngle(Angle targetAngle) {
     double targetDegrees = targetAngle.in(Degrees);
 
-    if (targetDegrees >= alageaSubsystemConstants.minAngle.in(Degrees)
-        && targetDegrees <= alageaSubsystemConstants.maxAngle.in(Degrees)) {
+    if (targetDegrees >= algeaSubsystemConstants.minAngle.in(Degrees)
+        && targetDegrees <= algeaSubsystemConstants.maxAngle.in(Degrees)) {
       pidController.setSetpoint(targetAngle.in(Degrees));
     }
 
@@ -123,38 +124,38 @@ public class AlageaSubsystem extends SubsystemBase {
     profiledPIDController.setGoal(targetDegrees);
   }
 
-  // sets the robot in the predefined resting angle
+  // sets the robot in the resting angle
   public void setRestAngle() {
-    setAngle(alageaSubsystemConstants.restAngle);
+    setAngle(algeaSubsystemConstants.restAngle);
 
   }
 
-  // sets the robot in the predefined collecting angle
+  // sets the robot in the collecting angle
   public void setCollectAngle() {
-    setAngle(alageaSubsystemConstants.collectAngle);
+    setAngle(algeaSubsystemConstants.collectAngle);
 
   }
-
+   
+  // sets the robot in the holding angle
   public void setHoldAngle() {
-    // sets the robot in the predefined holding angle
-    setAngle(alageaSubsystemConstants.holdAngle);
+    setAngle(algeaSubsystemConstants.holdAngle);
 
   }
 
   public void setShootingAngle() {
-    setAngle(alageaSubsystemConstants.scoreAngle);
+    setAngle(algeaSubsystemConstants.scoreAngle);
   }
 
   public boolean isSystemAtShootingAngle() {
     double currentAngle = getAngle().in(Degrees);
-    double targetAngle = alageaSubsystemConstants.scoreAngle.in(Degrees);
-    return Math.abs(currentAngle -  targetAngle) <= pidController.getPositionTolerance();
+    double targetAngle = algeaSubsystemConstants.scoreAngle.in(Degrees);
+    return Math.abs(currentAngle -  targetAngle) <= pidController.getErrorTolerance();
   }
 
   public boolean isSystemAtCollectingAngle() {
     double currentAngle = getAngle().in(Degrees);
-    double targetAngle = alageaSubsystemConstants.scoreAngle.in(Degrees);
-    return Math.abs(currentAngle - targetAngle) <= pidController.getPositionTolerance();
+    double targetAngle = algeaSubsystemConstants.scoreAngle.in(Degrees);
+    return Math.abs(currentAngle - targetAngle) <= pidController.getErrorTolerance();
   }
 
   public void setPower(double power) {
@@ -162,15 +163,15 @@ public class AlageaSubsystem extends SubsystemBase {
   }
 
   public Command waitForCollectionCommand() {
-    return new WaitUntilCommand(() -> hasBallTimer.get() > alageaSubsystemConstants.collectTime);
+    return new WaitUntilCommand(() -> hasBallTimer.get() > algeaSubsystemConstants.collectTime);
   }
 
   public void collectingAlgea() {
-    setPower(alageaSubsystemConstants.collectingPower);
+    setPower(algeaSubsystemConstants.collectingPower);
   }
 
-  public void shootAlagea() {
-    setPower(alageaSubsystemConstants.shootingPower);
+  public void shootAlgea() {
+    setPower(algeaSubsystemConstants.shootingPower);
   }
 
   @Override
@@ -185,7 +186,6 @@ public class AlageaSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("algea intake encoder", getAngle().in(Degrees));
     SmartDashboard.putBoolean("algea intake limit Switch", getLowLimitSwitch());
-    SmartDashboard.putNumber("algea intake encoder", getAngle().in(Degrees));
     SmartDashboard.putNumber("piece detector value", ballDetector.getVoltage());
     SmartDashboard.putBoolean("has ball?", hasBall());
 
@@ -206,7 +206,7 @@ public class AlageaSubsystem extends SubsystemBase {
       hasBallTimer.stop();
       hasBallTimer.reset();
     }
-    if (powerMotor.get() < 0 && hasBallTimer.get() > alageaSubsystemConstants.collectTime) {
+    if (powerMotor.get() < 0 && hasBallTimer.get() > algeaSubsystemConstants.collectTime) {
       setPower(0);
     }
   }
