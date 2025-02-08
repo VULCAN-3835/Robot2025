@@ -78,6 +78,10 @@ public class OVCameraUtil {
             this.result = newResult;
         }
     }
+    public Optional<Pose3d> getTagPose3d(int ID){
+        Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(ID);
+        return tagPose;
+    }
 
     public int getID() {
         if (hasTarget()) {
