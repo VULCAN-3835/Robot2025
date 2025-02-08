@@ -37,7 +37,8 @@ import frc.robot.Util.ElevatorStates;
 public final class Constants {
 
   public static class OperatorConstants {
-    public static final int driverController = 0;
+    public static final int driverControllerPort = 0;
+    public static final int buttonControllerPort = 1;
     public static final double kDeadband = 0.1;
   }
   public static class EndAccessoryConstants {

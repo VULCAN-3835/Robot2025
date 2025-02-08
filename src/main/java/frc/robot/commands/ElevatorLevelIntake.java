@@ -8,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Util.ElevatorStates;
+import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
@@ -17,25 +18,27 @@ import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ElevatorLevelIntake extends SequentialCommandGroup {
   /** Creates a new ElevatorLevelIntake. */
-  public ElevatorLevelIntake(ElevatorSubsystem elevatorSubsystem,EndAccessorySubsystem endAccessorySubsystem) {
+  public ElevatorLevelIntake(ChassisSubsystem chassisSubsystem,ElevatorSubsystem elevatorSubsystem,EndAccessorySubsystem endAccessorySubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addRequirements(elevatorSubsystem,endAccessorySubsystem);
+    addRequirements(chassisSubsystem,elevatorSubsystem,endAccessorySubsystem);
     addCommands(
-      // 1. sets the angle of the end accessory and the height of the elevator in the same time 
+      // 1. positioning itself in front of the april tag
+      new PositioningAprilTag(chassisSubsystem, false, true),
+
+      // 2. sets the angle of the end accessory and the height of the elevator in the same time 
       new ParallelCommandGroup(
         elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.source),
         new InstantCommand(()-> endAccessorySubsystem.setAngle(DropAngles.intakeAngle))),
 
-      // 2. releases the coral 
+      // 3. releases the coral 
       new CoralCollectCommand(endAccessorySubsystem),
 
-      // 3. returns the elevator and the end accessory to their resting state  
+      // 4. returns the elevator and the end accessory to their resting state  
       new ParallelCommandGroup(
         new InstantCommand(()-> elevatorSubsystem.setLevel(ElevatorStates.rest)),
         new InstantCommand(()-> endAccessorySubsystem.setAngle(DropAngles.restingAngle))
       )
-
     );
   }
 }

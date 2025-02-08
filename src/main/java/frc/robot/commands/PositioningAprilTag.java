@@ -27,24 +27,25 @@ public class PositioningAprilTag extends Command {
     private Trajectory trajectory;
     private double startTime;
     private boolean isMovingRight;
+    private boolean intake;
 
-    public PositioningAprilTag(ChassisSubsystem chassisSubsystem,boolean isMovingRight ) {
+    public PositioningAprilTag(ChassisSubsystem chassisSubsystem, boolean isMovingRight, boolean intake) {
         this.chassisSubsystem = chassisSubsystem;
         this.isMovingRight = isMovingRight;
+        this.intake = intake;
         addRequirements(chassisSubsystem);
 
-        //TODO: change pid values to actual values
+        // TODO: change pid values to actual values
         double xKp = 0, xKi = 0, xKd = 0;
         double yKp = 0, yKi = 0, yKd = 0;
         double rotKp = 0, rotKi = 0, rotKd = 0;
         double maxVelocity = 2.0, maxAcceleration = 2.0;
 
         this.controller = new HolonomicDriveController(
-            new PIDController(xKp, xKi, xKd),
-            new PIDController(yKp, yKi, yKd),
-            new ProfiledPIDController(rotKp, rotKi, rotKd,
-                new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration))
-        );
+                new PIDController(xKp, xKi, xKd),
+                new PIDController(yKp, yKi, yKd),
+                new ProfiledPIDController(rotKp, rotKi, rotKd,
+                        new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration)));
     }
 
     @Override
@@ -54,40 +55,52 @@ public class PositioningAprilTag extends Command {
 
         Optional<Pose3d> tagPoseOpt = chassisSubsystem.getCamera().getTagPose3d(ID);
 
+        if (chassisSubsystem.getCamera().getTagPose3d(ID).isPresent() && !intake) {
 
-        if (chassisSubsystem.getCamera().getTagPose3d(ID).isPresent()) {
-          
             Pose2d tagPose = tagPoseOpt.get().toPose2d();
             Pose2d startPose = chassisSubsystem.getPose();
 
-            // Generate a trajectory to move 1 meter in front of the tag and 1 meter to the left or right of the tag
+            // Generate a trajectory to move 1 meter in front of the tag and 1 meter to the
+            // left or right of the tag
             Pose2d targetPose = new Pose2d(
-              tagPose.getX() - tagPose.getRotation().getCos() + (isMovingRight ? -1 : 1) * tagPose.getRotation().getSin(),
-              tagPose.getY() - tagPose.getRotation().getSin() + (isMovingRight ? 1 : -1) * tagPose.getRotation().getCos(),
-              tagPose.getRotation()
-          );
-          
+                    tagPose.getX() - tagPose.getRotation().getCos()
+                            + (isMovingRight ? -1 : 1) * tagPose.getRotation().getSin(),
+                    tagPose.getY() - tagPose.getRotation().getSin()
+                            + (isMovingRight ? 1 : -1) * tagPose.getRotation().getCos(),
+                    tagPose.getRotation());
 
             TrajectoryConfig config = new TrajectoryConfig(2.0, 2.0);
             trajectory = TrajectoryGenerator.generateTrajectory(
-                List.of(startPose, targetPose), config
-            );
+                    List.of(startPose, targetPose), config);
+        }
+
+        // Generate a trajectory to move 1 meter in front of the tag
+        else if (intake && chassisSubsystem.getCamera().getTagPose3d(ID).isPresent()) {
+            Pose2d tagPose = tagPoseOpt.get().toPose2d();
+            Pose2d startPose = chassisSubsystem.getPose();
+
+            Pose2d targetPose = new Pose2d(
+                    tagPose.getX() - tagPose.getRotation().getCos(),
+                    tagPose.getY() - tagPose.getRotation().getSin(),
+                    tagPose.getRotation());
+
+            TrajectoryConfig config = new TrajectoryConfig(2.0, 2.0);
+            trajectory = TrajectoryGenerator.generateTrajectory(List.of(startPose, targetPose), config);
+
         } else {
             trajectory = new Trajectory(); // Empty trajectory if no tag is found
         }
-
     }
 
     @Override
     public void execute() {
         if (trajectory.getTotalTimeSeconds() == 0) {
-            chassisSubsystem.drive(0, 0, 0, false);;
+            chassisSubsystem.drive(0, 0, 0, false);
             return;
         }
 
         double elapsedTime = Timer.getFPGATimestamp() - startTime;
         State goal = trajectory.sample(elapsedTime);
-
 
         Optional<Pose3d> tagPoseOpt = chassisSubsystem.getCamera().getTagPose3d(chassisSubsystem.getCamera().getID());
 
@@ -95,15 +108,14 @@ public class PositioningAprilTag extends Command {
             Pose2d tagPose = tagPoseOpt.get().toPose2d();
 
             ChassisSpeeds speeds = controller.calculate(
-                chassisSubsystem.getPose(),
-                goal.poseMeters,
-                goal.velocityMetersPerSecond,
-                tagPose.getRotation()
-            );
+                    chassisSubsystem.getPose(),
+                    goal.poseMeters,
+                    goal.velocityMetersPerSecond,
+                    tagPose.getRotation());
 
             chassisSubsystem.drive(speeds, true);
         } else {
-            chassisSubsystem.drive(0,0,0, false);
+            chassisSubsystem.drive(0, 0, 0, false);
         }
     }
 
@@ -114,6 +126,6 @@ public class PositioningAprilTag extends Command {
 
     @Override
     public void end(boolean interrupted) {
-        chassisSubsystem.drive(0,0,0, false);
+        chassisSubsystem.drive(0, 0, 0, false);
     }
 }

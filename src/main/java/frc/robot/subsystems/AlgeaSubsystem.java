@@ -74,7 +74,7 @@ public class AlgeaSubsystem extends SubsystemBase {
     angleEncoder.setDutyCycleRange(algeaSubsystemConstants.minAngle.in(Degrees), algeaSubsystemConstants.maxAngle.in(Degrees));
 
 
-    this.config = new Config( Volts.of(0.02).per(Millisecond), Volts.of(2), Seconds.of(3));
+    this.config = new Config( Volts.of(0.01).per(Millisecond), Volts.of(0.5), Seconds.of(2));
     this.sysID = new SysIdRoutine(config,
      new SysIdRoutine.Mechanism(this::setVoltage,
     Log->{
