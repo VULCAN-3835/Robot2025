@@ -24,6 +24,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.hal.SimDevice.Direction;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -31,13 +32,11 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Direction;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ElevatorLevelScoreCMD;
 import frc.robot.commands.RestElevatorAndGripper;
 import frc.robot.commands.ShootingAlgeaCmd;
-import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -51,18 +50,19 @@ import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
-  // private final EndAccessorySubsystem endAccessorySubsystem = new
-  // EndAccessorySubsystem();
+
 
   private final AlgeaSubsystem algeaSubsystem = new AlgeaSubsystem();
 
-  ClimbSubsystem climbSubsystem;
-  // Replace with CommandPS4Controller or CommandJoystick if needed
+  private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
+
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
+
   private final EndAccessorySubsystem endAccessorySubsystem = new EndAccessorySubsystem();
 
   private final CommandXboxController xboxControllerDrive = new CommandXboxController(
       OperatorConstants.driverControllerPort);
+
   private final CommandXboxController buttonXboxController = new CommandXboxController(
       OperatorConstants.buttonControllerPort);
 
@@ -101,7 +101,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-
+    setUpContollers();
   }
 
   private void setUpContollers() {
@@ -129,10 +129,12 @@ public class RobotContainer {
     CommandXboxController cmdXboxController = new CommandXboxController(port);
 
     cmdXboxController.start().onTrue(new InstantCommand(() -> chassisSubsystem.zeroHeading()));
-    cmdXboxController.b().whileFalse(new ElevatorLevelIntake(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem));
+
+    cmdXboxController.b().whileTrue(new ElevatorLevelIntake(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem));
+    cmdXboxController.b().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
     
-    cmdXboxController.rightBumper().whileTrue(new InstantCommand(()-> setRight(port)));
-    cmdXboxController.leftBumper().whileTrue(new InstantCommand(()-> setLeft(port)));
+    cmdXboxController.rightBumper().whileTrue(new InstantCommand(()-> setRight(cmdXboxController)));
+    cmdXboxController.leftBumper().whileTrue(new InstantCommand(()-> setLeft(cmdXboxController)));
 
     cmdXboxController.a().whileTrue(new ClimbCMD(climbSubsystem));
     cmdXboxController.y().whileTrue(new CloseClimbCMD(climbSubsystem));
@@ -143,11 +145,35 @@ public class RobotContainer {
     cmdXboxController.rightTrigger().whileTrue(new ShootingAlgeaCmd(algeaSubsystem));
     cmdXboxController.rightTrigger().toggleOnFalse(new InstantCommand(()-> algeaSubsystem.setRestAngle()));
 
+  //// algea SysID
+  // start with reverse direction becuase gears are flipped
+  // xboxControllerDrive.a().whileTrue(alageaSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+  // xboxControllerDrive.b().whileTrue(alageaSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+  // xboxControllerDrive.y().whileTrue(alageaSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+  // xboxControllerDrive.x().whileTrue(alageaSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
 
+  // elevator SysID
+  // xboxControllerDrive.a().whileTrue(elevatorSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+  // xboxControllerDrive.b().whileTrue(elevatorSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+  // xboxControllerDrive.y().whileTrue(elevatorSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+  // xboxControllerDrive.x().whileTrue(elevatorSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+
+  // end accessory SysID
+  // xboxControllerDrive.a().whileTrue(endAccessorySubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+  // xboxControllerDrive.b().whileTrue(endAccessorySubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+  // xboxControllerDrive.y().whileTrue(endAccessorySubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+  // xboxControllerDrive.x().whileTrue(endAccessorySubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+
+  
+  // Chassis SysID
+  // xboxControllerDrive.a().whileTrue(chassisSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+  // xboxControllerDrive.b().whileTrue(chassisSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+  // xboxControllerDrive.y().whileTrue(chassisSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+  // xboxControllerDrive.x().whileTrue(chassisSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+  
   }
 
-  private void setRight(int port) {
-    CommandXboxController cmdXboxController = new CommandXboxController(port);
+  private void setRight(CommandXboxController cmdXboxController) {
 
     // scores the coral on the right side of the reef in L4
     cmdXboxController.povUp()
@@ -174,8 +200,7 @@ public class RobotContainer {
     cmdXboxController.povDown().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
   }
 
-  private void setLeft(int port) {
-    CommandXboxController cmdXboxController = new CommandXboxController(port);
+  private void setLeft(CommandXboxController cmdXboxController) {
 
     // scores the coral on the right side of the reef in L4
     cmdXboxController.povUp()
@@ -202,12 +227,7 @@ public class RobotContainer {
     cmdXboxController.povDown().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
   }
 
-  //// algea SysID
-  // start with reverse direction becuase gears are flipped
-  // xboxControllerDrive.a().whileTrue(alageaSubsystem.sysIdDynamic(Direction.kForward));
-  // xboxControllerDrive.b().whileTrue(alageaSubsystem.sysIdDynamic(Direction.kReverse));
-  // xboxControllerDrive.y().whileTrue(alageaSubsystem.sysIdQuasistatic(Direction.kForward));
-  // xboxControllerDrive.x().whileTrue(alageaSubsystem.sysIdQuasistatic(Direction.kReverse));
+
 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
