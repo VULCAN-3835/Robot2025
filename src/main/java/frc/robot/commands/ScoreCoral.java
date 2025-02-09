@@ -25,8 +25,6 @@ public class ScoreCoral extends SequentialCommandGroup {
 
       new WaitUntilCommand(() -> endAccessorySubsystem.isAtSetpoint()),
 
-      new WaitUntilCommand(() -> elevatorSubsystem.isAtSetHeight()),
-
       new CoralReleaseCommand(endAccessorySubsystem, dropingLevel),
 
       new InstantCommand(() -> endAccessorySubsystem.setAngle(DropAngles.restingAngle)),

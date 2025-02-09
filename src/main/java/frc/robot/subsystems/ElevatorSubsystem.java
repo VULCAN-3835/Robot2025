@@ -93,4 +93,9 @@ public class ElevatorSubsystem extends SubsystemBase {
 
      }
   }
+
+public Object isAtSetHeight() {
+    // TODO Auto-generated method stub
+    throw new UnsupportedOperationException("Unimplemented method 'isAtSetHeight'");
+}
 }

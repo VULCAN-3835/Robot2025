@@ -25,8 +25,6 @@ public class PrepareCollectCoralFromSource extends SequentialCommandGroup {
 
       new WaitUntilCommand(() -> endAccessorySubsystem.isAtSetpoint()),
 
-      new WaitUntilCommand(() -> elevatorSubsystem.isAtSetHeight()),
-
       new CoralCollectCommand(endAccessorySubsystem),
       
       new InstantCommand(() -> endAccessorySubsystem.setAngle(DropAngles.restingAngle)),
