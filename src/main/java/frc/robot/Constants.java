@@ -6,6 +6,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Centimeter;
 import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
@@ -252,7 +253,14 @@ public final class Constants {
     public static double kP = 0;
     public static double kI = 0;
     public static double kD = 0;
+
+    public static double kS = 0;
+    public static double kG = 0;
+    public static double kV = 0; 
+
     public static double restPower = 0;
+    public static double kMaxAcceleration = 0;
+    public static double kMaxVelocity = 0;
 
     // We'll need to know how much we get for every rotation, and use that number
     // here:
