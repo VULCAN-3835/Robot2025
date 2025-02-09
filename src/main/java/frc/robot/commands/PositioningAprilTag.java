@@ -36,9 +36,9 @@ public class PositioningAprilTag extends Command {
         addRequirements(chassisSubsystem);
 
         // TODO: change pid values to actual values
-        double xKp = 0, xKi = 0, xKd = 0;
-        double yKp = 0, yKi = 0, yKd = 0;
-        double rotKp = 0, rotKi = 0, rotKd = 0;
+        double xKp = 5, xKi = 0, xKd = 0;
+        double yKp = 5, yKi = 0, yKd = 0;
+        double rotKp = 5, rotKi = 0, rotKd = 0;
         double maxVelocity = 2.0, maxAcceleration = 2.0;
 
         this.controller = new HolonomicDriveController(
@@ -50,6 +50,10 @@ public class PositioningAprilTag extends Command {
 
     @Override
     public void initialize() {
+        
+        //the distance that the robot goes left or right to score on the coral
+        double leftOrRightDistanceInMeters = 1;
+
         startTime = Timer.getFPGATimestamp();
         int ID = chassisSubsystem.getCamera().getID();
 
@@ -64,9 +68,9 @@ public class PositioningAprilTag extends Command {
             // left or right of the tag
             Pose2d targetPose = new Pose2d(
                     tagPose.getX() - tagPose.getRotation().getCos()
-                            + (isMovingRight ? -1 : 1) * tagPose.getRotation().getSin(),
+                            + (isMovingRight ? -leftOrRightDistanceInMeters : leftOrRightDistanceInMeters) * tagPose.getRotation().getSin(),
                     tagPose.getY() - tagPose.getRotation().getSin()
-                            + (isMovingRight ? 1 : -1) * tagPose.getRotation().getCos(),
+                            + (isMovingRight ? leftOrRightDistanceInMeters : -leftOrRightDistanceInMeters) * tagPose.getRotation().getCos(),
                     tagPose.getRotation());
 
             TrajectoryConfig config = new TrajectoryConfig(2.0, 2.0);

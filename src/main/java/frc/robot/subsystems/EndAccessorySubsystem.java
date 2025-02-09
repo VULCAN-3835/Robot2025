@@ -39,7 +39,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
     private DutyCycleEncoder angleEncoder;
     private AnalogInput pieceDetector;
 
-    private Timer timer = new Timer();
+    private Timer timer;
 
     private PIDController pidController;
     private ProfiledPIDController profiledPIDController;
@@ -51,6 +51,8 @@ public class EndAccessorySubsystem extends SubsystemBase {
     public EndAccessorySubsystem() {
         this.angleMotor = new TalonFX(EndAccessoryConstants.angleMotorID);
         this.powerMotor = new TalonFX(EndAccessoryConstants.powerMotorID);
+
+        this.timer = new Timer();
 
         this.angleEncoder = new DutyCycleEncoder(EndAccessoryConstants.angleEncoderID);
         this.pieceDetector = new AnalogInput(EndAccessoryConstants.pieceDetectorID);

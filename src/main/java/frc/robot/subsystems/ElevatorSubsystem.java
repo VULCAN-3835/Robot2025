@@ -96,8 +96,6 @@ public class ElevatorSubsystem extends SubsystemBase {
     elevatorMotorRight.setVoltage(-volts.in(Volts));
   }
 
-
-
   public void setLevel(ElevatorStates state) {
     double setPoint = ElevatorConstant.enumDistance(state).in(Centimeter);
 
@@ -111,7 +109,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   }
 
-  // current height.
+  // current height
   public Measure<DistanceUnit> getDistance() {
     Angle angle1= (this.elevatorMotorLeft.getPosition().getValue());
     Angle angle2 = (this.elevatorMotorRight.getPosition().getValue());

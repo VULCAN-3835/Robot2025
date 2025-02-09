@@ -19,6 +19,7 @@ public class CloseClimbCMD extends SequentialCommandGroup {
   public CloseClimbCMD(ClimbSubsystem climbSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
+    addRequirements(climbSubsystem);
     addCommands(
       //1. set the motor to the close motor speed
       new InstantCommand(()-> climbSubsystem.setMotor(ClimbSubsystemConstants.closeClimbMotorPower)),

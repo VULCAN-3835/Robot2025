@@ -24,7 +24,6 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.hal.SimDevice.Direction;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
@@ -76,6 +75,8 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
 
     autoChooser.setDefaultOption("EMPTY", null);
+
+
     SmartDashboard.putData("Auto Chooser", autoChooser);
     NamedCommands.registerCommand("score L4 left", new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem,
         endAccessorySubsystem, ElevatorStates.coralL4, DropAngles.setDropAngleL4, false, false));
@@ -145,7 +146,7 @@ public class RobotContainer {
     cmdXboxController.rightTrigger().whileTrue(new ShootingAlgeaCmd(algeaSubsystem));
     cmdXboxController.rightTrigger().toggleOnFalse(new InstantCommand(()-> algeaSubsystem.setRestAngle()));
 
-  //// algea SysID
+  // algea SysID
   // start with reverse direction becuase gears are flipped
   // xboxControllerDrive.a().whileTrue(alageaSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
   // xboxControllerDrive.b().whileTrue(alageaSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
@@ -170,7 +171,7 @@ public class RobotContainer {
   // xboxControllerDrive.b().whileTrue(chassisSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
   // xboxControllerDrive.y().whileTrue(chassisSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
   // xboxControllerDrive.x().whileTrue(chassisSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-  
+
   }
 
   private void setRight(CommandXboxController cmdXboxController) {
