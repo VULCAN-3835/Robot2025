@@ -33,15 +33,14 @@ import frc.robot.Util.ElevatorStates;
 
 public class ElevatorSubsystem extends SubsystemBase {
   /** Creates a new ElevatorSubsystem. */
-  private final TalonFX ElevatorMotorRight;
-  private final TalonFX ElevatorMotorLeft;
+  private final TalonFX ElevatorMotor;
   private final DigitalInput closeLimitSwitch;
   private ProfiledPIDController profilePIDController;
   private ElevatorFeedforward elevatorFeedforward;
   
     public ElevatorSubsystem() {
-      this.ElevatorMotorLeft = new TalonFX(ElevatorConstant.motorLeftID); 
-      this.ElevatorMotorRight = new TalonFX(ElevatorConstant.motorRightID);
+     
+      this.ElevatorMotor = new TalonFX(ElevatorConstant.motorID);
       this.closeLimitSwitch = new DigitalInput(ElevatorConstant.limitSwitchID);
       this.profilePIDController = new ProfiledPIDController(ElevatorConstant.kP, ElevatorConstant.kI, ElevatorConstant.kD, new TrapezoidProfile.Constraints(5, 10));
       profilePIDController.setGoal(0);
@@ -55,8 +54,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   }
   public void setPower(double power){
-    ElevatorMotorLeft.set(power);
-    ElevatorMotorRight.set(-power);
+    ElevatorMotor.set(power);
 
    // ElevatorMotorLeft.setVoltage(
       //m_controller.calculate(m_encoder.getDistance())
@@ -66,10 +64,8 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   // current height.
   public Measure<DistanceUnit> getDistance() {
-    Angle angle1= (this.ElevatorMotorLeft.getPosition().getValue());
-    Angle angle2 = (this.ElevatorMotorRight.getPosition().getValue());
-    Angle avg = angle1.minus(angle2).div(2);
-    return ElevatorConstant.distancePerRotation.timesDivisor(avg);
+    Angle angle = (this.ElevatorMotor.getPosition().getValue());
+    return ElevatorConstant.distancePerRotation.timesDivisor(angle);
   }
 
   public void setRest() {
