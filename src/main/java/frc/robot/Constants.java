@@ -69,15 +69,11 @@ public final class Constants {
 
     public static final double waitTime = 0;
 
-    public static final double kP = 0;
-    public static final double kI = 0;
-    public static final double kD = 0;
-
     public static final double ProfiledkP = 0;
     public static final double profiledkI = 0;
     public static final double profiledkD = 0;
 
-    public static final double armAngleTolerence = 0;
+    public static final Angle armAngleTolerence = Degrees.of(0);
   }
   public static class algeaSubsystemConstants{
 
@@ -256,7 +252,10 @@ public final class Constants {
 
   public static class ElevatorConstant {
 
-    public static final Distance coralL1 = Centimeter.of(0); // I will add the real measurments later on
+
+    //TODO: change values after measuring them
+
+    public static final Distance coralL1 = Centimeter.of(0);
     public static final Distance coralL2 = Centimeter.of(0);
     public static final Distance coralL3 = Centimeter.of(0);
     public static final Distance coralL4 = Centimeter.of(0);

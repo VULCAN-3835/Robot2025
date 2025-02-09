@@ -66,6 +66,7 @@ public class PositioningAprilTag extends Command {
 
             // Generate a trajectory to move 1 meter in front of the tag and 1 meter to the
             // left or right of the tag
+            
             Pose2d targetPose = new Pose2d(
                     tagPose.getX() - tagPose.getRotation().getCos()
                             + (isMovingRight ? -leftOrRightDistanceInMeters : leftOrRightDistanceInMeters) * tagPose.getRotation().getSin(),

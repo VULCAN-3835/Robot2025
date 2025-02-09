@@ -41,10 +41,10 @@ public class EndAccessorySubsystem extends SubsystemBase {
 
     private Timer timer;
 
-    private PIDController pidController;
     private ProfiledPIDController profiledPIDController;
     private Constraints constraints;
 
+    // the SysID routine
     private SysIdRoutine sysIdRoutine;
     private Config config;
 
@@ -57,14 +57,12 @@ public class EndAccessorySubsystem extends SubsystemBase {
         this.angleEncoder = new DutyCycleEncoder(EndAccessoryConstants.angleEncoderID);
         this.pieceDetector = new AnalogInput(EndAccessoryConstants.pieceDetectorID);
 
-        this.pidController = new PIDController(EndAccessoryConstants.kP, EndAccessoryConstants.kI,
-                EndAccessoryConstants.kD);
-
         this.constraints = new Constraints(EndAccessoryConstants.maxVelocity, EndAccessoryConstants.maxAcceleration);
         this.profiledPIDController = new ProfiledPIDController(EndAccessoryConstants.ProfiledkP,
                 EndAccessoryConstants.profiledkI,
                 EndAccessoryConstants.profiledkD, constraints);
 
+        // the SysID configs, for explanation on it go to the elevator subsystem in lines 77-79
         this.config = new Config(Volts.of(0.02).per(Millisecond), Volts.of(2), Seconds.of(3));
         this.sysIdRoutine = new SysIdRoutine(config,
             new SysIdRoutine.Mechanism(this::setVoltage,
@@ -75,20 +73,23 @@ public class EndAccessorySubsystem extends SubsystemBase {
                     },
             this));
 
-        pidController.setTolerance(EndAccessoryConstants.armAngleTolerence);
-        profiledPIDController.setTolerance(EndAccessoryConstants.armAngleTolerence);
+        profiledPIDController.setTolerance(EndAccessoryConstants.armAngleTolerence.in(Degree));
     }
 
     private void setVoltage(Voltage volts) {
         angleMotor.setVoltage(volts.in(Volts));
     }
 
+    //sysID command for the quasistatic tests
     public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
         return this.sysIdRoutine.quasistatic(direction);
     }
+
+    //sysID command for the Dynamic tests
     public Command sysIdDynamic(SysIdRoutine.Direction direction) {
       return this.sysIdRoutine.dynamic(direction);
     }
+
     public enum DropAngles {
         setDropAngleL1, setDropAngleL2, setDropAngleL3, setDropAngleL4, restingAngle, intakeAngle;
     }
@@ -117,27 +118,21 @@ public class EndAccessorySubsystem extends SubsystemBase {
     public void setAngle(DropAngles dropingLevel) {
         switch (dropingLevel) {
             case setDropAngleL1:
-                pidController.setSetpoint(EndAccessoryConstants.targetDropAngleL1.in(Degree));
                 profiledPIDController.setGoal(EndAccessoryConstants.targetDropAngleL1.in(Degree));
                 break;
             case setDropAngleL2:
-                pidController.setSetpoint(EndAccessoryConstants.targetDropAngleL2.in(Degree));
                 profiledPIDController.setGoal(EndAccessoryConstants.targetDropAngleL2.in(Degree));
                 break;
             case setDropAngleL3:
-                pidController.setSetpoint(EndAccessoryConstants.targetDropAngleL3.in(Degree));
                 profiledPIDController.setGoal(EndAccessoryConstants.targetDropAngleL3.in(Degree));
                 break;
             case setDropAngleL4:
-                pidController.setSetpoint(EndAccessoryConstants.targetDropAngleL4.in(Degree));
                 profiledPIDController.setGoal(EndAccessoryConstants.targetDropAngleL4.in(Degree));
                 break;
             case restingAngle:
-                pidController.setSetpoint(EndAccessoryConstants.targetAngleRest.in(Degree));
                 profiledPIDController.setGoal(EndAccessoryConstants.targetAngleRest.in(Degree));
                 break;
             case intakeAngle:
-                pidController.setSetpoint(EndAccessoryConstants.targetIntakeAngle.in(Degree));
                 profiledPIDController.setGoal(EndAccessoryConstants.targetIntakeAngle.in(Degree));
         }
     }
@@ -152,22 +147,27 @@ public class EndAccessorySubsystem extends SubsystemBase {
     }
 
     public boolean isAtSetpoint() {
-        return pidController.atSetpoint() && profiledPIDController.atGoal();
+        return Degrees.of(profiledPIDController.getSetpoint().position).minus(getAngle()).abs(Degrees) < EndAccessoryConstants.armAngleTolerence.in(Degrees); 
     }
+
+    // end accessory SysID to use this paste it in the configureXboxBinding method in robot container
+    // xboxControllerDrive.a().whileTrue(endAccessorySubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    // xboxControllerDrive.b().whileTrue(endAccessorySubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    // xboxControllerDrive.y().whileTrue(endAccessorySubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    // xboxControllerDrive.x().whileTrue(endAccessorySubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+
 
     @Override
     public void periodic() {
 
-        double pidOutput = pidController.calculate(getAngle().in(Degrees));
         double profiledPIDOutput = profiledPIDController.calculate(getAngle().in(Degrees));
-        double motorOutput = pidOutput + profiledPIDOutput;
 
-        if (getAngle().in(Degree) < EndAccessoryConstants.kLowestAngle.in(Degree) && motorOutput < 0) {
+        if (getAngle().in(Degree) < EndAccessoryConstants.kLowestAngle.in(Degree) && profiledPIDOutput < 0) {
             angleMotor.set(0);
-        } else if (getAngle().in(Degree) > EndAccessoryConstants.kHighestAngle.in(Degree) && motorOutput > 0) {
+        } else if (getAngle().in(Degree) > EndAccessoryConstants.kHighestAngle.in(Degree) && profiledPIDOutput > 0) {
             angleMotor.set(0);
         } else {
-            angleMotor.set(motorOutput);
+            angleMotor.set(profiledPIDOutput);
         }
 
         if (hasPiece()) {
@@ -182,8 +182,8 @@ public class EndAccessorySubsystem extends SubsystemBase {
             timer.reset();
         }
 
-        SmartDashboard.putNumber("end current angle", getAngle().in(Degrees));
-        SmartDashboard.putBoolean("end has piece?", hasPiece());
-        SmartDashboard.putNumber("infrared end value", pieceDetector.getVoltage());
+        SmartDashboard.putNumber("EndAccessory Subsystem/end current angle", getAngle().in(Degrees));
+        SmartDashboard.putBoolean("EndAccessory Subsystem/end has piece?", hasPiece());
+        SmartDashboard.putNumber("EndAccessory Subsystem/infrared end value", pieceDetector.getVoltage());
     }
 }

@@ -384,6 +384,12 @@ public class ChassisSubsystem extends SubsystemBase {
     }
   }
 
+    // Chassis SysID to use this paste it in the configureXboxBinding method in robotContainer
+  // xboxControllerDrive.a().whileTrue(chassisSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+  // xboxControllerDrive.b().whileTrue(chassisSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+  // xboxControllerDrive.y().whileTrue(chassisSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+  // xboxControllerDrive.x().whileTrue(chassisSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+
   @Override
   public void periodic() {
     setModuleStates(this.swerveModuleStates);
@@ -398,38 +404,37 @@ public class ChassisSubsystem extends SubsystemBase {
     this.field.setRobotPose(this.poseEstimator.getEstimatedPosition());
     this.atField.setRobotPose(this.atCam.getPoseFromCamera());
 
-    SmartDashboard.putNumber("Gyro Heading", getHeading());
+    SmartDashboard.putNumber("ChassisSubsystem/Gyro Heading", getHeading());
 
-    SmartDashboard.putNumber("Left Front Distance",this.swerve_modules[Wheels.LEFT_FRONT.ordinal()].getPosition().distanceMeters);
-    SmartDashboard.putNumber("Left Back Distance",this.swerve_modules[Wheels.LEFT_BACK.ordinal()].getPosition().distanceMeters);
-    SmartDashboard.putNumber("Right Front Distance",this.swerve_modules[Wheels.RIGHT_FRONT.ordinal()].getPosition().distanceMeters);
-    SmartDashboard.putNumber("Right Back Distance",this.swerve_modules[Wheels.RIGHT_BACK.ordinal()].getPosition().distanceMeters);
+    SmartDashboard.putNumber("ChassisSubsystem/Left Front Distance",this.swerve_modules[Wheels.LEFT_FRONT.ordinal()].getPosition().distanceMeters);
+    SmartDashboard.putNumber("ChassisSubsystem/Left Back Distance",this.swerve_modules[Wheels.LEFT_BACK.ordinal()].getPosition().distanceMeters);
+    SmartDashboard.putNumber("ChassisSubsystem/Right Front Distance",this.swerve_modules[Wheels.RIGHT_FRONT.ordinal()].getPosition().distanceMeters);
+    SmartDashboard.putNumber("ChassisSubsystem/Right Back Distance",this.swerve_modules[Wheels.RIGHT_BACK.ordinal()].getPosition().distanceMeters);
 
-    SmartDashboard.putNumber("Left Front Rotation",this.swerve_modules[Wheels.LEFT_FRONT.ordinal()].getPosition().angle.getRotations());
-    SmartDashboard.putNumber("Left Back Rotation",this.swerve_modules[Wheels.LEFT_BACK.ordinal()].getPosition().angle.getRotations());
-    SmartDashboard.putNumber("Right Front Rotation",this.swerve_modules[Wheels.RIGHT_FRONT.ordinal()].getPosition().angle.getRotations());
-    SmartDashboard.putNumber("Right Back Rotation",this.swerve_modules[Wheels.RIGHT_BACK.ordinal()].getPosition().angle.getRotations());
+    SmartDashboard.putNumber("ChassisSubsystem/Left Front Rotation",this.swerve_modules[Wheels.LEFT_FRONT.ordinal()].getPosition().angle.getRotations());
+    SmartDashboard.putNumber("ChassisSubsystem/Left Back Rotation",this.swerve_modules[Wheels.LEFT_BACK.ordinal()].getPosition().angle.getRotations());
+    SmartDashboard.putNumber("ChassisSubsystem/Right Front Rotation",this.swerve_modules[Wheels.RIGHT_FRONT.ordinal()].getPosition().angle.getRotations());
+    SmartDashboard.putNumber("ChassisSubsystem/Right Back Rotation",this.swerve_modules[Wheels.RIGHT_BACK.ordinal()].getPosition().angle.getRotations());
 
-    SmartDashboard.putNumber("Left Front Rotation Error",this.swerve_modules[Wheels.LEFT_FRONT.ordinal()].getModuleAngleError());
-    SmartDashboard.putNumber("Left Back Rotation Error",this.swerve_modules[Wheels.LEFT_BACK.ordinal()].getModuleAngleError());
-    SmartDashboard.putNumber("Right Front Rotation Error",this.swerve_modules[Wheels.RIGHT_FRONT.ordinal()].getModuleAngleError());
-    SmartDashboard.putNumber("Right Back Rotation Error",this.swerve_modules[Wheels.RIGHT_BACK.ordinal()].getModuleAngleError());
+    SmartDashboard.putNumber("ChassisSubsystem/Left Front Rotation Error",this.swerve_modules[Wheels.LEFT_FRONT.ordinal()].getModuleAngleError());
+    SmartDashboard.putNumber("ChassisSubsystem/Left Back Rotation Error",this.swerve_modules[Wheels.LEFT_BACK.ordinal()].getModuleAngleError());
+    SmartDashboard.putNumber("ChassisSubsystem/Right Front Rotation Error",this.swerve_modules[Wheels.RIGHT_FRONT.ordinal()].getModuleAngleError());
+    SmartDashboard.putNumber("ChassisSubsystem/Right Back Rotation Error",this.swerve_modules[Wheels.RIGHT_BACK.ordinal()].getModuleAngleError());
 
-    SmartDashboard.putNumber("Left Front Rotation Output",this.swerve_modules[Wheels.LEFT_FRONT.ordinal()].getModuleClosedLoopOutput());
-    SmartDashboard.putNumber("Left Back Rotation Output",this.swerve_modules[Wheels.LEFT_BACK.ordinal()].getModuleClosedLoopOutput());
-    SmartDashboard.putNumber("Right Front Rotation Output",this.swerve_modules[Wheels.RIGHT_FRONT.ordinal()].getModuleClosedLoopOutput());
-    SmartDashboard.putNumber("Right Back Rotation Output",this.swerve_modules[Wheels.RIGHT_BACK.ordinal()].getModuleClosedLoopOutput());
+    SmartDashboard.putNumber("ChassisSubsystem/Left Front Rotation Output",this.swerve_modules[Wheels.LEFT_FRONT.ordinal()].getModuleClosedLoopOutput());
+    SmartDashboard.putNumber("ChassisSubsystem/Left Back Rotation Output",this.swerve_modules[Wheels.LEFT_BACK.ordinal()].getModuleClosedLoopOutput());
+    SmartDashboard.putNumber("ChassisSubsystem/Right Front Rotation Output",this.swerve_modules[Wheels.RIGHT_FRONT.ordinal()].getModuleClosedLoopOutput());
+    SmartDashboard.putNumber("ChassisSubsystem/Right Back Rotation Output",this.swerve_modules[Wheels.RIGHT_BACK.ordinal()].getModuleClosedLoopOutput());
   
-    SmartDashboard.putNumber("Left Front Drive Velocity", swerve_modules[Wheels.LEFT_FRONT.ordinal()].getVelocity());
-    SmartDashboard.putNumber("Left Back Drive Velocity", swerve_modules[Wheels.LEFT_BACK.ordinal()].getVelocity());
-    SmartDashboard.putNumber("Right Front Drive Velocity", swerve_modules[Wheels.RIGHT_FRONT.ordinal()].getVelocity());
-    SmartDashboard.putNumber("Right Back Drive Velocity", swerve_modules[Wheels.RIGHT_BACK.ordinal()].getVelocity());
+    SmartDashboard.putNumber("ChassisSubsystem/Left Front Drive Velocity", swerve_modules[Wheels.LEFT_FRONT.ordinal()].getVelocity());
+    SmartDashboard.putNumber("ChassisSubsystem/Left Back Drive Velocity", swerve_modules[Wheels.LEFT_BACK.ordinal()].getVelocity());
+    SmartDashboard.putNumber("ChassisSubsystem/Right Front Drive Velocity", swerve_modules[Wheels.RIGHT_FRONT.ordinal()].getVelocity());
+    SmartDashboard.putNumber("ChassisSubsystem/Right Back Drive Velocity", swerve_modules[Wheels.RIGHT_BACK.ordinal()].getVelocity());
 
-    SmartDashboard.putNumber("Left Front Drive Output", swerve_modules[Wheels.LEFT_FRONT.ordinal()].getModuleDriveOutput());
-    SmartDashboard.putNumber("Left Back Drive Output", swerve_modules[Wheels.LEFT_BACK.ordinal()].getModuleDriveOutput());
-    SmartDashboard.putNumber("Right Front Drive Output", swerve_modules[Wheels.RIGHT_FRONT.ordinal()].getModuleDriveOutput());
-    SmartDashboard.putNumber("Right Back Drive Output", swerve_modules[Wheels.RIGHT_BACK.ordinal()].getModuleDriveOutput());
+    SmartDashboard.putNumber("ChassisSubsystem/Left Front Drive Output", swerve_modules[Wheels.LEFT_FRONT.ordinal()].getModuleDriveOutput());
+    SmartDashboard.putNumber("ChassisSubsystem/Left Back Drive Output", swerve_modules[Wheels.LEFT_BACK.ordinal()].getModuleDriveOutput());
+    SmartDashboard.putNumber("ChassisSubsystem/Right Front Drive Output", swerve_modules[Wheels.RIGHT_FRONT.ordinal()].getModuleDriveOutput());
+    SmartDashboard.putNumber("ChassisSubsystem/Right Back Drive Output", swerve_modules[Wheels.RIGHT_BACK.ordinal()].getModuleDriveOutput());
 
-    // SmartDashboard.putNumber("tid", this.atCam.getAprilTagID());
   }
 }

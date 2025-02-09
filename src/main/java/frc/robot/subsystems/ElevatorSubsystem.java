@@ -48,8 +48,10 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final ElevatorFeedforward elevatorFeedforward;
   private final ProfiledPIDController profiledPIDController;
   private final Constraints constraints;
+
+  //the sysID objects
   private final SysIdRoutine sysIdRoutine;
-  private Config config;
+  private final Config config;
 
   private final double maxVelocity = 2;
   private final double maxAcceleration = 4;
@@ -72,8 +74,10 @@ public class ElevatorSubsystem extends SubsystemBase {
      ElevatorConstant.ProfiledkD, constraints);
     this.trapezoidProfile = new TrapezoidProfile(constraints);
 
+    //SysID configs: the first param is how mach volts will it go up in how much time,
+    //seconds one is how much for the quastatics tests and
+    //the third one is how many seconds to finish for safety
     this.config = new Config( Volts.of(0.05).per(Millisecond), Volts.of(3), Seconds.of(3));
-    
     this.sysIdRoutine = new SysIdRoutine(config,
      new SysIdRoutine.Mechanism(this::setVoltage,
       Log->{
@@ -84,9 +88,11 @@ public class ElevatorSubsystem extends SubsystemBase {
     }, this));
   }
 
+  //SysID command for quasistatics tests
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
   return this.sysIdRoutine.quasistatic(direction);
   }
+  //SysID command for dynamic tests
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return this.sysIdRoutine.dynamic(direction);
   }
@@ -128,6 +134,13 @@ public class ElevatorSubsystem extends SubsystemBase {
       return new InstantCommand(() -> this.setLevel(elevatorStates));
   }
 
+  
+  // elevator SysID to use this add this in the configureXboxBinding method in the robotContainter
+  // xboxControllerDrive.a().whileTrue(elevatorSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+  // xboxControllerDrive.b().whileTrue(elevatorSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+  // xboxControllerDrive.y().whileTrue(elevatorSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+  // xboxControllerDrive.x().whileTrue(elevatorSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+
   @Override
   public void periodic() {
 
@@ -158,8 +171,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     if (getCloseLimitSwitch()) {
       currentPosition = 0;
     }
-    SmartDashboard.putNumber("distance of elevator", currentPosition);
-    SmartDashboard.putBoolean("low limit switch pressed", getCloseLimitSwitch());
+    SmartDashboard.putNumber("ElevatorSubsystem/distance of elevator", currentPosition);
+    SmartDashboard.putBoolean("ElevatorSubsystem/low limit switch pressed", getCloseLimitSwitch());
 
   }
 }

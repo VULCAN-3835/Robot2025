@@ -50,6 +50,8 @@ public class AlgeaSubsystem extends SubsystemBase {
 
   private final double maxVelocity = 0;
   private final double maxAcceleration = 0;
+
+  //SysID objects
   private final Config config;
   private final SysIdRoutine sysID;
 
@@ -73,7 +75,7 @@ public class AlgeaSubsystem extends SubsystemBase {
 
     angleEncoder.setDutyCycleRange(algeaSubsystemConstants.minAngle.in(Degrees), algeaSubsystemConstants.maxAngle.in(Degrees));
 
-
+    //the SysID configs, for explenation go to elevator subsystem in lines 77-79
     this.config = new Config( Volts.of(0.01).per(Millisecond), Volts.of(0.5), Seconds.of(2));
     this.sysID = new SysIdRoutine(config,
      new SysIdRoutine.Mechanism(this::setVoltage,
@@ -85,12 +87,17 @@ public class AlgeaSubsystem extends SubsystemBase {
      this));
   }
 
+  //SysID Quasistatics tests commands
   public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
     return this.sysID.quasistatic(direction);
   }
+
+  //SysID dynamic tests commands
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return this.sysID.dynamic(direction);
   }
+
+
   public void setVoltage(Voltage volts){
     angleMotor.setVoltage(volts.in(Volts));
   }
@@ -174,6 +181,13 @@ public class AlgeaSubsystem extends SubsystemBase {
     setPower(algeaSubsystemConstants.shootingPower);
   }
 
+  // algea SysID to use this paste it in the configureXboxBinding method in robot container
+  // start with reverse direction becuase gears are flipped
+  // xboxControllerDrive.a().whileTrue(alageaSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+  // xboxControllerDrive.b().whileTrue(alageaSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+  // xboxControllerDrive.y().whileTrue(alageaSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+  // xboxControllerDrive.x().whileTrue(alageaSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
+
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
@@ -184,10 +198,10 @@ public class AlgeaSubsystem extends SubsystemBase {
 
     double power = pidOutput + profiledPIDOutput;
 
-    SmartDashboard.putNumber("algea intake encoder", getAngle().in(Degrees));
-    SmartDashboard.putBoolean("algea intake limit Switch", getLowLimitSwitch());
-    SmartDashboard.putNumber("piece detector value", ballDetector.getVoltage());
-    SmartDashboard.putBoolean("has ball?", hasBall());
+    SmartDashboard.putNumber("AlgeaSubsystem/algea intake encoder", getAngle().in(Degrees));
+    SmartDashboard.putBoolean("AlgeaSubsystem/algea intake limit Switch", getLowLimitSwitch());
+    SmartDashboard.putNumber("AlgeaSubsystem/piece detector value", ballDetector.getVoltage());
+    SmartDashboard.putBoolean("AlgeaSubsystem/has ball?", hasBall());
 
 
     if (getLowLimitSwitch() && power > 0) {

@@ -112,9 +112,9 @@ public class RobotContainer {
           () -> -xboxControllerDrive.getLeftX(),
           () -> -xboxControllerDrive.getRightX()));
 
-      configureXboxBinding(OperatorConstants.driverControllerPort);
+      configureXboxBinding(xboxControllerDrive);
       if (xboxControllerDrive.isConnected() && buttonXboxController.isConnected()) {
-        configureXboxBinding(OperatorConstants.buttonControllerPort);
+        configureXboxBinding(buttonXboxController);
       }
     } else {
       this.chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(this.chassisSubsystem,
@@ -122,20 +122,22 @@ public class RobotContainer {
           () -> -xboxControllerDrive.getLeftX(),
           () -> -xboxControllerDrive.getRightX()));
 
-      configureXboxBinding(OperatorConstants.buttonControllerPort);
+      configureXboxBinding(buttonXboxController);
     }
   }
 
-  private void configureXboxBinding(int port) {
-    CommandXboxController cmdXboxController = new CommandXboxController(port);
+  private void configureXboxBinding(CommandXboxController cmdXboxController) {
 
     cmdXboxController.start().onTrue(new InstantCommand(() -> chassisSubsystem.zeroHeading()));
 
     cmdXboxController.b().whileTrue(new ElevatorLevelIntake(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem));
     cmdXboxController.b().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
+
+    
     
     cmdXboxController.rightBumper().whileTrue(new InstantCommand(()-> setRight(cmdXboxController)));
     cmdXboxController.leftBumper().whileTrue(new InstantCommand(()-> setLeft(cmdXboxController)));
+
 
     cmdXboxController.a().whileTrue(new ClimbCMD(climbSubsystem));
     cmdXboxController.y().whileTrue(new CloseClimbCMD(climbSubsystem));
@@ -145,32 +147,6 @@ public class RobotContainer {
 
     cmdXboxController.rightTrigger().whileTrue(new ShootingAlgeaCmd(algeaSubsystem));
     cmdXboxController.rightTrigger().toggleOnFalse(new InstantCommand(()-> algeaSubsystem.setRestAngle()));
-
-  // algea SysID
-  // start with reverse direction becuase gears are flipped
-  // xboxControllerDrive.a().whileTrue(alageaSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
-  // xboxControllerDrive.b().whileTrue(alageaSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-  // xboxControllerDrive.y().whileTrue(alageaSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-  // xboxControllerDrive.x().whileTrue(alageaSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-
-  // elevator SysID
-  // xboxControllerDrive.a().whileTrue(elevatorSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
-  // xboxControllerDrive.b().whileTrue(elevatorSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-  // xboxControllerDrive.y().whileTrue(elevatorSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-  // xboxControllerDrive.x().whileTrue(elevatorSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-
-  // end accessory SysID
-  // xboxControllerDrive.a().whileTrue(endAccessorySubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
-  // xboxControllerDrive.b().whileTrue(endAccessorySubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-  // xboxControllerDrive.y().whileTrue(endAccessorySubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-  // xboxControllerDrive.x().whileTrue(endAccessorySubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-
-  
-  // Chassis SysID
-  // xboxControllerDrive.a().whileTrue(chassisSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
-  // xboxControllerDrive.b().whileTrue(chassisSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-  // xboxControllerDrive.y().whileTrue(chassisSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-  // xboxControllerDrive.x().whileTrue(chassisSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
 
   }
 
