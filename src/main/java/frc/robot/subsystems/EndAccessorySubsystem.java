@@ -47,7 +47,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
         angleEncoder = new DutyCycleEncoder(EndAccessorySubsystemConstants.angleEncoderID);
         pieceDetector = new AnalogInput(EndAccessorySubsystemConstants.pieceDetectorID);
 
-        pidController = new PIDController(EndAccessorySubsystemConstants.kP, 0, EndAccessorySubsystemConstants.kD);
+        pidController = new PIDController(EndAccessorySubsystemConstants.kP, EndAccessorySubsystemConstants.KI, EndAccessorySubsystemConstants.kD);
         pidController.setTolerance(EndAccessorySubsystemConstants.armAngleTolerence);
     }
 
@@ -129,6 +129,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
     SmartDashboard.putNumber("EndAccessorySubject/PID Setpoint", pidController.getSetpoint());
     SmartDashboard.putNumber("EndAccessorySubject/PID kp", EndAccessorySubsystemConstants.kP);
     SmartDashboard.putNumber("EndAccessorySubject/PID kd", EndAccessorySubsystemConstants.kD);
+    SmartDashboard.putNumber("EndAccessorySubject/PID ki", EndAccessorySubsystemConstants.kI);
     SmartDashboard.putBoolean("EndAccessorySubject/Is at set point", isAtSetpoint());
     SmartDashboard.putBoolean("EndAccessorySubject/Is gripper stop", powerMotor.get() == 0);
     SmartDashboard.putBoolean("EndAccessorySubject/Gripper intake active", powerMotor.get() == EndAccessorySubsystemConstants.kMotorSpeed);
