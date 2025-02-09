@@ -46,8 +46,8 @@ public class ClimbSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    if (getLimitswitch() && climbMotor.get() < 0) {
-      setMotor(0);
-    }
+    // if (getLimitswitch() && climbMotor.get() < 0) {
+    //   setMotor(0);
+    // }
   }
 }
