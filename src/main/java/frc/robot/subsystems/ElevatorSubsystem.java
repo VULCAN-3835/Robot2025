@@ -50,7 +50,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void setRest() {
-    pidController.setSetpoint(ElevatorConstant.restDistance.in(Centimeter));
+    this.setLevel(ElevatorStates.rest);
   }
 
   public boolean getCloseLimitSwitch() {
