@@ -86,9 +86,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    ElevatorMotorLeft.set(profilePIDController.calculate(getDistance().in(Meter)) + elevatorFeedforward.calculate(profilePIDController.getSetpoint().velocity));
-
-     double power = profilePIDController.calculate(getDistance().in(Centimeter));
+     double power = profilePIDController.calculate(getDistance().in(Centimeter))+ elevatorFeedforward.calculate(profilePIDController.getSetpoint().velocity);
      if (getCloseLimitSwitch() && power < 0) {
       setPower(0);
      } else {
