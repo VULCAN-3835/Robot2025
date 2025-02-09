@@ -7,8 +7,6 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Centimeter;
 import static edu.wpi.first.units.Units.Meter;
 
-
-
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
@@ -21,6 +19,9 @@ import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.VelocityUnit;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Velocity;
@@ -28,6 +29,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.ElevatorConstant;
 import frc.robot.Util.ElevatorStates;
 
@@ -36,21 +38,23 @@ public class ElevatorSubsystem extends SubsystemBase {
   private final TalonFX ElevatorMotorRight;
   private final TalonFX ElevatorMotorLeft;
   private final DigitalInput closeLimitSwitch;
+  private Distance disSetLevel;
   private ProfiledPIDController profilePIDController;
   private ElevatorFeedforward elevatorFeedforward;
   
-    public ElevatorSubsystem() {
-      this.ElevatorMotorLeft = new TalonFX(ElevatorConstant.motorLeftID); 
-      this.ElevatorMotorRight = new TalonFX(ElevatorConstant.motorRightID);
-      this.closeLimitSwitch = new DigitalInput(ElevatorConstant.limitSwitchID);
-      this.profilePIDController = new ProfiledPIDController(ElevatorConstant.kP, ElevatorConstant.kI, ElevatorConstant.kD, new TrapezoidProfile.Constraints(5, 10));
+
+  public ElevatorSubsystem() {
+    this.ElevatorMotorLeft = new TalonFX(ElevatorConstant.motorLeftID); 
+    this.ElevatorMotorRight = new TalonFX(ElevatorConstant.motorRightID);
+    this.closeLimitSwitch = new DigitalInput(ElevatorConstant.limitSwitchID);
+    this.profilePIDController = new ProfiledPIDController(ElevatorConstant.kP, ElevatorConstant.kI, ElevatorConstant.kD, new TrapezoidProfile.Constraints(5, 10));
       profilePIDController.setGoal(0);
       new TrapezoidProfile.Constraints(ElevatorConstant.kMaxVelocity, ElevatorConstant.kMaxAcceleration);
       this.elevatorFeedforward =  new ElevatorFeedforward(ElevatorConstant.kS, ElevatorConstant.kG, ElevatorConstant.kV);
-    
-    }
+  }
 
   public void setLevel(ElevatorStates state) {
+    disSetLevel = (ElevatorConstant.enumDistance(state));
     profilePIDController.setGoal(ElevatorConstant.enumDistance(state).in(Centimeter));
 
   }
@@ -66,14 +70,14 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   // current height.
   public Measure<DistanceUnit> getDistance() {
-    Angle angle1= (this.ElevatorMotorLeft.getPosition().getValue());
+    Angle angle1 = (this.ElevatorMotorLeft.getPosition().getValue());
     Angle angle2 = (this.ElevatorMotorRight.getPosition().getValue());
     Angle avg = angle1.minus(angle2).div(2);
     return ElevatorConstant.distancePerRotation.timesDivisor(avg);
   }
 
   public void setRest() {
-    profilePIDController.setGoal(ElevatorConstant.restDistance.in(Centimeter));
+    this.setLevel(ElevatorStates.rest);
   }
 
   public boolean getCloseLimitSwitch() {
@@ -81,7 +85,12 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public InstantCommand setLevelElevatorCommand(ElevatorStates elevatorStates) {
-      return new InstantCommand(() -> this.setLevel(elevatorStates));
+    return new InstantCommand(() -> this.setLevel(elevatorStates));
+  }
+
+  public Command waitForLevel() {
+    return new WaitUntilCommand(
+        () -> this.getDistance().minus(disSetLevel).abs(Centimeter) < ElevatorConstant.errorTollerance.in(Centimeter));
   }
 
   @Override
