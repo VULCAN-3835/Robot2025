@@ -5,6 +5,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Rotations;
 
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
@@ -14,88 +15,93 @@ import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.AnalogInput;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.DutyCycleEncoder;
+import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
+import frc.robot.Constants.alageaSubsystemConstants;
 
 public class AlageaSubsystem extends SubsystemBase {
   /** Creates a new AlageaIntakeSubsystem. */
   private final TalonFX angleMotor;
   private final TalonFX powerMotor;
-  private final StatusSignal<Angle> getPosition;
   private final AnalogInput ballDetector;
-  private PIDController pidController;
-  private final DigitalInput limitSwitch;
-  private Angle currentSetpoint;
+  private final PIDController pidController;
+  private final DigitalInput lowLimitSwitch;
+  private final DutyCycleEncoder angleEncoder;
+  private final Timer hasBallTimer;
 
   public AlageaSubsystem() {
-    angleMotor = new TalonFX(Constants.alageaSubsystemConstants.angleMotorID);
-    powerMotor = new TalonFX(Constants.alageaSubsystemConstants.PowerMotorID);
-    ballDetector = new AnalogInput(Constants.alageaSubsystemConstants.ballDetectorID);
-    limitSwitch = new DigitalInput(Constants.alageaSubsystemConstants.limitSwitchID);
-    this.getPosition = this.angleMotor.getPosition();
+    this.angleMotor = new TalonFX(alageaSubsystemConstants.angleMotorID);
+    this.powerMotor = new TalonFX(alageaSubsystemConstants.powerMotorID);
+
+    this.ballDetector = new AnalogInput(alageaSubsystemConstants.ballDetectorID);
+    this.lowLimitSwitch = new DigitalInput(alageaSubsystemConstants.limitSwitchID);
+    this.angleEncoder = new DutyCycleEncoder(alageaSubsystemConstants.angleEncoderID);
 
     pidController = new PIDController(0, 0, 0);
-    pidController.setTolerance(Constants.alageaSubsystemConstants.pidTolerence);
-    currentSetpoint = Constants.alageaSubsystemConstants.restAngle;
+    pidController.setTolerance(alageaSubsystemConstants.pidTolerence);
 
+    this.hasBallTimer = new Timer();
   }
 
+  // checks if the system detects the ball
   public boolean hasBall() {
-    // checks if the system detects the ball
-
-    return ballDetector.getVoltage() > Constants.alageaSubsystemConstants.ballDetectorThreshold;
+    return ballDetector.getVoltage() > alageaSubsystemConstants.ballDetectorThreshold;
 
   }
 
+  // gets the current angle
   public Angle getAngle() {
-    // gets the current angle
-    return getPosition.getValue();
+    return Rotations.of(angleEncoder.get());
 
   }
 
+  public boolean getLowLimitSwitch() {
+    return lowLimitSwitch.get();
+  }
+
+  // sets the desired robot angle
   private void setAngle(Angle targetAngle) {
-    // sets the desired robot angle
     double targetDegrees = targetAngle.in(Degrees);
-    if (targetDegrees >= Constants.alageaSubsystemConstants.minAngle.in(Degrees)
-        && targetDegrees <= Constants.alageaSubsystemConstants.maxAngle.in(Degrees)) {
-      currentSetpoint = targetAngle;
-      pidController.setSetpoint(targetDegrees);
-    } else {
-      System.out.println("Invalid angle, please enter a valid angle");
+    if (targetDegrees >= alageaSubsystemConstants.minAngle.in(Degrees)
+        && targetDegrees <= alageaSubsystemConstants.maxAngle.in(Degrees)) {
+      pidController.setSetpoint(targetAngle.in(Degrees));
     }
   }
 
+  // sets the robot in the predefined resting angle
   public void setRestAngle() {
-    // sets the robot in the predefined resting angle
-    setAngle(Constants.alageaSubsystemConstants.restAngle);
+    setAngle(alageaSubsystemConstants.restAngle);
 
   }
 
+  // sets the robot in the predefined collecting angle
   public void setCollectAngle() {
-    // sets the robot in the predefined collecting angle
-    setAngle(Constants.alageaSubsystemConstants.collectingAngle);
+    setAngle(alageaSubsystemConstants.collectAngle);
 
   }
 
   public void setHoldAngle() {
     // sets the robot in the predefined holding angle
-    setAngle(Constants.alageaSubsystemConstants.holdAngle);
+    setAngle(alageaSubsystemConstants.holdAngle);
 
   }
 
   public void setShootingAngle() {
-    setAngle(Constants.alageaSubsystemConstants.shootingAngle);
+    setAngle(alageaSubsystemConstants.scoreAngle);
   }
 
   public boolean isSystemAtShootingAngle() {
     double currentAngle = getAngle().in(Degrees);
-    double targetAngle = Constants.alageaSubsystemConstants.shootingAngle.in(Degrees);
-    return Math.abs(currentAngle - targetAngle) <= pidController.getPositionTolerance();
+    double targetAngle = alageaSubsystemConstants.scoreAngle.in(Degrees);
+    return Math.abs(currentAngle -  targetAngle) <= pidController.getPositionTolerance();
   }
 
   public boolean isSystemAtCollectingAngle() {
     double currentAngle = getAngle().in(Degrees);
-    double targetAngle = Constants.alageaSubsystemConstants.collectingAngle.in(Degrees);
+    double targetAngle = alageaSubsystemConstants.scoreAngle.in(Degrees);
     return Math.abs(currentAngle - targetAngle) <= pidController.getPositionTolerance();
   }
 
@@ -103,26 +109,39 @@ public class AlageaSubsystem extends SubsystemBase {
     powerMotor.set(power);
   }
 
-  public void setCollectingPower() {
-    setPower(Constants.alageaSubsystemConstants.collectingPower);
+  public Command waitForCollectionCommand() {
+    return new WaitUntilCommand(() -> hasBallTimer.get() > alageaSubsystemConstants.collectTime);
+  }
+
+  public void collectingAlgea() {
+    setPower(alageaSubsystemConstants.collectingPower);
   }
 
   public void shootAlagea() {
-    setPower(Constants.alageaSubsystemConstants.shootingPower);
+    setPower(alageaSubsystemConstants.shootingPower);
   }
 
   @Override
   public void periodic() {
     // This method will be called once per scheduler run
-    // checks if limitSwitch is true and if so, sets the angle to the intalizing
-    // position
-    // also constantly checkes and updates the desired settings for the motor
+
     double voltage = pidController.calculate(getAngle().in(Degrees));
-    if (limitSwitch.get() && voltage < 0) {
+    if (getLowLimitSwitch() && voltage > 0) {
+      angleMotor.set(0);
+    } else {
       angleMotor.set(voltage);
     }
-    if (hasBall() && powerMotor.get() < 0) {
-      setPower(Constants.alageaSubsystemConstants.restingPower);
+
+    if (hasBall()) {
+      if (hasBallTimer.get() == 0) {
+        hasBallTimer.start();
+      }
+    } else {
+      hasBallTimer.stop();
+      hasBallTimer.reset();
+    }
+    if (powerMotor.get() < 0 && hasBallTimer.get() > alageaSubsystemConstants.collectTime) {
+      setPower(0);
     }
   }
 }

@@ -14,22 +14,26 @@ import frc.robot.subsystems.AlageaSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class CollectingAlageaCmd extends SequentialCommandGroup {
   /** Creates a new CollectingAlageaCmd. */
+
   public CollectingAlageaCmd(AlageaSubsystem alageaSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
+
     addCommands(
         // 1. sets the subsystem in the predefined collecting angle
         new InstantCommand(() -> alageaSubsystem.setCollectAngle()),
+
         // 2. waits until system is at the collecting angle
         new WaitUntilCommand(()-> alageaSubsystem.isSystemAtCollectingAngle()),
+
         // 3. starts to collect the piece
-        new InstantCommand(() -> alageaSubsystem.setCollectingPower()),
+        new InstantCommand(() -> alageaSubsystem.collectingAlgea()),
+
         // 4. waits until the sensor feels the piece
-        new WaitUntilCommand(() -> alageaSubsystem.hasBall()),
+        alageaSubsystem.waitForCollectionCommand(),
+
         // 5. stops the motor and sets the subsystem in the predefined resting angle
-        new InstantCommand(() -> {
-          alageaSubsystem.setPower(0);
-          alageaSubsystem.setRestAngle();
-        }));
+        new InstantCommand(() -> alageaSubsystem.setRestAngle()
+        ));
   }
 }
