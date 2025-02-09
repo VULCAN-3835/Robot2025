@@ -246,8 +246,8 @@ public final class Constants {
     public static Distance restDistance = Centimeter.of(0);
     public static Distance sourceDistance = Centimeter.of(0);
 
-    public static int motorLeftID = 51;//TODO: needs to change the values of the ports to actual values
-    public static int motorRightID = 50;
+    //TODO: needs to change the values of the ports to actual values
+    public static int motorID = 50;
     public static int limitSwitchID = 9;
 
     public static double kP = 0;
