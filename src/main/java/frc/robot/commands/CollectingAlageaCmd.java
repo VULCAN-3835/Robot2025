@@ -33,7 +33,9 @@ public class CollectingAlageaCmd extends SequentialCommandGroup {
         alageaSubsystem.waitForCollectionCommand(),
 
         // 5. stops the motor and sets the subsystem in the predefined resting angle
-        new InstantCommand(() -> alageaSubsystem.setRestAngle()
-        ));
+        new InstantCommand(() -> {
+          alageaSubsystem.setPower(0);
+          alageaSubsystem.setRestAngle();
+    }));
   }
 }
