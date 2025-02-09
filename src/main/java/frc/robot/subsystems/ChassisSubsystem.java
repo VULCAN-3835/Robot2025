@@ -37,6 +37,7 @@ import frc.robot.Constants;
 import frc.robot.Robot;
 import frc.robot.Constants.ChassisConstants;
 import frc.robot.Constants.ModuleConstants;
+import frc.robot.Util.OVCameraUtil;
 import frc.robot.Util.SwerveModule;
 
 import static edu.wpi.first.units.Units.Meters;
@@ -75,7 +76,7 @@ public class ChassisSubsystem extends SubsystemBase {
   };
 
   // april tag camera and field initilazation
-  // private OVCameraUtil atCam;;
+  private OVCameraUtil atCam;;
   private Field2d atField;
 
 
@@ -126,7 +127,7 @@ public class ChassisSubsystem extends SubsystemBase {
     updateSwervePositions();
     zeroHeading();
 
-    // atCam = new OVCameraUtil("limelight-front",ChassisConstants.CAMERA_POSE3D);
+    atCam = new OVCameraUtil("limelight-front",ChassisConstants.CAMERA_POSE3D);
 
     // Robot starting position for odometry
     startingPos = new Pose2d(1.3, 5.52, Rotation2d.fromDegrees(0));
@@ -316,9 +317,9 @@ public class ChassisSubsystem extends SubsystemBase {
      * Getter for the Limelight utility used by the subsystem for vision processing
      * @return Limelight utility object used by the subsystem for vision processing
   */
-  // public OVCameraUtil getCamera() {
-  //   return this.atCam;
-  // }
+  public OVCameraUtil getCamera() {
+    return this.atCam;
+  }
 
   /**
      * Resets the odometry to a given pose
@@ -355,47 +356,47 @@ public class ChassisSubsystem extends SubsystemBase {
   /**
      * Update pose estimator using vision data from the limelight
   */
-  // private void updatePoseEstimatorWithVisionBotPose() {
-  //   Pose2d visionBotPose = this.atCam.getPoseFromCamera();
-  //   if (visionBotPose.getX() == 0.0) {
-  //     return;
-  //   }
+  private void updatePoseEstimatorWithVisionBotPose() {
+    Pose2d visionBotPose = this.atCam.getPoseFromCamera();
+    if (visionBotPose.getX() == 0.0) {
+      return;
+    }
 
-  //   // distance from current pose to vision estimated pose
-  //   double poseDifference = poseEstimator.getEstimatedPosition().getTranslation().getDistance(visionBotPose.getTranslation());
+    // distance from current pose to vision estimated pose
+    double poseDifference = poseEstimator.getEstimatedPosition().getTranslation().getDistance(visionBotPose.getTranslation());
 
-  //   if (this.atCam.cameraHasTarget()) {
-  //     double xyStds;
-  //     double degStds;
+    if (this.atCam.hasTarget()) {
+      double xyStds;
+      double degStds;
 
-  //     if (this.atCam.cameraHasTarget()) {
-  //       xyStds = 0.5;
-  //       degStds = 6;
-  //     }
-  //     else {
-  //       return;
-  //     }
+      if (this.atCam.hasTarget()) {
+        xyStds = 0.5;
+        degStds = 6;
+      }
+      else {
+        return;
+      }
 
-  //     poseEstimator.setVisionMeasurementStdDevs(
-  //         VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
-  //     poseEstimator.addVisionMeasurement(visionBotPose,
-  //         Timer.getFPGATimestamp() - (this.atCam.getCameraTimeStampSec()));
-  //   }
-  // }
+      poseEstimator.setVisionMeasurementStdDevs(
+          VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
+      poseEstimator.addVisionMeasurement(visionBotPose,
+          Timer.getFPGATimestamp() - (this.atCam.getCameraTimeStampSec()));
+    }
+  }
 
   @Override
   public void periodic() {
     setModuleStates(this.swerveModuleStates);
     
     updateSwervePositions();
-    // this.poseEstimator.update(getRotation2d().unaryMinus(), this.swerve_positions);
-    // updatePoseEstimatorWithVisionBotPose();
+    this.poseEstimator.update(getRotation2d().unaryMinus(), this.swerve_positions);
+    updatePoseEstimatorWithVisionBotPose();
 
-    // if (this.limelight.hasValidTarget()) {
-    //   this.poseEstimator.addVisionMeasurement(this.limelight.getPoseFromCamera(), Timer.getFPGATimestamp() - (this.limelight.getCameraTimeStampSec()));
-    // }
-    // this.field.setRobotPose(this.poseEstimator.getEstimatedPosition());
-    // this.atField.setRobotPose(this.atCam.getPoseFromCamera());
+    if (this.atCam.hasTarget()) {
+      this.poseEstimator.addVisionMeasurement(this.atCam.getPoseFromCamera(), Timer.getFPGATimestamp() - (this.atCam.getCameraTimeStampSec()));
+    }
+    this.field.setRobotPose(this.poseEstimator.getEstimatedPosition());
+    this.atField.setRobotPose(this.atCam.getPoseFromCamera());
 
     SmartDashboard.putNumber("Gyro Heading", getHeading());
 

@@ -18,7 +18,7 @@ public class CoralReleaseCommand extends SequentialCommandGroup {
             new WaitUntilCommand(() -> !endAccessorySubsystem.hasPiece()),
 
             // 3. Stop the gripper once the piece is successfully released
-            new InstantCommand(() -> endAccessorySubsystem.gripperRest(), endAccessorySubsystem)
+            new InstantCommand(() -> endAccessorySubsystem.gripperStop(), endAccessorySubsystem)
         );
     }
 }

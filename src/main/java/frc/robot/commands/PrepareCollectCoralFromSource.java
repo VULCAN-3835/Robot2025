@@ -35,7 +35,6 @@ public class PrepareCollectCoralFromSource extends SequentialCommandGroup {
 
       new WaitUntilCommand(() -> endAccessorySubsystem.isAtSetpoint()),
 
-      new WaitUntilCommand(() -> elevatorSubsystem.isAtSetHeight())
-    );
+      elevatorSubsystem.waitForLevel());
   }
 }

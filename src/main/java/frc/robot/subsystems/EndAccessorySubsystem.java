@@ -48,8 +48,8 @@ public class EndAccessorySubsystem extends SubsystemBase {
         pidController.setTolerance(EndAccessorySubsystemConstants.armAngleTolerence);
     }
 
-    public enum DropAngles {
-        setDropAngleL1, setDropAngleL2, setDropAngleL3, setDropAngleL4, restingAngle;
+    public enum DropAngles { 
+        setDropAngleL1, setDropAngleL2, setDropAngleL3, setDropAngleL4, restingAngle, intakeAngle;
     }
 
     public Command waitForCoral() {
@@ -73,6 +73,11 @@ public class EndAccessorySubsystem extends SubsystemBase {
         }
     }
 
+    public void gripperStop() {
+        powerMotor.set(0);
+
+    }
+
     public void setAngle(DropAngles dropingLevel) {
         switch (dropingLevel) {
             case setDropAngleL1:
@@ -89,15 +94,14 @@ public class EndAccessorySubsystem extends SubsystemBase {
                 break;
             case restingAngle:
                 pidController.setSetpoint(EndAccessorySubsystemConstants.targetAngleRest.in(Degree));
+                break;
+            case intakeAngle:
+            pidController.setSetpoint(EndAccessorySubsystemConstants.targetAngleRest.in(Degree));
             default:
         }
     }
 
-    public void gripperRest() {
-        pidController.setSetpoint(EndAccessorySubsystemConstants.targetAngleRest.in(Degree));
-    }
-
-    private Measure<AngleUnit> getAngle() {
+    private Measure<AngleUnit> getAngle() { 
         return Rotations.of(angleEncoder.get());
     }
 
@@ -113,8 +117,8 @@ public class EndAccessorySubsystem extends SubsystemBase {
         return pieceDetector.getVoltage() > EndAccessorySubsystemConstants.khHasPieceVoltageThreshold;
 
     }
-
-    public boolean isAtSetpoint() {
+ 
+    public boolean isAtSetpoint(){
         return pidController.atSetpoint();
     }
 
@@ -136,7 +140,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
                 timer.start();
             }
             if (timer.get() > EndAccessorySubsystemConstants.waitTime) {
-                gripperRest();
+                gripperStop();
             }
         } else {
             timer.stop();

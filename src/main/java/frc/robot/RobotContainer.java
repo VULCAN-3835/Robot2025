@@ -12,6 +12,7 @@ import frc.robot.commands.CollectingAlageaCmd;
 import frc.robot.commands.ShootingAlageaCmd;
 import frc.robot.subsystems.AlageaSubsystem;
 import frc.robot.commands.ClimbCMD;
+import frc.robot.commands.CloseClimbCMD;
 import frc.robot.Util.ElevatorStates;
 import frc.robot.commands.ResetClimbing;
 import frc.robot.subsystems.ClimbSubsystem;
@@ -21,6 +22,8 @@ import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
 /**
@@ -64,23 +67,22 @@ public class RobotContainer {
   private void configureBindings() {
     if (xboxControllerDrive.isConnected()) {
       this.chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(this.chassisSubsystem,
-          () -> -xboxControllerDrive.getLeftY(),
+          () -> -xboxControllerDrive.getLeftY(),//could use the math.pow and 3
           () -> -xboxControllerDrive.getLeftX(),
           () -> -xboxControllerDrive.getRightX()));
     }
 
-    xboxControllerDrive.b().whileTrue(new ShootingAlageaCmd(alageaSubsystem));
-    xboxControllerDrive.x().whileTrue(new CollectingAlageaCmd(alageaSubsystem));
+    xboxControllerDrive.povDown().whileTrue(new InstantCommand(()-> climbSubsystem.setMotor(-0.2)));
+    xboxControllerDrive.povDown().toggleOnFalse(new InstantCommand(()-> climbSubsystem.setMotor(0)));
+    
+    xboxControllerDrive.povUp().whileTrue(new InstantCommand(()-> climbSubsystem.setMotor(0.2)));
+    xboxControllerDrive.povUp().toggleOnFalse(new InstantCommand(()-> climbSubsystem.setMotor(0)));
 
-    xboxControllerDrive.y().toggleOnTrue(new ClimbCMD(climbSubsystem));
-    xboxControllerDrive.b().toggleOnTrue(new ResetClimbing(climbSubsystem));
+    xboxControllerDrive.leftBumper().whileTrue(new InstantCommand(()->elevatorSubsystem.setPower(0.1)));
+    xboxControllerDrive.leftBumper().toggleOnFalse(new InstantCommand(()-> elevatorSubsystem.setPower(0)));
 
-    xboxControllerDrive.b().toggleOnTrue(elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL1));
-    xboxControllerDrive.a().toggleOnTrue(elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL2));
-    xboxControllerDrive.x().toggleOnTrue(elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL3));
-    xboxControllerDrive.leftStick().toggleOnTrue(elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL4));
-    xboxControllerDrive.y().toggleOnTrue(elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.rest));
-    xboxControllerDrive.rightStick().toggleOnTrue(elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.source));
+    xboxControllerDrive.rightBumper().whileTrue(new InstantCommand(()->elevatorSubsystem.setPower(-0.1)));
+    xboxControllerDrive.rightBumper().toggleOnFalse(new InstantCommand(()-> elevatorSubsystem.setPower(0)));
   }
 
   /**
