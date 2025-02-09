@@ -259,6 +259,7 @@ public final class Constants {
     public static double kV = 0; 
 
     public static double restPower = 0;
+    public static Distance errorTollerance = Centimeter.of(0.3);
     public static double kMaxAcceleration = 0;
     public static double kMaxVelocity = 0;
 

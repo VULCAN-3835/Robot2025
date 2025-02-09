@@ -7,8 +7,6 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Centimeter;
 import static edu.wpi.first.units.Units.Meter;
 
-
-
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
@@ -21,6 +19,9 @@ import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.VelocityUnit;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Velocity;
@@ -28,6 +29,7 @@ import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.ElevatorConstant;
 import frc.robot.Util.ElevatorStates;
 
@@ -35,6 +37,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   /** Creates a new ElevatorSubsystem. */
   private final TalonFX ElevatorMotor;
   private final DigitalInput closeLimitSwitch;
+  private Distance disSetLevel;
   private ProfiledPIDController profilePIDController;
   private ElevatorFeedforward elevatorFeedforward;
   
@@ -46,20 +49,15 @@ public class ElevatorSubsystem extends SubsystemBase {
       profilePIDController.setGoal(0);
       new TrapezoidProfile.Constraints(ElevatorConstant.kMaxVelocity, ElevatorConstant.kMaxAcceleration);
       this.elevatorFeedforward =  new ElevatorFeedforward(ElevatorConstant.kS, ElevatorConstant.kG, ElevatorConstant.kV);
-    
-    }
+  }
 
   public void setLevel(ElevatorStates state) {
+    disSetLevel = (ElevatorConstant.enumDistance(state));
     profilePIDController.setGoal(ElevatorConstant.enumDistance(state).in(Centimeter));
 
   }
   public void setPower(double power){
     ElevatorMotor.set(power);
-
-   // ElevatorMotorLeft.setVoltage(
-      //m_controller.calculate(m_encoder.getDistance())
-      //+ m_feedforward.calculate(m_controller.getSetpoint().velocity));
-
   }
 
   // current height.
@@ -69,7 +67,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void setRest() {
-    profilePIDController.setGoal(ElevatorConstant.restDistance.in(Centimeter));
+    this.setLevel(ElevatorStates.rest);
   }
 
   public boolean getCloseLimitSwitch() {
@@ -77,7 +75,12 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public InstantCommand setLevelElevatorCommand(ElevatorStates elevatorStates) {
-      return new InstantCommand(() -> this.setLevel(elevatorStates));
+    return new InstantCommand(() -> this.setLevel(elevatorStates));
+  }
+
+  public Command waitForLevel() {
+    return new WaitUntilCommand(
+        () -> this.getDistance().minus(disSetLevel).abs(Centimeter) < ElevatorConstant.errorTollerance.in(Centimeter));
   }
 
   @Override
