@@ -16,6 +16,7 @@ import frc.robot.Constants.EndAccessorySubsystemConstants;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.DutyCycleEncoder;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.units.AngleUnit;
 import edu.wpi.first.units.Measure;
@@ -46,7 +47,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
         angleEncoder = new DutyCycleEncoder(EndAccessorySubsystemConstants.angleEncoderID);
         pieceDetector = new AnalogInput(EndAccessorySubsystemConstants.pieceDetectorID);
 
-        pidController = new PIDController(EndAccessorySubsystemConstants.kP, 0, EndAccessorySubsystemConstants.kD);
+        pidController = new PIDController(EndAccessorySubsystemConstants.kP, EndAccessorySubsystemConstants.KI, EndAccessorySubsystemConstants.kD);
         pidController.setTolerance(EndAccessorySubsystemConstants.armAngleTolerence);
     }
 
@@ -118,6 +119,22 @@ public class EndAccessorySubsystem extends SubsystemBase {
 
     @Override
     public void periodic() {
+    SmartDashboard.putNumber("EndAccessorySubject/End current angle", getAngle().in(Degrees));
+    SmartDashboard.putNumber("EndAccessorySubject/End target angle", EndAccessorySubsystemConstants.targetAngleRest.in(Degrees));
+    SmartDashboard.putBoolean("EndAccessorySubject/End has piece?", hasPiece());
+    SmartDashboard.putBoolean("EndAccessorySubject/Coral inside?", timer.get() > EndAccessorySubsystemConstants.waitTime);
+    SmartDashboard.putNumber("EndAccessorySubject/Infrared end value", pieceDetector.getVoltage());
+    SmartDashboard.putBoolean("EndAccessorySubject/High limit is working?", getHighLimitSwitch());
+    SmartDashboard.putBoolean("EndAccessorySubject/Low limit is working?", getLowLimitSwitch());
+    SmartDashboard.putNumber("EndAccessorySubject/PID Setpoint", pidController.getSetpoint());
+    SmartDashboard.putNumber("EndAccessorySubject/PID kp", EndAccessorySubsystemConstants.kP);
+    SmartDashboard.putNumber("EndAccessorySubject/PID kd", EndAccessorySubsystemConstants.kD);
+    SmartDashboard.putNumber("EndAccessorySubject/PID ki", EndAccessorySubsystemConstants.kI);
+    SmartDashboard.putBoolean("EndAccessorySubject/Is at set point", isAtSetpoint());
+    SmartDashboard.putBoolean("EndAccessorySubject/Is gripper stop", powerMotor.get() == 0);
+    SmartDashboard.putBoolean("EndAccessorySubject/Gripper intake active", powerMotor.get() == EndAccessorySubsystemConstants.kMotorSpeed);
+    SmartDashboard.putBoolean("EndAccessorySubject/Gripper release active", powerMotor.get() == -EndAccessorySubsystemConstants.kMotorSpeed);
+    SmartDashboard.putBoolean("EndAccessorySubject/Timer running?", timer.get() > 0);
 
         double pidOutput = pidController.calculate(getAngle().in(Degrees));
 
