@@ -1,9 +1,7 @@
 package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.subsystems.EndAccessorySubsystem;
 
 public class CoralCollectCommand extends SequentialCommandGroup {
@@ -19,7 +17,7 @@ public class CoralCollectCommand extends SequentialCommandGroup {
             endAccessorySubsystem.waitForCoral(),
     
             // 3. Stop the gripper once the piece is successfully collected
-            new InstantCommand(() -> endAccessorySubsystem.gripperRest())
+            new InstantCommand(() -> endAccessorySubsystem.gripperStop())
         );
     }
 }

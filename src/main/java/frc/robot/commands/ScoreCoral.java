@@ -15,18 +15,18 @@ import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class PrepareCollectCoralFromSource extends SequentialCommandGroup {
-
-  public PrepareCollectCoralFromSource(EndAccessorySubsystem endAccessorySubsystem, ElevatorSubsystem elevatorSubsystem) {
+public class ScoreCoral extends SequentialCommandGroup {
+  public ScoreCoral(EndAccessorySubsystem endAccessorySubsystem, ElevatorSubsystem elevatorSubsystem, DropAngles dropingLevel, ElevatorStates elevatorStates) {
     addCommands(
-      new InstantCommand(() -> endAccessorySubsystem.setIntakeAngle()),
 
-      elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.source),
+      new InstantCommand(() -> endAccessorySubsystem.setAngle(dropingLevel)),
+
+      elevatorSubsystem.setLevelElevatorCommand(elevatorStates),
 
       new WaitUntilCommand(() -> endAccessorySubsystem.isAtSetpoint()),
 
-      new CoralCollectCommand(endAccessorySubsystem),
-      
+      new CoralReleaseCommand(endAccessorySubsystem, dropingLevel),
+
       new InstantCommand(() -> endAccessorySubsystem.setAngle(DropAngles.restingAngle)),
 
       new InstantCommand(() -> elevatorSubsystem.setRest()),
