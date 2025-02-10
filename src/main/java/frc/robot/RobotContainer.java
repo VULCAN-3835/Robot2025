@@ -5,28 +5,20 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.CoralCollectCommand;
 import frc.robot.commands.DefaultTeleopCommand;
-import frc.robot.commands.CoralReleaseCommand;
 import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem;
 import frc.robot.commands.CollectingAlageaCmd;
-import frc.robot.commands.DefaultTeleopCommand;
 import frc.robot.commands.ShootingAlageaCmd;
 import frc.robot.subsystems.AlageaSubsystem;
 import frc.robot.commands.ClimbCMD;
 import frc.robot.commands.CloseClimbCMD;
 import frc.robot.Util.ElevatorStates;
-import frc.robot.commands.DefaultTeleopCommand;
 import frc.robot.commands.ResetClimbing;
-import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
-
 import frc.robot.subsystems.ElevatorSubsystem;
 import com.pathplanner.lib.auto.AutoBuilder;
-
 import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
