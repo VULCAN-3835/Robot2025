@@ -6,6 +6,8 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.Util.ElevatorStates;
+import frc.robot.Util.FieldLayout;
+import frc.robot.Util.FieldLayout.ReefSide;
 import frc.robot.commands.ClimbCMD;
 import frc.robot.commands.CloseClimbCMD;
 import frc.robot.commands.CollectingAlgeaCmd;
@@ -47,6 +49,7 @@ import frc.robot.commands.ShootingAlgeaCmd;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
+  FieldLayout.ReefSide currentSelectedSide = ReefSide.bottom;
   // The robot's subsystems and commands are defined here...
   private final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
 
@@ -111,11 +114,13 @@ public class RobotContainer {
           () -> -xboxControllerDrive.getLeftY(),
           () -> -xboxControllerDrive.getLeftX(),
           () -> -xboxControllerDrive.getRightX()));
+          
 
       configureXboxBinding(xboxControllerDrive);
       if (xboxControllerDrive.isConnected() && buttonXboxController.isConnected()) {
         configureXboxBinding(buttonXboxController);
       }
+      xboxControllerDrive.button(2).onTrue(new InstantCommand((() -> this.currentSelectedSide = ReefSide.bottomLeft)));
     } else {
       this.chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(this.chassisSubsystem,
           () -> -xboxControllerDrive.getLeftY(),

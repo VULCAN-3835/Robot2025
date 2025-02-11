@@ -24,7 +24,7 @@ public class ElevatorLevelIntake extends SequentialCommandGroup {
     addRequirements(chassisSubsystem,elevatorSubsystem,endAccessorySubsystem);
     addCommands(
       // 1. positioning itself in front of the april tag
-      new PositioningAprilTag(chassisSubsystem, false, true),
+      // new PositioningAprilTag(chassisSubsystem, false, true),
 
       // 2. sets the angle of the end accessory and the height of the elevator in the same time 
       new ParallelCommandGroup(
