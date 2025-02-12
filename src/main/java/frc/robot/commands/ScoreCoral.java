@@ -35,6 +35,6 @@ public class ScoreCoral extends SequentialCommandGroup {
 
       new WaitUntilCommand(() -> endAccessorySubsystem.isAtSetpoint()),
 
-      elevatorSubsystem.waitForLevel());
+      elevatorSubsystem.waitForLevel();
   }
 }
