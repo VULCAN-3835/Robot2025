@@ -41,7 +41,7 @@ public class RobotContainer {
   private final AlageaSubsystem alageaSubsystem = new AlageaSubsystem();
   private final Joystick joystic = new Joystick(0);
 
-  ClimbSubsystem climbSubsystem;
+   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
