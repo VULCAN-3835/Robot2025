@@ -52,7 +52,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
     }
 
     public enum DropAngles { 
-        setDropAngleL1, setDropAngleL2, setDropAngleL3, setDropAngleL4, restingAngle, intakeAngle;
+        setDropAngleL1, setDropAngleL2, setDropAngleL3, setDropAngleL4, restingAngle, intakeAngle, maxAngle;
     }
 
     public Command waitForCoral() {
@@ -91,6 +91,9 @@ public class EndAccessorySubsystem extends SubsystemBase {
                 pidController.setSetpoint(EndAccessorySubsystemConstants.targetAngleRest.in(Degree));
                 break;
             case intakeAngle:
+            pidController.setSetpoint(EndAccessorySubsystemConstants.targetAngleRest.in(Degree));
+                break;
+            case maxAngle:
             pidController.setSetpoint(EndAccessorySubsystemConstants.targetAngleRest.in(Degree));
             default:
         }
