@@ -33,22 +33,22 @@ public class AlageaSubsystem extends SubsystemBase {
   private final Timer hasBallTimer;
 
   public AlageaSubsystem() {
-    this.angleMotor = new TalonFX(alageaSubsystemConstants.angleMotorID);
-    this.powerMotor = new TalonFX(alageaSubsystemConstants.powerMotorID);
+    this.angleMotor = new TalonFX(Constants.alageaSubsystemConstants.angleMotorID);
+    this.powerMotor = new TalonFX(Constants.alageaSubsystemConstants.powerMotorID);
 
-    this.ballDetector = new AnalogInput(alageaSubsystemConstants.ballDetectorID);
-    this.lowLimitSwitch = new DigitalInput(alageaSubsystemConstants.limitSwitchID);
-    this.angleEncoder = new DutyCycleEncoder(alageaSubsystemConstants.angleEncoderID);
+    this.ballDetector = new AnalogInput(Constants.alageaSubsystemConstants.ballDetectorID);
+    this.lowLimitSwitch = new DigitalInput(Constants.alageaSubsystemConstants.limitSwitchID);
+    this.angleEncoder = new DutyCycleEncoder(Constants.alageaSubsystemConstants.angleEncoderID);
 
     pidController = new PIDController(0, 0, 0);
-    pidController.setTolerance(alageaSubsystemConstants.pidTolerence);
+    pidController.setTolerance(Constants.alageaSubsystemConstants.pidTolerence);
 
     this.hasBallTimer = new Timer();
   }
 
   // checks if the system detects the ball
   public boolean hasBall() {
-    return ballDetector.getVoltage() > alageaSubsystemConstants.ballDetectorThreshold;
+    return ballDetector.getVoltage() > Constants.alageaSubsystemConstants.ballDetectorThreshold;
 
   }
 
@@ -65,43 +65,43 @@ public class AlageaSubsystem extends SubsystemBase {
   // sets the desired robot angle
   private void setAngle(Angle targetAngle) {
     double targetDegrees = targetAngle.in(Degrees);
-    if (targetDegrees >= alageaSubsystemConstants.minAngle.in(Degrees)
-        && targetDegrees <= alageaSubsystemConstants.maxAngle.in(Degrees)) {
+    if (targetDegrees >= Constants.alageaSubsystemConstants.minAngle.in(Degrees)
+        && targetDegrees <= Constants.alageaSubsystemConstants.maxAngle.in(Degrees)) {
       pidController.setSetpoint(targetAngle.in(Degrees));
     }
   }
 
   // sets the robot in the predefined resting angle
   public void setRestAngle() {
-    setAngle(alageaSubsystemConstants.restAngle);
+    setAngle(Constants.alageaSubsystemConstants.restAngle);
 
   }
 
   // sets the robot in the predefined collecting angle
   public void setCollectAngle() {
-    setAngle(alageaSubsystemConstants.collectAngle);
+    setAngle(Constants.alageaSubsystemConstants.collectAngle);
 
   }
 
   public void setHoldAngle() {
     // sets the robot in the predefined holding angle
-    setAngle(alageaSubsystemConstants.holdAngle);
+    setAngle(Constants.alageaSubsystemConstants.holdAngle);
 
   }
 
   public void setShootingAngle() {
-    setAngle(alageaSubsystemConstants.scoreAngle);
+    setAngle(Constants.alageaSubsystemConstants.scoreAngle);
   }
 
   public boolean isSystemAtShootingAngle() {
     double currentAngle = getAngle().in(Degrees);
-    double targetAngle = alageaSubsystemConstants.scoreAngle.in(Degrees);
+    double targetAngle = Constants.alageaSubsystemConstants.scoreAngle.in(Degrees);
     return Math.abs(currentAngle -  targetAngle) <= pidController.getPositionTolerance();
   }
 
   public boolean isSystemAtCollectingAngle() {
     double currentAngle = getAngle().in(Degrees);
-    double targetAngle = alageaSubsystemConstants.scoreAngle.in(Degrees);
+    double targetAngle = Constants.alageaSubsystemConstants.scoreAngle.in(Degrees);
     return Math.abs(currentAngle - targetAngle) <= pidController.getPositionTolerance();
   }
 
@@ -110,15 +110,15 @@ public class AlageaSubsystem extends SubsystemBase {
   }
 
   public Command waitForCollectionCommand() {
-    return new WaitUntilCommand(() -> hasBallTimer.get() > alageaSubsystemConstants.collectTime);
+    return new WaitUntilCommand(() -> hasBallTimer.get() > Constants.alageaSubsystemConstants.collectTime);
   }
 
   public void collectingAlgea() {
-    setPower(alageaSubsystemConstants.collectingPower);
+    setPower(Constants.alageaSubsystemConstants.collectingPower);
   }
 
   public void shootAlagea() {
-    setPower(alageaSubsystemConstants.shootingPower);
+    setPower(Constants.alageaSubsystemConstants.shootingPower);
   }
 
   @Override
@@ -140,7 +140,7 @@ public class AlageaSubsystem extends SubsystemBase {
       hasBallTimer.stop();
       hasBallTimer.reset();
     }
-    if (powerMotor.get() < 0 && hasBallTimer.get() > alageaSubsystemConstants.collectTime) {
+    if (powerMotor.get() < 0 && hasBallTimer.get() > Constants.alageaSubsystemConstants.collectTime) {
       setPower(0);
     }
   }
