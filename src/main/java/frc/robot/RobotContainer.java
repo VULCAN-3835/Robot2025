@@ -40,7 +40,8 @@ public class RobotContainer {
   private final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
   private final AlageaSubsystem alageaSubsystem = new AlageaSubsystem();
   private final Joystick joystic = new Joystick(0);
-
+  private int rightLevelCounter = 0;
+  private int leftLevelCounter = 0;
    private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
@@ -69,6 +70,12 @@ public class RobotContainer {
           () -> -xboxControllerDrive.getLeftX(),
           () -> -xboxControllerDrive.getRightX()));
     }
+    xboxControllerDrive.rightBumper()().onTrue(new InstantCommand(()-> rightLevelCounter++));
+    xboxControllerDrive.rightBumper().onTrue(new InstantCommand(()-> rightLevelCounter--));
+
+    xboxControllerDrive.leftBumper().onTrue(new InstantCommand(()-> leftLevelCounter++));
+    xboxControllerDrive.leftBumper().onTrue(new InstantCommand(()-> leftLevelCounter--));
+
 
     xboxControllerDrive.b().whileTrue(new ShootingAlageaCmd(alageaSubsystem));
     xboxControllerDrive.x().whileTrue(new CollectingAlageaCmd(alageaSubsystem));
