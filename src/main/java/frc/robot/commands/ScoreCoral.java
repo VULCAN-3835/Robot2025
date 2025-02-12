@@ -23,6 +23,8 @@ public class ScoreCoral extends SequentialCommandGroup {
 
       elevatorSubsystem.setLevelElevatorCommand(elevatorStates),
 
+      elevatorSubsystem.waitForLevel()),
+
       new WaitUntilCommand(() -> endAccessorySubsystem.isAtSetpoint()),
 
       new CoralReleaseCommand(endAccessorySubsystem, dropingLevel),
