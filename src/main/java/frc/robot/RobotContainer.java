@@ -71,10 +71,10 @@ public class RobotContainer {
           () -> -xboxControllerDrive.getRightX()));
     }
     xboxControllerDrive.rightBumper()().onTrue(new InstantCommand(()-> rightLevelCounter++));
-    xboxControllerDrive.rightBumper().onTrue(new InstantCommand(()-> rightLevelCounter--));
+    xboxControllerDrive.rightTrigger().onTrue(new InstantCommand(()-> rightLevelCounter--));
 
     xboxControllerDrive.leftBumper().onTrue(new InstantCommand(()-> leftLevelCounter++));
-    xboxControllerDrive.leftBumper().onTrue(new InstantCommand(()-> leftLevelCounter--));
+    xboxControllerDrive.leftTrigger().onTrue(new InstantCommand(()-> leftLevelCounter--));
 
 
     xboxControllerDrive.b().whileTrue(new ShootingAlageaCmd(alageaSubsystem));
