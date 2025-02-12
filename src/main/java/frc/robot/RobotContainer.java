@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.CollectingAlageaCmd;
+import frc.robot.commands.DefaultAlageaCmd;
 import frc.robot.commands.DefaultTeleopCommand;
 import frc.robot.commands.ShootingAlageaCmd;
 import frc.robot.subsystems.AlageaSubsystem;
@@ -26,6 +27,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 
@@ -58,19 +60,7 @@ public class RobotContainer {
    */
   public RobotContainer() {
 
-    NamedCommands.registerCommand("CollectingAlagea", new CollectingAlageaCmd(alageaSubsystem));
-    NamedCommands.registerCommand("ShootingAlagea", new ShootingAlageaCmd(alageaSubsystem));
-    NamedCommands.registerCommand("Climb", new ClimbCMD(climbSubsystem));
-    NamedCommands.registerCommand("ResetClimbing", new ResetClimbing(climbSubsystem));
-    NamedCommands.registerCommand("elevator to L4", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL4));
-    NamedCommands.registerCommand("elevator to L3", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL3));
-    NamedCommands.registerCommand("elevator to L2", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL2));
-    NamedCommands.registerCommand("elevator to L1", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL1));
-    NamedCommands.registerCommand("elevator to rest", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.rest));
-    NamedCommands.registerCommand("elevator to source", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.source));
-
-
-
+    CommandScheduler.getInstance().setDefaultCommand(alageaSubsystem, new DefaultAlageaCmd(alageaSubsystem));
 
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.setDefaultOption("EMPTY", null);
