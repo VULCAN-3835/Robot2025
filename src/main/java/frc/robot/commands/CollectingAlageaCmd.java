@@ -18,7 +18,7 @@ public class CollectingAlageaCmd extends SequentialCommandGroup {
   public CollectingAlageaCmd(AlageaSubsystem alageaSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-
+    addRequirements(alageaSubsystem);
     addCommands(
         // 1. sets the subsystem in the predefined collecting angle
         new InstantCommand(() -> alageaSubsystem.setCollectAngle()),
