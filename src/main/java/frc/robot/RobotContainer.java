@@ -11,6 +11,7 @@ import frc.robot.commands.CoralReleaseCommand;
 import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem;
 import frc.robot.commands.CollectingAlageaCmd;
+import frc.robot.commands.DefaultAlageaCmd;
 import frc.robot.commands.DefaultTeleopCommand;
 import frc.robot.commands.ShootingAlageaCmd;
 import frc.robot.subsystems.AlageaSubsystem;
@@ -24,6 +25,7 @@ import frc.robot.subsystems.ClimbSubsystem;
 
 import frc.robot.subsystems.ElevatorSubsystem;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
@@ -65,8 +67,9 @@ public class RobotContainer {
    */
   public RobotContainer() {
 
-    autoChooser = AutoBuilder.buildAutoChooser();
+    CommandScheduler.getInstance().setDefaultCommand(alageaSubsystem, new DefaultAlageaCmd(alageaSubsystem));
 
+    autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.setDefaultOption("EMPTY", null);
     SmartDashboard.putData("Auto Chooser", autoChooser);
     configureBindings();

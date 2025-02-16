@@ -90,7 +90,12 @@ public final class Constants {
     public static final Angle restAngle = Degrees.of(0);
     public static final Angle collectAngle = Degrees.of(0);
     public static final Angle holdAngle = Degrees.of(0);
-    public static final Angle scoreAngle = Degrees.of(0);
+
+    public static final Angle collectingAngle = Degrees.of(0);
+    public static final Angle maxAngle = Degrees.of(0);
+    public static final Angle minAngle = Degrees.of(0);
+    public static final Angle shootingAngle = Degrees.of(0);
+    public static final Angle scoreAngle = Degrees.of(0)
 
     public static final double pidTolerence = 0; 
 
