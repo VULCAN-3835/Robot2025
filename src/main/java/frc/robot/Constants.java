@@ -66,6 +66,8 @@ public final class Constants {
     public static final Angle targetAngleRest = Degrees.of(0);
     public static final Angle targetIntakeAngle = Degrees.of(0);
     public static final Angle restingAngle = Degrees.of(0);
+    public static final Angle maxAngle = Degrees.of(0);
+
     public static final double waitTime = 0;
     public static final double kP = 0;
     public static final double kD = 0;
