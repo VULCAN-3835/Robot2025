@@ -1,0 +1,67 @@
+{
+  "version": "2025.0",
+  "waypoints": [
+    {
+      "anchor": {
+        "x": 3.432,
+        "y": 5.521
+      },
+      "prevControl": null,
+      "nextControl": {
+        "x": 2.8906040337075978,
+        "y": 6.040751764946449
+      },
+      "isLocked": false,
+      "linkedName": null
+    },
+    {
+      "anchor": {
+        "x": 1.5445790816326532,
+        "y": 6.968654336734694
+      },
+      "prevControl": {
+        "x": 2.364956289775226,
+        "y": 4.8507293093922925
+      },
+      "nextControl": null,
+      "isLocked": false,
+      "linkedName": null
+    }
+  ],
+  "rotationTargets": [],
+  "constraintZones": [],
+  "pointTowardsZones": [],
+  "eventMarkers": [
+    {
+      "name": "prepare to collect coral",
+      "waypointRelativePos": 0.48231132075471517,
+      "endWaypointRelativePos": null,
+      "command": null
+    },
+    {
+      "name": "collect Coral from source",
+      "waypointRelativePos": 1.0,
+      "endWaypointRelativePos": null,
+      "command": null
+    }
+  ],
+  "globalConstraints": {
+    "maxVelocity": 3.0,
+    "maxAcceleration": 3.0,
+    "maxAngularVelocity": 540.0,
+    "maxAngularAcceleration": 720.0,
+    "nominalVoltage": 12.0,
+    "unlimited": false
+  },
+  "goalEndState": {
+    "velocity": 0,
+    "rotation": 131.86975513778094
+  },
+  "reversed": false,
+  "folder": null,
+  "idealStartingState": {
+    "velocity": 0,
+    "rotation": -60.22115506647138
+  },
+  "useDefaultConstraints": true
+}
