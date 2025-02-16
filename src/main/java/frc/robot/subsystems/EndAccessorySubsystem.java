@@ -91,10 +91,10 @@ public class EndAccessorySubsystem extends SubsystemBase {
                 pidController.setSetpoint(EndAccessorySubsystemConstants.targetAngleRest.in(Degree));
                 break;
             case intakeAngle:
-            pidController.setSetpoint(EndAccessorySubsystemConstants.targetAngleRest.in(Degree));
+            pidController.setSetpoint(EndAccessorySubsystemConstants.targetIntakeAngle.in(Degree));
                 break;
             case maxAngle:
-            pidController.setSetpoint(EndAccessorySubsystemConstants.targetAngleRest.in(Degree));
+            pidController.setSetpoint(EndAccessorySubsystemConstants.maxAngle.in(Degree));
             default:
         }
     }
