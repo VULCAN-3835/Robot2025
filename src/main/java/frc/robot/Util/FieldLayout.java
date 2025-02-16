@@ -108,14 +108,3 @@ public final class FieldLayout {
     }
 }
 
-// var p = x.getTagPose(10).get().toPose2d();
-// p = new Pose2d(p.getTranslation(),
-// p.getRotation().plus(Rotation2d.fromDegrees(180)));
-// p = new Pose2d(p.getTranslation().minus(new Translation2d(0.5,
-// p.getRotation())), p.getRotation());
-// var left = new Pose2d(p.getTranslation().plus(new
-// Translation2d(Inches.of(6.5).in(Meters),
-// p.getRotation().plus(Rotation2d.fromDegrees(90)))), p.getRotation());
-// var right = new Pose2d(p.getTranslation().plus(new
-// Translation2d(Inches.of(6.5).in(Meters),
-// p.getRotation().plus(Rotation2d.fromDegrees(-90)))), p.getRotation());

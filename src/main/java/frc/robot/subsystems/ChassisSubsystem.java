@@ -49,6 +49,7 @@ import frc.robot.Constants.ModuleConstants;
 import frc.robot.Util.OVCameraUtil;
 import frc.robot.Util.SwerveModule;
 
+import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
@@ -466,7 +467,8 @@ public class ChassisSubsystem extends SubsystemBase {
       
       ChassisSpeeds speeds = controller.calculate(getPose(), goalState.poseMeters, goalState.velocityMetersPerSecond,holonomicSetPoint.getRotation());
       drive(speeds, false);
-      if (controller.atReference()) {
+      // @Tal:: Change to constant
+      if (Meters.of(currentPose2dHolonomic.minus(holonomicSetPoint).getTranslation().getDistance(holonomicSetPoint.getTranslation())).gt(Centimeters.of(0.5))) {
         isAutonomous = false;
       }
     }

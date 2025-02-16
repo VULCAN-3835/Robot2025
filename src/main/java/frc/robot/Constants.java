@@ -82,7 +82,7 @@ public final class Constants {
 
     public static final int ballDetectorID = 0;
     public static final int limitSwitchID = 6;
-    public static final int angleEncoderID = 7;
+    public static final int angleEncoderID = 1;
 
     public static final double ballDetectorThreshold =1.8;
 
@@ -193,9 +193,9 @@ public final class Constants {
     public static final boolean kLeftBackInverted = true;
     public static final boolean kRightBackInverted = true;
 
-    public static final double kMaxDrivingVelocity = 1.5;
+    public static final double kMaxDrivingVelocity = 3.5;
     public static final double kTeleDriveMaxAccelerationUnitsPerSec = 5;
-    public static final double kTeleDriveMaxSpeedMetersPerSec = 1.5;
+    public static final double kTeleDriveMaxSpeedMetersPerSec = 3.5;
     public static final double kTeleDriveMaxAngulerSpeedRadiansPerSec = Math.PI * 1.5;
 
     // Distance between centers of right and left wheels on robot meters

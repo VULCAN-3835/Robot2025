@@ -49,7 +49,6 @@ import frc.robot.commands.ShootingAlgeaCmd;
  * subsystems, commands, and trigger mappings) should be declared here.
  */
 public class RobotContainer {
-  FieldLayout.ReefSide currentSelectedSide = ReefSide.bottom;
   // The robot's subsystems and commands are defined here...
   private final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
 
@@ -108,6 +107,9 @@ public class RobotContainer {
     setUpContollers();
   }
 
+  // setting up 1 controller that does everything and if 2 are connected then it splits it to two controllers:
+  // first one to the chassis
+  // the seconds one to the buttons
   private void setUpContollers() {
     if (xboxControllerDrive.isConnected()) {
       this.chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(this.chassisSubsystem,
@@ -120,7 +122,6 @@ public class RobotContainer {
       if (xboxControllerDrive.isConnected() && buttonXboxController.isConnected()) {
         configureXboxBinding(buttonXboxController);
       }
-      xboxControllerDrive.button(2).onTrue(new InstantCommand((() -> this.currentSelectedSide = ReefSide.bottomLeft)));
     } else {
       this.chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(this.chassisSubsystem,
           () -> -xboxControllerDrive.getLeftY(),
@@ -133,28 +134,34 @@ public class RobotContainer {
 
   private void configureXboxBinding(CommandXboxController cmdXboxController) {
 
-    cmdXboxController.start().onTrue(new InstantCommand(() -> chassisSubsystem.zeroHeading()));
+    // cmdXboxController.start().onTrue(new InstantCommand(() -> chassisSubsystem.zeroHeading()));
 
-    cmdXboxController.b().whileTrue(new ElevatorLevelIntake(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem));
-    cmdXboxController.b().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
+    // cmdXboxController.b().whileTrue(new ElevatorLevelIntake(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem));
+    // cmdXboxController.b().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
 
     
     
-    cmdXboxController.rightBumper().whileTrue(new InstantCommand(()-> setRight(cmdXboxController)));
-    cmdXboxController.leftBumper().whileTrue(new InstantCommand(()-> setLeft(cmdXboxController)));
+    // cmdXboxController.rightBumper().whileTrue(new InstantCommand(()-> setRight(cmdXboxController)));
+    // cmdXboxController.leftBumper().whileTrue(new InstantCommand(()-> setLeft(cmdXboxController)));
 
 
-    cmdXboxController.a().whileTrue(new ClimbCMD(climbSubsystem));
-    cmdXboxController.y().whileTrue(new CloseClimbCMD(climbSubsystem));
+    // cmdXboxController.a().whileTrue(new ClimbCMD(climbSubsystem));
+    // cmdXboxController.y().whileTrue(new CloseClimbCMD(climbSubsystem));
 
-    cmdXboxController.leftTrigger().whileTrue(new CollectingAlgeaCmd(algeaSubsystem));
-    cmdXboxController.leftTrigger().toggleOnFalse(new InstantCommand(()-> algeaSubsystem.setRestAngle()));
+    // cmdXboxController.leftTrigger().whileTrue(new CollectingAlgeaCmd(algeaSubsystem));
+    // cmdXboxController.leftTrigger().toggleOnFalse(new InstantCommand(()-> algeaSubsystem.setRestAngle()));
 
-    cmdXboxController.rightTrigger().whileTrue(new ShootingAlgeaCmd(algeaSubsystem));
-    cmdXboxController.rightTrigger().toggleOnFalse(new InstantCommand(()-> algeaSubsystem.setRestAngle()));
+    // cmdXboxController.rightTrigger().whileTrue(new ShootingAlgeaCmd(algeaSubsystem));
+    // cmdXboxController.rightTrigger().toggleOnFalse(new InstantCommand(()-> algeaSubsystem.setRestAngle()));
+
+    xboxControllerDrive.a().whileTrue(algeaSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+    xboxControllerDrive.b().whileTrue(algeaSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+    xboxControllerDrive.y().whileTrue(algeaSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+    xboxControllerDrive.x().whileTrue(algeaSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
 
   }
 
+  // @Tal: Document.
   private void setRight(CommandXboxController cmdXboxController) {
 
     // scores the coral on the right side of the reef in L4
@@ -181,7 +188,8 @@ public class RobotContainer {
             ElevatorStates.coralL1, DropAngles.setDropAngleL1, true, false));
     cmdXboxController.povDown().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
   }
-
+  
+  // @Tal: Document.
   private void setLeft(CommandXboxController cmdXboxController) {
 
     // scores the coral on the right side of the reef in L4

@@ -5,14 +5,17 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Millisecond;
 import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Second;
 import static edu.wpi.first.units.Units.Seconds;
 import static edu.wpi.first.units.Units.Volt;
 import static edu.wpi.first.units.Units.Volts;
 import static edu.wpi.first.units.Units.VoltsPerMeterPerSecond;
 
+import com.ctre.phoenix6.CANBus;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.NeutralModeValue;
@@ -76,15 +79,17 @@ public class AlgeaSubsystem extends SubsystemBase {
     angleEncoder.setDutyCycleRange(algeaSubsystemConstants.minAngle.in(Degrees), algeaSubsystemConstants.maxAngle.in(Degrees));
 
     //the SysID configs, for explenation go to elevator subsystem in lines 77-79
-    this.config = new Config( Volts.of(0.01).per(Millisecond), Volts.of(0.5), Seconds.of(2));
+    this.config = new Config(Volts.of(1.8).per(Second), Volts.of(2.5), Seconds.of(2));
     this.sysID = new SysIdRoutine(config,
      new SysIdRoutine.Mechanism(this::setVoltage,
-    Log->{
-      angleMotor.get();
-      angleMotor.getMotorVoltage();
-      angleMotor.getVelocity();
-    } ,
+    Log -> {
+      Log.motor("Angle Motor")
+         .voltage(angleMotor.getMotorVoltage().getValue())
+         .angularPosition(Degrees.of(getAngle().in(Degrees)))
+         .angularVelocity(DegreesPerSecond.of(angleMotor.getVelocity().getValue().in(DegreesPerSecond)));
+    }, 
      this));
+
   }
 
   //SysID Quasistatics tests commands
@@ -202,6 +207,7 @@ public class AlgeaSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("AlgeaSubsystem/algea intake limit Switch", getLowLimitSwitch());
     SmartDashboard.putNumber("AlgeaSubsystem/piece detector value", ballDetector.getVoltage());
     SmartDashboard.putBoolean("AlgeaSubsystem/has ball?", hasBall());
+    
 
 
     if (getLowLimitSwitch() && power > 0) {
