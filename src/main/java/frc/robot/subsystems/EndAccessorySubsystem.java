@@ -68,6 +68,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
         switch (target) {
             case setDropAngleL1:
                 powerMotor.set(-EndAccessorySubsystemConstants.kMotorSpeed);
+                break;
             default:
                 powerMotor.set(EndAccessorySubsystemConstants.kMotorSpeed);
         }
