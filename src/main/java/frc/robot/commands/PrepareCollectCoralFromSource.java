@@ -23,6 +23,8 @@ public class PrepareCollectCoralFromSource extends SequentialCommandGroup {
 
       elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.source),
 
+      elevatorSubsystem.waitForLevel()),
+
       new WaitUntilCommand(() -> endAccessorySubsystem.isAtSetpoint()),
 
       new CoralCollectCommand(endAccessorySubsystem),

@@ -5,26 +5,39 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
+import frc.robot.commands.CoralCollectCommand;
 import frc.robot.commands.DefaultTeleopCommand;
+
 import frc.robot.commands.PrepareCollectCoralFromSource;
+import frc.robot.commands.CoralReleaseCommand;
+
 import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
 import frc.robot.commands.CollectingAlageaCmd;
+
 import frc.robot.commands.CoralCollectCommand;
 import frc.robot.commands.CoralReleaseCommand;
+
+import frc.robot.commands.DefaultAlageaCmd;
+import frc.robot.commands.DefaultTeleopCommand;
+
 import frc.robot.commands.ShootingAlageaCmd;
 import frc.robot.subsystems.AlageaSubsystem;
 import frc.robot.commands.ClimbCMD;
 import frc.robot.commands.CloseClimbCMD;
 import frc.robot.Util.ElevatorStates;
+import frc.robot.commands.DefaultTeleopCommand;
 import frc.robot.commands.ResetClimbing;
+import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.ClimbSubsystem;
+
 import frc.robot.subsystems.ElevatorSubsystem;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
 import edu.wpi.first.wpilibj.Joystick;
+import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -64,6 +77,7 @@ public class RobotContainer {
   public RobotContainer() {
 
 
+
     NamedCommands.registerCommand("CollectingAlagea", new CollectingAlageaCmd(alageaSubsystem));
     NamedCommands.registerCommand("ShootingAlagea", new ShootingAlageaCmd(alageaSubsystem));
 
@@ -83,8 +97,9 @@ public class RobotContainer {
     NamedCommands.registerCommand("elevator to L2", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL2));
     NamedCommands.registerCommand("elevator to L1", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL1));
 
-    autoChooser = AutoBuilder.buildAutoChooser();
+    CommandScheduler.getInstance().setDefaultCommand(alageaSubsystem, new DefaultAlageaCmd(alageaSubsystem));
 
+    autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.setDefaultOption("EMPTY", null);
     SmartDashboard.putData("Auto Chooser", autoChooser);
     configureBindings();
