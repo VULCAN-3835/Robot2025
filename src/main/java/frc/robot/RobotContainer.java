@@ -8,7 +8,10 @@ import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DefaultTeleopCommand;
 import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem;
+import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
 import frc.robot.commands.CollectingAlageaCmd;
+import frc.robot.commands.CoralCollectCommand;
+import frc.robot.commands.CoralReleaseCommand;
 import frc.robot.commands.ShootingAlageaCmd;
 import frc.robot.subsystems.AlageaSubsystem;
 import frc.robot.commands.ClimbCMD;
@@ -18,6 +21,8 @@ import frc.robot.commands.ResetClimbing;
 import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.auto.NamedCommands;
+
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -56,6 +61,25 @@ public class RobotContainer {
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
   public RobotContainer() {
+
+
+    NamedCommands.registerCommand("CollectingAlagea", new CollectingAlageaCmd(alageaSubsystem));
+    NamedCommands.registerCommand("ShootingAlagea", new ShootingAlageaCmd(alageaSubsystem));
+
+    NamedCommands.registerCommand("Climb", new ClimbCMD(climbSubsystem));
+    NamedCommands.registerCommand("ResetClimbing", new ResetClimbing(climbSubsystem));
+
+    NamedCommands.registerCommand("shoot Coral to L1", new CoralReleaseCommand(endAccessorySubsystem,DropAngles.setDropAngleL1));
+    NamedCommands.registerCommand("shoot Coral to L2", new CoralReleaseCommand(endAccessorySubsystem,DropAngles.setDropAngleL2));
+    NamedCommands.registerCommand("shoot Coral to L3", new CoralReleaseCommand(endAccessorySubsystem,DropAngles.setDropAngleL3));
+    NamedCommands.registerCommand("shoot Coral to L4", new CoralReleaseCommand(endAccessorySubsystem,DropAngles.setDropAngleL4));
+    NamedCommands.registerCommand("shoot Coral to rest", new CoralReleaseCommand(endAccessorySubsystem,DropAngles.restingAngle));
+    NamedCommands.registerCommand("collect Coral from source", new CoralCollectCommand(endAccessorySubsystem));
+
+    NamedCommands.registerCommand("elevator to L4", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL4));
+    NamedCommands.registerCommand("elevator to L3", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL3));
+    NamedCommands.registerCommand("elevator to L2", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL2));
+    NamedCommands.registerCommand("elevator to L1", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL1));
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
