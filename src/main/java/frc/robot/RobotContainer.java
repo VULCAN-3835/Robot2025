@@ -70,7 +70,7 @@ public class RobotContainer {
           () -> -xboxControllerDrive.getLeftX(),
           () -> -xboxControllerDrive.getRightX()));
     }
-    xboxControllerDrive.rightBumper()().onTrue(new InstantCommand(()-> rightLevelCounter++));
+    xboxControllerDrive.rightBumper().onTrue(new InstantCommand(()-> rightLevelCounter++));
     xboxControllerDrive.rightTrigger().onTrue(new InstantCommand(()-> rightLevelCounter--));
 
     xboxControllerDrive.leftBumper().onTrue(new InstantCommand(()-> leftLevelCounter++));
