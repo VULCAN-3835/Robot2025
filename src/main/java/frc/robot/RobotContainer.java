@@ -6,6 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DefaultTeleopCommand;
+import frc.robot.commands.PrepareCollectCoralFromSource;
 import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
@@ -75,6 +76,7 @@ public class RobotContainer {
     NamedCommands.registerCommand("shoot Coral to L4", new CoralReleaseCommand(endAccessorySubsystem,DropAngles.setDropAngleL4));
     NamedCommands.registerCommand("shoot Coral to rest", new CoralReleaseCommand(endAccessorySubsystem,DropAngles.restingAngle));
     NamedCommands.registerCommand("collect Coral from source", new CoralCollectCommand(endAccessorySubsystem));
+    NamedCommands.registerCommand("prepare to collect coral", new PrepareCollectCoralFromSource(endAccessorySubsystem, elevatorSubsystem));
 
     NamedCommands.registerCommand("elevator to L4", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL4));
     NamedCommands.registerCommand("elevator to L3", elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL3));
