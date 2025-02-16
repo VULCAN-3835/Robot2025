@@ -46,6 +46,8 @@ public final class Constants {
     public static final int driverController = 0;
     public static final int commandController = 0;
     public static final double kDeadband = 0.1;
+    public static int rightLevelCounter = 0;
+    public static int leftLevelCounter = 0;
   }
   public static class alageaSubsystemConstants{
     //TODO: change the values to the actual values

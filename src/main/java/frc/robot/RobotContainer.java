@@ -40,8 +40,6 @@ public class RobotContainer {
   private final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
   private final AlageaSubsystem alageaSubsystem = new AlageaSubsystem();
   private final Joystick joystic = new Joystick(0);
-  private int rightLevelCounter = 0;
-  private int leftLevelCounter = 0;
    private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
   // Replace with CommandPS4Controller or CommandJoystick if needed
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
@@ -50,7 +48,32 @@ public class RobotContainer {
       OperatorConstants.driverController);
 
   private SendableChooser<Command> autoChooser = new SendableChooser<>();
-
+  public static void whichLevel(){
+    if(Constants.OperatorConstants.rightLevelCounter > 0 && Constants.OperatorConstants.rightLevelCounter < 6){
+      System.out.println("rightLevel counter is in level1");
+    }
+    if(Constants.OperatorConstants.rightLevelCounter > 5 && Constants.OperatorConstants.rightLevelCounter < 11){
+      System.out.println("rightLevelCounter is in level2");
+    }
+    if(Constants.OperatorConstants.rightLevelCounter > 10 && Constants.OperatorConstants.rightLevelCounter < 16){
+      System.out.println("rightLevelCounter is in level3");
+    }
+    if(Constants.OperatorConstants.rightLevelCounter > 15 && Constants.OperatorConstants.rightLevelCounter < 21){
+      System.out.println("rightLevelCounter is in level4");
+    }
+    if(Constants.OperatorConstants.leftLevelCounter > 0 && Constants.OperatorConstants.leftLevelCounter < 6){
+      System.out.println("leftLevelCounterr is in level1");
+    }
+    if(Constants.OperatorConstants.leftLevelCounter > 5 && Constants.OperatorConstants.leftLevelCounter < 11){
+      System.out.println("leftLevelCounter is in level2");
+    }
+    if(Constants.OperatorConstants.leftLevelCounter > 10 && Constants.OperatorConstants.leftLevelCounter < 16){
+      System.out.println("leftLevelCounter is in level3");
+    }
+    if(Constants.OperatorConstants.leftLevelCounter > 15 && Constants.OperatorConstants.leftLevelCounter < 21){
+      System.out.println("leftLevelCounter is in level4");
+    }
+  }
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
@@ -70,12 +93,13 @@ public class RobotContainer {
           () -> -xboxControllerDrive.getLeftX(),
           () -> -xboxControllerDrive.getRightX()));
     }
-    xboxControllerDrive.rightBumper().onTrue(new InstantCommand(()-> rightLevelCounter++));
-    xboxControllerDrive.rightTrigger().onTrue(new InstantCommand(()-> rightLevelCounter--));
+    xboxControllerDrive.rightBumper().onTrue(new InstantCommand(()-> Constants.OperatorConstants.rightLevelCounter++));
+    xboxControllerDrive.rightTrigger().onTrue(new InstantCommand(()-> Constants.OperatorConstants.rightLevelCounter--));
 
-    xboxControllerDrive.leftBumper().onTrue(new InstantCommand(()-> leftLevelCounter++));
-    xboxControllerDrive.leftTrigger().onTrue(new InstantCommand(()-> leftLevelCounter--));
-
+    xboxControllerDrive.leftBumper().onTrue(new InstantCommand(()-> Constants.OperatorConstants.leftLevelCounter++));
+    xboxControllerDrive.leftTrigger().onTrue(new InstantCommand(()-> Constants.OperatorConstants.leftLevelCounter--));
+    
+    xboxControllerDrive.leftBumper().toggleOnTrue(new InstantCommand()-> whichLevel());
 
     xboxControllerDrive.b().whileTrue(new ShootingAlageaCmd(alageaSubsystem));
     xboxControllerDrive.x().whileTrue(new CollectingAlageaCmd(alageaSubsystem));
