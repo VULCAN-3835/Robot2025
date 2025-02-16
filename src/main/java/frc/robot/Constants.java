@@ -65,6 +65,7 @@ public final class Constants {
     public static final Angle maxAngle = Degrees.of(0);
     public static final Angle minAngle = Degrees.of(0);
     public static final Angle shootingAngle = Degrees.of(0);
+    public static final Angle scoreAngle = Degrees.of(0);
    
 
     public static final double ballDetectorThreshold = 0;
