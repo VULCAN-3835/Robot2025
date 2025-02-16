@@ -17,8 +17,8 @@ public class ShootingAlageaCmd extends SequentialCommandGroup {
   public ShootingAlageaCmd(AlageaSubsystem alageaSubsystem) {
     // Add your commands in the addCommands() call, e.g
     // addCommands(new FooCommand(), new BarCommand());
+    addRequirements(alageaSubsystem);
     addCommands(
-
         // 1. sets the subsystem in the predefined shooting angle
         new InstantCommand(() -> alageaSubsystem.setShootingAngle()),
 
@@ -30,7 +30,7 @@ public class ShootingAlageaCmd extends SequentialCommandGroup {
 
         // 4. checkes if the alagea was shot
         new WaitUntilCommand(() -> !alageaSubsystem.hasBall()),
-        
+
         // 5. stops the motor and sets the subsystem in the predefined resting angle
         new InstantCommand(() -> {
           alageaSubsystem.setPower(0);
