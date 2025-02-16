@@ -48,7 +48,7 @@ public class RobotContainer {
       OperatorConstants.driverController);
 
   private SendableChooser<Command> autoChooser = new SendableChooser<>();
-  public static void whichLevel(){
+  public static void RWhichLevel(){
     if(Constants.OperatorConstants.rightLevelCounter > 0 && Constants.OperatorConstants.rightLevelCounter < 6){
       System.out.println("rightLevel counter is in level1");
     }
@@ -61,7 +61,9 @@ public class RobotContainer {
     if(Constants.OperatorConstants.rightLevelCounter > 15 && Constants.OperatorConstants.rightLevelCounter < 21){
       System.out.println("rightLevelCounter is in level4");
     }
-    if(Constants.OperatorConstants.leftLevelCounter > 0 && Constants.OperatorConstants.leftLevelCounter < 6){
+  }
+  public static void LWhichLevel(){
+     if(Constants.OperatorConstants.leftLevelCounter > 0 && Constants.OperatorConstants.leftLevelCounter < 6){
       System.out.println("leftLevelCounterr is in level1");
     }
     if(Constants.OperatorConstants.leftLevelCounter > 5 && Constants.OperatorConstants.leftLevelCounter < 11){
@@ -99,7 +101,8 @@ public class RobotContainer {
     xboxControllerDrive.leftBumper().onTrue(new InstantCommand(()-> Constants.OperatorConstants.leftLevelCounter++));
     xboxControllerDrive.leftTrigger().onTrue(new InstantCommand(()-> Constants.OperatorConstants.leftLevelCounter--));
     
-    xboxControllerDrive.leftBumper().toggleOnTrue(new InstantCommand()-> whichLevel());
+    xboxControllerDrive.leftBumper().toggleOnTrue(new InstantCommand()-> RWhichLevel());
+    xboxControllerDrive.rightBumper().toggleOnTrue(new InstantCommand()-> LWhichLevel());
 
     xboxControllerDrive.b().whileTrue(new ShootingAlageaCmd(alageaSubsystem));
     xboxControllerDrive.x().whileTrue(new CollectingAlageaCmd(alageaSubsystem));
