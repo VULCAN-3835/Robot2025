@@ -6,6 +6,7 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Degree;
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.DegreesPerSecond;
 import static edu.wpi.first.units.Units.Millisecond;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Seconds;
@@ -67,10 +68,11 @@ public class EndAccessorySubsystem extends SubsystemBase {
         this.sysIdRoutine = new SysIdRoutine(config,
             new SysIdRoutine.Mechanism(this::setVoltage,
             Log -> {
-                angleMotor.get();
-                angleMotor.getMotorVoltage();
-                angleMotor.getVelocity();
-                    },
+                Log.motor("Angle Motor")
+                .voltage(angleMotor.getMotorVoltage().getValue())
+                .angularPosition(Degrees.of(getAngle().in(Degrees)))
+                .angularVelocity(DegreesPerSecond.of(angleMotor.getVelocity().getValue().in(DegreesPerSecond)));
+                },
             this));
 
         profiledPIDController.setTolerance(EndAccessoryConstants.armAngleTolerence.in(Degree));

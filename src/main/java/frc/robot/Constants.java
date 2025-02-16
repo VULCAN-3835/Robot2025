@@ -262,8 +262,7 @@ public final class Constants {
     public static final Distance restDistance = Centimeter.of(0);
     public static final Distance sourceDistance = Centimeter.of(0);
 
-    public static final int motorLeftID = 51;
-    public static final int motorRightID = 50;
+    public static final int elevatorMotorID = 50;
     public static final int limitSwitchID = 9;
 
     public static final double kP = 0;
@@ -283,7 +282,7 @@ public final class Constants {
 
     // We'll need to know how much we get for every rotation, and use that number
     // here:
-    public static Per<DistanceUnit, AngleUnit> distancePerRotation = Centimeters.of(20).div(Rotation.of(1));
+    public static Per<DistanceUnit, AngleUnit> distancePerRotation = Centimeters.of(0.25).div(Rotation.of(1));
 
     public static Distance enumDistance(ElevatorStates elevatorStates) {
       switch (elevatorStates) {

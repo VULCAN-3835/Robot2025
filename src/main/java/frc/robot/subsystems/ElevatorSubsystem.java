@@ -6,9 +6,11 @@ package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Centimeter;
 import static edu.wpi.first.units.Units.Centimeters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Millisecond;
 import static edu.wpi.first.units.Units.Milliseconds;
 import static edu.wpi.first.units.Units.Minute;
+import static edu.wpi.first.units.Units.RPM;
 import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.RotationsPerSecond;
 import static edu.wpi.first.units.Units.Seconds;
@@ -40,8 +42,7 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 
 public class ElevatorSubsystem extends SubsystemBase {
   /** Creates a new ElevatorSubsystem. */
-  private final TalonFX elevatorMotorRight;
-  private final TalonFX elevatorMotorLeft;
+  private final TalonFX elevatorMotor;
   private final DigitalInput closeLimitSwitch;
   private final PIDController pidController;
   private final TrapezoidProfile trapezoidProfile;
@@ -63,8 +64,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 
   public ElevatorSubsystem() {
-    this.elevatorMotorLeft = new TalonFX(ElevatorConstant.motorLeftID); 
-    this.elevatorMotorRight = new TalonFX(ElevatorConstant.motorRightID);
+    this.elevatorMotor = new TalonFX(ElevatorConstant.elevatorMotorID);
     this.closeLimitSwitch = new DigitalInput(ElevatorConstant.limitSwitchID);
 
     this.elevatorFeedforward = new ElevatorFeedforward(ElevatorConstant.kS, ElevatorConstant.kG, ElevatorConstant.kV);
@@ -81,9 +81,10 @@ public class ElevatorSubsystem extends SubsystemBase {
     this.sysIdRoutine = new SysIdRoutine(config,
      new SysIdRoutine.Mechanism(this::setVoltage,
       Log->{
-        elevatorMotorLeft.getMotorVoltage();
-        elevatorMotorLeft.get();
-        getCloseLimitSwitch();
+        Log.motor("elevator Motor")
+        .voltage(elevatorMotor.getMotorVoltage().getValue())
+        .linearPosition(Centimeters.of(getDistance().in(Centimeters)))
+        .linearVelocity(MetersPerSecond.of(elevatorMotor.getVelocity().getValue().in(RPM)));
 
     }, this));
   }
@@ -98,8 +99,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public void setVoltage(Voltage volts){
-    elevatorMotorLeft.setVoltage(volts.in(Volts));
-    elevatorMotorRight.setVoltage(-volts.in(Volts));
+    elevatorMotor.setVoltage(volts.in(Volts));
   }
 
   public void setLevel(ElevatorStates state) {
@@ -110,17 +110,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     trapzoidSetPoint = new State(setPoint, 0);
   }
   public void setPower(double power){
-    elevatorMotorLeft.set(power);
-    elevatorMotorRight.set(-power);
+    elevatorMotor.set(power);
 
   }
 
   // current height
   public Measure<DistanceUnit> getDistance() {
-    Angle angle1= (this.elevatorMotorLeft.getPosition().getValue());
-    Angle angle2 = (this.elevatorMotorRight.getPosition().getValue());
-    Angle avg = angle1.minus(angle2).div(2);
-    return ElevatorConstant.distancePerRotation.timesDivisor(avg);
+    Angle angle = (this.elevatorMotor.getPosition().getValue());
+    return ElevatorConstant.distancePerRotation.timesDivisor(angle);
   }
 
   public void setRest() {
@@ -146,7 +143,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     //the current position and the velocity of the elevator
     currentPosition = getDistance().in(Centimeter);
-    currentVelocity  = elevatorMotorLeft.getVelocity().getValue().in(RotationsPerSecond)*60;
+    currentVelocity  = elevatorMotor.getVelocity().getValue().in(RotationsPerSecond)*60;
 
 
     //calculates the controlles output to the motors
@@ -155,17 +152,14 @@ public class ElevatorSubsystem extends SubsystemBase {
     State trapzoidOutput = trapezoidProfile.calculate(trapezoidProfile.totalTime(),new State(currentPosition, currentVelocity), trapzoidSetPoint);
 
     //uses the velcity that has been calculated by the trapzoid
-    double feedForwardOutput = elevatorFeedforward.calculate(trapzoidOutput.velocity);
-
+    double feedForwardOutput = elevatorFeedforward.calculate(currentVelocity);
     // the sum of the output power by all of the motor controllers
     double power = profiledPIDOutput + pidOutput + feedForwardOutput + trapzoidOutput.velocity;
 
     if (getCloseLimitSwitch() && power < 0) {
-      elevatorMotorLeft.set(0);
-      elevatorMotorRight.set(0);
+      elevatorMotor.set(0);
     } else {
-      elevatorMotorLeft.set(power);
-      elevatorMotorRight.set(-power);
+      elevatorMotor.set(power);
 
     }
     if (getCloseLimitSwitch()) {
