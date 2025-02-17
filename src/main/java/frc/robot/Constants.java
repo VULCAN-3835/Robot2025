@@ -47,6 +47,8 @@ public final class Constants {
   public static class OperatorConstants {
     public static final int driverController = 0;
     public static final double kDeadband = 0.1;
+    public static int rightLevelCounter = 0;
+    public static int leftLevelCounter = 0;
   }
   public static class EndAccessorySubsystemConstants {
     //TODO: change all values to actual values
