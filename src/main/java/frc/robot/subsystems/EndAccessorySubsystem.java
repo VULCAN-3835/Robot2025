@@ -45,7 +45,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
         angleEncoder = new DutyCycleEncoder(EndAccessorySubsystemConstants.angleEncoderID);
         pieceDetector = new AnalogInput(EndAccessorySubsystemConstants.pieceDetectorID);
 
-        pidController = new PIDController(EndAccessorySubsystemConstants.kP, EndAccessorySubsystemConstants.KI, EndAccessorySubsystemConstants.kD);
+        pidController = new PIDController(EndAccessorySubsystemConstants.kP, EndAccessorySubsystemConstants.kI, EndAccessorySubsystemConstants.kD);
         pidController.setTolerance(EndAccessorySubsystemConstants.armAngleTolerence);
     }
 

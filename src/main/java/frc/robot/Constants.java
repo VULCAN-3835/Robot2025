@@ -71,6 +71,7 @@ public final class Constants {
     public static final double waitTime = 0;
     public static final double kP = 0;
     public static final double kD = 0;
+    public static final double kI = 0;
     public static final double armAngleTolerence = 0;
   }
   public static class alageaSubsystemConstants{
@@ -246,10 +247,10 @@ public final class Constants {
 
   public static class ElevatorConstant {
 
-    public static Distance coralL1 = Centimeter.of(1); // I will add the real measurments later on
-    public static Distance coralL2 = Centimeter.of(6);
-    public static Distance coralL3 = Centimeter.of(6);
-    public static Distance coralL4 = Centimeter.of(6);
+    public static Distance coralL1 = Centimeter.of(0); // I will add the real measurments later on
+    public static Distance coralL2 = Centimeter.of(0);
+    public static Distance coralL3 = Centimeter.of(0);
+    public static Distance coralL4 = Centimeter.of(0);
     public static Distance restDistance = Centimeter.of(0);
     public static Distance sourceDistance = Centimeter.of(0);
 
@@ -266,7 +267,7 @@ public final class Constants {
     public static double kV = 0; 
 
     public static double restPower = 0;
-    public static Distance errorTollerance = Centimeter.of(0.3);
+    public static Distance errorTollerance = Centimeter.of(0.0);
     public static double kMaxAcceleration = 0;
     public static double kMaxVelocity = 0;
 
