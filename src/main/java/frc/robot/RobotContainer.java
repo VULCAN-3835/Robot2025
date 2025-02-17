@@ -101,8 +101,8 @@ public class RobotContainer {
     xboxControllerDrive.leftBumper().onTrue(new InstantCommand(()-> Constants.OperatorConstants.leftLevelCounter++));
     xboxControllerDrive.leftTrigger().onTrue(new InstantCommand(()-> Constants.OperatorConstants.leftLevelCounter--));
     
-    xboxControllerDrive.leftBumper().toggleOnTrue(new InstantCommand()-> RWhichLevel());
-    xboxControllerDrive.rightBumper().toggleOnTrue(new InstantCommand()-> LWhichLevel());
+    xboxControllerDrive.leftBumper().toggleOnTrue(new InstantCommand(()-> RWhichLevel()));
+    xboxControllerDrive.rightBumper().toggleOnTrue(new InstantCommand(()-> LWhichLevel()));
 
     xboxControllerDrive.b().whileTrue(new ShootingAlageaCmd(alageaSubsystem));
     xboxControllerDrive.x().whileTrue(new CollectingAlageaCmd(alageaSubsystem));
