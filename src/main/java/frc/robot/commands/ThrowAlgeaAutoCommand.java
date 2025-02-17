@@ -5,7 +5,9 @@
 package frc.robot.commands;
 
 import static edu.wpi.first.units.Units.Centimeter;
+import static edu.wpi.first.units.Units.Centimeters;
 
+import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -24,10 +26,11 @@ public class ThrowAlgeaAutoCommand extends SequentialCommandGroup {
 
     addCommands(
       new InstantCommand(() -> elevatorSubsystem.setLevel(elevatorStates)),
-      new WaitUntilCommand(()-> elevatorSubsystem.getDistance().minus(elevatorStates.disSetLevel).abs(Centimeter).leq(elevatorConstant.errorTollerance.in(Centimeter))),
+      new WaitUntilCommand(()->elevatorSubsystem.getDistance().minus(Centimeters.of(elevatorConstant.enumDistance(elevatorStates).in(Centimeter))).lt(Centimeters.of(elevatorConstant.errorTollerance.in(Centimeter)))),
       new InstantCommand(()-> endAccessorySubsystem.gripperIntake()),
       new InstantCommand(()-> endAccessorySubsystem.gripperRelease()),
-      new InstantCommand(()-> elevatorSubsystem.setLevel(elevatorStates.rest)),
+      new InstantCommand(()-> elevatorSubsystem.setLevel(elevatorStates.rest))
     );
+  
   }
 }
