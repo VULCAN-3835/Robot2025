@@ -15,9 +15,6 @@ public class CoralReleaseCommand extends SequentialCommandGroup {
         addRequirements(endAccessorySubsystem);
         addCommands(
 
-            new InstantCommand(()->endAccessorySubsystem.setAngle(dropAngle)),
-
-            new WaitUntilCommand(()->endAccessorySubsystem.isAtSetpoint()),
             // 2. Activate the gripper to release the piece
             new InstantCommand(() -> endAccessorySubsystem.gripperRelease(dropAngle)),
 

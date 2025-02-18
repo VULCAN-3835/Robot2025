@@ -14,7 +14,12 @@ import static edu.wpi.first.units.Units.Volts;
 import java.util.Collection;
 
 import com.ctre.phoenix6.Orchestra;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.TalonFXConfigurator;
 import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.InvertedValue;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -46,7 +51,6 @@ public class EndAccessorySubsystem extends SubsystemBase {
     private DutyCycleEncoder angleEncoder;
     private AnalogInput pieceDetector;
 
-    private Timer timer;
 
     private ProfiledPIDController profiledPIDController;
     private Constraints constraints;
@@ -58,14 +62,24 @@ public class EndAccessorySubsystem extends SubsystemBase {
     public EndAccessorySubsystem() {
         this.angleMotor = new TalonFX(EndAccessoryConstants.angleMotorID);
         this.powerMotor = new TalonFX(EndAccessoryConstants.powerMotorID);
+
+        this.angleMotor.setNeutralMode(NeutralModeValue.Brake);
+
+        TalonFXConfigurator configurator = angleMotor.getConfigurator();
+
+        MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+
+        motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+
+        configurator.apply(motorOutputConfigs);
+        
+
         this.sound = new Orchestra();
         sound.addInstrument(powerMotor);
-        sound.loadMusic("src/main/deploy/output.chrp");
-
-        this.timer = new Timer();
+        sound.loadMusic("output.chrp");
 
         this.angleEncoder = new DutyCycleEncoder(EndAccessoryConstants.angleEncoderID);
-        angleEncoder.setInverted(true);
+        angleEncoder.setInverted(false);
         
         // angleEncoder.setDutyCycleRange(EndAccessoryConstants.kMinAngle.in(Rotations), EndAccessoryConstants.kMaxAngle.in(Rotations));
         this.pieceDetector = new AnalogInput(EndAccessoryConstants.pieceDetectorID);
@@ -74,7 +88,8 @@ public class EndAccessorySubsystem extends SubsystemBase {
         this.profiledPIDController = new ProfiledPIDController(EndAccessoryConstants.ProfiledkP,
                 EndAccessoryConstants.profiledkI,
                 EndAccessoryConstants.profiledkD, constraints);
-        profiledPIDController.setGoal(82);
+        this.profiledPIDController.enableContinuousInput(0, 360);
+        profiledPIDController.setGoal(EndAccessoryConstants.targetAngleRest.in(Degrees));
 
         
         // the SysID configs, for explanation on it go to the elevator subsystem in lines 77-79
@@ -174,7 +189,14 @@ public class EndAccessorySubsystem extends SubsystemBase {
     }
 
     public Angle getAngle() {
-        return Rotations.of(angleEncoder.get());
+        double curr = angleEncoder.get()*360;
+
+        curr-=224;
+        if (curr < 0) {
+            curr += 360;
+        }
+
+        return Degrees.of(curr);
     }
 
     public boolean hasPiece() {
@@ -214,15 +236,17 @@ public class EndAccessorySubsystem extends SubsystemBase {
             gripperStop();
         }
 
-        if (getAngle().in(Degrees)<EndAccessoryConstants.kMinAngle.in(Degrees) && profiledPIDOutput<0) {
+        if (getAngle().in(Degrees)<=EndAccessoryConstants.kMinAngle.in(Degrees) && profiledPIDOutput<0) {
             angleMotor.set(0);
             System.out.println("error low");
         }
-        if(getAngle().in(Degrees)<EndAccessoryConstants.kMaxAngle.in(Degrees) && profiledPIDOutput>0){
+        else if(getAngle().in(Degrees)>=EndAccessoryConstants.kMaxAngle.in(Degrees) && profiledPIDOutput>0){
             angleMotor.set(0);
             System.out.println("error high ");
         }
-        angleMotor.set(profiledPIDOutput);
+        else {
+            angleMotor.set(profiledPIDOutput);
+        }
 
 
         SmartDashboard.putNumber("EndAccessory Subsystem/end current angle", getAngle().in(Degrees));
@@ -230,9 +254,8 @@ public class EndAccessorySubsystem extends SubsystemBase {
         SmartDashboard.putNumber("EndAccessory Subsystem/infrared end value", pieceDetector.getVoltage());
         SmartDashboard.putBoolean("EndAccessory Subsystem/ is angle connected", angleEncoder.isConnected());
         SmartDashboard.putNumber("EndAccessory Subsystem/ pid output", profiledPIDOutput);
-        SmartDashboard.putNumber("EndAccessory Subsystem/ timer", timer.get());
         SmartDashboard.putBoolean("EndAccessory Subsystem/ is at setpoint", isAtSetpoint());
-        SmartDashboard.putNumber("EndAccessory Subsystem/ pid setPoint",profiledPIDController.getGoal().position);
+        SmartDashboard.putNumber("EndAccessory Subsystem/ pid setPoint", profiledPIDController.getGoal().position);
 
     }
 }

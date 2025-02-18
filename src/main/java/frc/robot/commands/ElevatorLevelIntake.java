@@ -18,10 +18,10 @@ import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ElevatorLevelIntake extends SequentialCommandGroup {
   /** Creates a new ElevatorLevelIntake. */
-  public ElevatorLevelIntake(ChassisSubsystem chassisSubsystem,ElevatorSubsystem elevatorSubsystem,EndAccessorySubsystem endAccessorySubsystem) {
+  public ElevatorLevelIntake(ElevatorSubsystem elevatorSubsystem,EndAccessorySubsystem endAccessorySubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addRequirements(chassisSubsystem,elevatorSubsystem,endAccessorySubsystem);
+    addRequirements(elevatorSubsystem,endAccessorySubsystem);
     addCommands(
       // 1. positioning itself in front of the april tag
       // new PositioningAprilTag(chassisSubsystem, false, true),

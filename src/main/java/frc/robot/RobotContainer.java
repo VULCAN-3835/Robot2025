@@ -80,25 +80,7 @@ public class RobotContainer {
 
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
-    NamedCommands.registerCommand("score L4 left", new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem,
-        endAccessorySubsystem, ElevatorStates.coralL4, DropAngles.setDropAngleL4, false, false));
-    NamedCommands.registerCommand("score L3 left", new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem,
-        endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3, false, false));
-    NamedCommands.registerCommand("score L2 left", new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem,
-        endAccessorySubsystem, ElevatorStates.coralL2, DropAngles.setDropAngleL2, false, false));
-    NamedCommands.registerCommand("score L1 left", new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem,
-        endAccessorySubsystem, ElevatorStates.coralL1, DropAngles.setDropAngleL1, false, false));
-    NamedCommands.registerCommand("intake from source", new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem,
-        endAccessorySubsystem, ElevatorStates.source, DropAngles.intakeAngle, false, true));
 
-    NamedCommands.registerCommand("score L4 right", new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem,
-        endAccessorySubsystem, ElevatorStates.coralL4, DropAngles.setDropAngleL4, true, false));
-    NamedCommands.registerCommand("score L3 right", new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem,
-        endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3, true, false));
-    NamedCommands.registerCommand("score L2 right", new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem,
-        endAccessorySubsystem, ElevatorStates.coralL2, DropAngles.setDropAngleL2, true, false));
-    NamedCommands.registerCommand("score L1 right", new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem,
-        endAccessorySubsystem, ElevatorStates.coralL1, DropAngles.setDropAngleL1, true, false));
 
     configureBindings();
   }
@@ -134,87 +116,68 @@ public class RobotContainer {
 
   private void configureXboxBinding(CommandXboxController cmdXboxController) {
 
-    // cmdXboxController.start().onTrue(new InstantCommand(() -> chassisSubsystem.zeroHeading()));
+  // xboxControllerDrive.a().whileTrue(elevatorSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+  // xboxControllerDrive.b().whileTrue(elevatorSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+  // xboxControllerDrive.y().whileTrue(elevatorSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+  // xboxControllerDrive.x().whileTrue(elevatorSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
 
-    // cmdXboxController.b().whileTrue(new ElevatorLevelIntake(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem));
-    // cmdXboxController.b().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
+  cmdXboxController.a().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,endAccessorySubsystem,ElevatorStates.coralL3,DropAngles.setDropAngleL3));
 
-    
-    
-    // cmdXboxController.rightBumper().whileTrue(new InstantCommand(()-> setRight(cmdXboxController)));
-    // cmdXboxController.leftBumper().whileTrue(new InstantCommand(()-> setLeft(cmdXboxController)));
-
-
-    // cmdXboxController.a().whileTrue(new ClimbCMD(climbSubsystem));
-    // cmdXboxController.y().whileTrue(new CloseClimbCMD(climbSubsystem));
-
-    // cmdXboxController.leftTrigger().whileTrue(new CollectingAlgeaCmd(algeaSubsystem));
-    // cmdXboxController.leftTrigger().toggleOnFalse(new InstantCommand(()-> algeaSubsystem.setRestAngle()));
-
-    // cmdXboxController.rightTrigger().whileTrue(new ShootingAlgeaCmd(algeaSubsystem));
-    // cmdXboxController.rightTrigger().toggleOnFalse(new InstantCommand(()-> algeaSubsystem.setRestAngle()));
-
-    cmdXboxController.a().whileTrue(new CoralCollectCommand(endAccessorySubsystem));
-    cmdXboxController.a().toggleOnFalse(new InstantCommand(()->endAccessorySubsystem.setAngle(DropAngles.restingAngle)));
-    cmdXboxController.b().whileTrue(new CoralReleaseCommand(endAccessorySubsystem, DropAngles.setDropAngleL1));
-    cmdXboxController.b().toggleOnFalse(new InstantCommand(()->endAccessorySubsystem.setAngle(DropAngles.restingAngle)));
-    
-    
-  }
+}
 
   private void setRight(CommandXboxController cmdXboxController) {
 
-    // scores the coral on the right side of the reef in L4
-    cmdXboxController.povUp()
-        .whileTrue(new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem,
-            ElevatorStates.coralL4, DropAngles.setDropAngleL4, true, false));
-    cmdXboxController.povUp().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
+    // // scores the coral on the right side of the reef in L4
+    // cmdXboxController.povUp()
+    //     .whileTrue(new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem,
+    //         ElevatorStates.coralL4, DropAngles.setDropAngleL4, true, false));
+    // cmdXboxController.povUp().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
 
-    // scores the coral on the right side of the reef in L3
-    cmdXboxController.povLeft()
-        .whileTrue(new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem,
-            ElevatorStates.coralL3, DropAngles.setDropAngleL3, true, false));
-    cmdXboxController.povLeft().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
+    // // scores the coral on the right side of the reef in L3
+    // cmdXboxController.povLeft()
+    //     .whileTrue(new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem,
+    //         ElevatorStates.coralL3, DropAngles.setDropAngleL3, true, false));
+    // cmdXboxController.povLeft().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
 
-    // scores the coral on the right side of the reef in L2
-    cmdXboxController.povRight()
-        .whileTrue(new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem,
-            ElevatorStates.coralL2, DropAngles.setDropAngleL2, true, false));
-    cmdXboxController.povRight().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
+    // // scores the coral on the right side of the reef in L2
+    // cmdXboxController.povRight()
+    //     .whileTrue(new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem,
+    //         ElevatorStates.coralL2, DropAngles.setDropAngleL2, true, false));
+    // cmdXboxController.povRight().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
 
-    // scores the coral on the right side of the reef in L1
-    cmdXboxController.povDown()
-        .whileTrue(new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem,
-            ElevatorStates.coralL1, DropAngles.setDropAngleL1, true, false));
-    cmdXboxController.povDown().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
+    // // scores the coral on the right side of the reef in L1
+    // cmdXboxController.povDown()
+    //     .whileTrue(new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem,
+    //         ElevatorStates.coralL1, DropAngles.setDropAngleL1, true, false));
+    // cmdXboxController.povDown().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
   }
   
   // @Tal: Document.
   private void setLeft(CommandXboxController cmdXboxController) {
 
-    // scores the coral on the right side of the reef in L4
-    cmdXboxController.povUp()
-        .whileTrue(new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem,
-            ElevatorStates.coralL4, DropAngles.setDropAngleL4, false, false));
-    cmdXboxController.povUp().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
+    // // scores the coral on the right side of the reef in L4
+    // cmdXboxController.povUp()
+    //     .whileTrue(new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem,
+    //         ElevatorStates.coralL4, DropAngles.setDropAngleL4, false, false));
+    // cmdXboxController.povUp().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
 
-    // scores the coral on the right side of the reef in L3
-    cmdXboxController.povLeft()
-        .whileTrue(new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem,
-            ElevatorStates.coralL3, DropAngles.setDropAngleL3, false, false));
-    cmdXboxController.povLeft().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
+    // // scores the coral on the right side of the reef in L3
+    // cmdXboxController.povLeft()
+    //     .whileTrue(new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem,
+    //         ElevatorStates.coralL3, DropAngles.setDropAngleL3, false, false));
+    // cmdXboxController.povLeft().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
 
-    // scores the coral on the right side of the reef in L2
-    cmdXboxController.povRight()
-        .whileTrue(new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem,
-            ElevatorStates.coralL2, DropAngles.setDropAngleL2, false, false));
-    cmdXboxController.povRight().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
+    // // scores the coral on the right side of the reef in L2
+    // cmdXboxController.povRight()
+    //     .whileTrue(new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem,
+    //         ElevatorStates.coralL2, DropAngles.setDropAngleL2, false, false));
+    // cmdXboxController.povRight().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
 
-    // scores the coral on the right side of the reef in L1
-    cmdXboxController.povDown()
-        .whileTrue(new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem,
-            ElevatorStates.coralL1, DropAngles.setDropAngleL1, false, false));
-    cmdXboxController.povDown().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
+    // // scores the coral on the right side of the reef in L1
+    // cmdXboxController.povDown()
+    //     .whileTrue(new ElevatorLevelScoreCMD(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem,
+    //         ElevatorStates.coralL1, DropAngles.setDropAngleL1, false, false));
+    // cmdXboxController.povDown().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
   }
 
 

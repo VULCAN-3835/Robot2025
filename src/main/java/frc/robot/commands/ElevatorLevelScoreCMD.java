@@ -19,15 +19,12 @@ import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ElevatorLevelScoreCMD extends SequentialCommandGroup {
   /** Creates a new ElevatorLevelScoreCMD. */
-  public ElevatorLevelScoreCMD(ChassisSubsystem chassisSubsystem,ElevatorSubsystem elevatorSubsystem, EndAccessorySubsystem endAccessorySubsystem,
-  ElevatorStates elevatorState,DropAngles dropAngle,boolean isMovingRight,boolean Intake) {
+  public ElevatorLevelScoreCMD(ElevatorSubsystem elevatorSubsystem, EndAccessorySubsystem endAccessorySubsystem,
+  ElevatorStates elevatorState,DropAngles dropAngle) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addRequirements(chassisSubsystem,elevatorSubsystem,endAccessorySubsystem);
 
     addCommands(
-      // 1. positioning itself in front of the april tag
-      // new PositioningAprilTag(chassisSubsystem, isMovingRight, Intake),
 
       // 2. sets the angle of the end accessory and the height of the elevator in the same time 
       new ParallelCommandGroup(

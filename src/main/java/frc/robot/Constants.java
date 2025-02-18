@@ -47,8 +47,8 @@ public final class Constants {
     public static final int angleMotorID = 60;
     public static final int powerMotorID = 61;
 
-    public static final double maxVelocity = 2;
-    public static final double maxAcceleration = 2;
+    public static final double maxVelocity = 70;
+    public static final double maxAcceleration = 100;
 
 
     public static final int angleEncoderID = 5;
@@ -62,19 +62,19 @@ public final class Constants {
 
     public static final double kHasPieceVoltageThreshold = 1.8;
 
-    public static final Angle kMaxAngle = Degrees.of(84);
-    public static final Angle kMinAngle = Degrees.of(276);
+    public static final Angle kMaxAngle = Degrees.of(191);
+    public static final Angle kMinAngle = Degrees.of(50);
 
-    public static final Angle targetDropAngleL1 = Degrees.of(53);
-    public static final Angle targetDropAngleL2 = Degrees.of(0);
-    public static final Angle targetDropAngleL3 = Degrees.of(0);
-    public static final Angle targetDropAngleL4 = Degrees.of(0);
+    public static final Angle targetDropAngleL1 = Degrees.of(64);
+    public static final Angle targetDropAngleL2 = Degrees.of(162);
+    public static final Angle targetDropAngleL3 = Degrees.of(162);
+    public static final Angle targetDropAngleL4 = Degrees.of(188);
 
-    public static final Angle targetAngleRest = Degrees.of(82);
+    public static final Angle targetAngleRest = Degrees.of(52);
 
-    public static final Angle targetIntakeAngle = Degrees.of(50);
+    public static final Angle targetIntakeAngle = Degrees.of(85);
 
-    public static final double ProfiledkP = 0.0241628;
+    public static final double ProfiledkP = 0.005;
     public static final double profiledkI = 0;
     public static final double profiledkD = 0;
 
@@ -264,16 +264,15 @@ public final class Constants {
 
     public static final Distance coralL1 = Centimeter.of(0);
     public static final Distance coralL2 = Centimeter.of(0);
-    public static final Distance coralL3 = Centimeter.of(0);
-    public static final Distance coralL4 = Centimeter.of(0);
+    public static final Distance coralL3 = Centimeter.of(17.52);
+    public static final Distance coralL4 = Centimeter.of(38);
     public static final Distance restDistance = Centimeter.of(0);
-    public static final Distance sourceDistance = Centimeter.of(0);
+    public static final Distance sourceDistance = Centimeter.of(11);
 
     public static final int elevatorMotorID = 50;
-    // public static final int limitSwitchID = 9;
-    public static final int limitSwitchID = 4;
+    public static final int limitSwitchID = 7;
 
-    public static final double kP = 0;
+    public static final double kP = 0.01;
     public static final double kI = 0;
     public static final double kD = 0;
 
@@ -281,7 +280,7 @@ public final class Constants {
     public static final double kG = 0;
     public static final double kV = 0;
 
-    public static final double ProfiledkP = 0;
+    public static final double ProfiledkP = 0.015;
     public static final double ProfiledkI = 0;
     public static final double ProfiledkD = 0;
 
@@ -290,21 +289,27 @@ public final class Constants {
 
     // We'll need to know how much we get for every rotation, and use that number
     // here:
-    public static Per<DistanceUnit, AngleUnit> distancePerRotation = Centimeters.of(0.25).div(Rotation.of(1));
+    public static Per<DistanceUnit, AngleUnit> distancePerRotation = Centimeters.of(1).div(Rotation.of(3.2));
 
     public static Distance enumDistance(ElevatorStates elevatorStates) {
       switch (elevatorStates) {
         case coralL1:
+          System.out.println("L1");
           return coralL1;
         case coralL2:
+        System.out.println("L2");
           return coralL2;
         case coralL3:
+        System.out.println("L3");
           return coralL3;
         case coralL4:
+        System.out.println("L4");
           return coralL4;
         case source:
+        System.out.println("source");
           return sourceDistance;
         case rest:
+        System.out.println("rest");
           return restDistance;
 
       }

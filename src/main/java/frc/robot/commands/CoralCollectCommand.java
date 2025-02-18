@@ -14,11 +14,6 @@ public class CoralCollectCommand extends SequentialCommandGroup {
 
         addCommands(
             
-
-            new InstantCommand(()-> endAccessorySubsystem.setAngle(DropAngles.intakeAngle)),
-
-            new WaitUntilCommand(()-> endAccessorySubsystem.isAtSetpoint()),
-            
             // 1. Activate the gripper to start the intake process
             new InstantCommand(() -> endAccessorySubsystem.gripperIntake()),
 
