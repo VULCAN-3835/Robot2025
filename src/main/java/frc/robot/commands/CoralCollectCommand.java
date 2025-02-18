@@ -2,7 +2,10 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.subsystems.EndAccessorySubsystem;
+import frc.robot.Constants.EndAccessoryConstants;
+import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
 
 public class CoralCollectCommand extends SequentialCommandGroup {
 
@@ -10,6 +13,11 @@ public class CoralCollectCommand extends SequentialCommandGroup {
         addRequirements(endAccessorySubsystem);
 
         addCommands(
+            
+
+            new InstantCommand(()-> endAccessorySubsystem.setAngle(DropAngles.intakeAngle)),
+
+            new WaitUntilCommand(()-> endAccessorySubsystem.isAtSetpoint()),
             
             // 1. Activate the gripper to start the intake process
             new InstantCommand(() -> endAccessorySubsystem.gripperIntake()),

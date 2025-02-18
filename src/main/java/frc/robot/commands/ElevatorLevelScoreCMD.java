@@ -35,7 +35,7 @@ public class ElevatorLevelScoreCMD extends SequentialCommandGroup {
         new InstantCommand(()-> endAccessorySubsystem.setAngle(dropAngle))),
 
       // 3. releases the coral 
-      new CoralReleaseCommand(endAccessorySubsystem),
+      new CoralReleaseCommand(endAccessorySubsystem,dropAngle),
 
       // 4. returns the elevator and the end accessory to their resting state  
       new ParallelCommandGroup(

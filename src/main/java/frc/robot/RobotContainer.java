@@ -53,7 +53,7 @@ public class RobotContainer {
   private final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
 
 
-  private final AlgeaSubsystem algeaSubsystem = new AlgeaSubsystem();
+  // private final AlgeaSubsystem algeaSubsystem = new AlgeaSubsystem();
 
   private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
 
@@ -154,14 +154,14 @@ public class RobotContainer {
     // cmdXboxController.rightTrigger().whileTrue(new ShootingAlgeaCmd(algeaSubsystem));
     // cmdXboxController.rightTrigger().toggleOnFalse(new InstantCommand(()-> algeaSubsystem.setRestAngle()));
 
-    xboxControllerDrive.a().whileTrue(algeaSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
-    xboxControllerDrive.b().whileTrue(algeaSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
-    xboxControllerDrive.y().whileTrue(algeaSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
-    xboxControllerDrive.x().whileTrue(algeaSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
-
+    cmdXboxController.a().whileTrue(new CoralCollectCommand(endAccessorySubsystem));
+    cmdXboxController.a().toggleOnFalse(new InstantCommand(()->endAccessorySubsystem.setAngle(DropAngles.restingAngle)));
+    cmdXboxController.b().whileTrue(new CoralReleaseCommand(endAccessorySubsystem, DropAngles.setDropAngleL1));
+    cmdXboxController.b().toggleOnFalse(new InstantCommand(()->endAccessorySubsystem.setAngle(DropAngles.restingAngle)));
+    
+    
   }
 
-  // @Tal: Document.
   private void setRight(CommandXboxController cmdXboxController) {
 
     // scores the coral on the right side of the reef in L4

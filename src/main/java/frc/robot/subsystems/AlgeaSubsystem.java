@@ -79,12 +79,12 @@ public class AlgeaSubsystem extends SubsystemBase {
     angleEncoder.setDutyCycleRange(algeaSubsystemConstants.minAngle.in(Degrees), algeaSubsystemConstants.maxAngle.in(Degrees));
 
     //the SysID configs, for explenation go to elevator subsystem in lines 77-79
-    this.config = new Config(Volts.of(1.8).per(Second), Volts.of(2.5), Seconds.of(2));
+    this.config = new Config(Volts.of(1.5).per(Second), Volts.of(3.0), Seconds.of(5));
     this.sysID = new SysIdRoutine(config,
      new SysIdRoutine.Mechanism(this::setVoltage,
     Log -> {
       Log.motor("Angle Motor")
-         .voltage(angleMotor.getMotorVoltage().getValue())
+         .voltage(Volts.of(angleMotor.getMotorVoltage().getValue().in(Volts)))
          .angularPosition(Degrees.of(getAngle().in(Degrees)))
          .angularVelocity(DegreesPerSecond.of(angleMotor.getVelocity().getValue().in(DegreesPerSecond)));
     }, 

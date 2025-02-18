@@ -42,39 +42,46 @@ public final class Constants {
     public static final double kDeadband = 0.1;
   }
   public static class EndAccessoryConstants {
+
     //TODO: change all values to actual values
     public static final int angleMotorID = 60;
     public static final int powerMotorID = 61;
 
-    public static final double maxVelocity = 0;
-    public static final double maxAcceleration = 0;
+    public static final double maxVelocity = 2;
+    public static final double maxAcceleration = 2;
 
 
-    public static final int angleEncoderID = 8;
+    public static final int angleEncoderID = 5;
     public static final int pieceDetectorID = 1;
 
-    public static final int kMotorSpeed = 0;
-    public static final double kHasPieceVoltageThreshold = 2.5;
+    public static final double kMotorSpeedL1 = -0.4;
+    public static final double kMotorSpeedL2 = 0;
+    public static final double kMotorSpeedL3 = 0;
+    public static final double kMotorSpeedL4 = 0;
+    public static final double kMotorSpeedIntake = 0.4;
 
-    public static final Angle kLowestAngle = Degrees.of(0);
-    public static final Angle kHighestAngle = Degrees.of(0);
-    public static final Angle kReverseSpeedAngle = Degrees.of(0);
+    public static final double kHasPieceVoltageThreshold = 1.8;
 
-    public static final Angle targetDropAngleL1 = Degrees.of(0);
+    public static final Angle kMaxAngle = Degrees.of(84);
+    public static final Angle kMinAngle = Degrees.of(276);
+
+    public static final Angle targetDropAngleL1 = Degrees.of(53);
     public static final Angle targetDropAngleL2 = Degrees.of(0);
     public static final Angle targetDropAngleL3 = Degrees.of(0);
     public static final Angle targetDropAngleL4 = Degrees.of(0);
-    public static final Angle targetAngleRest = Degrees.of(0);
-    public static final Angle targetIntakeAngle = Degrees.of(0);
 
-    public static final double waitTime = 0;
+    public static final Angle targetAngleRest = Degrees.of(82);
 
-    public static final double ProfiledkP = 0;
+    public static final Angle targetIntakeAngle = Degrees.of(50);
+
+    public static final double ProfiledkP = 0.0241628;
     public static final double profiledkI = 0;
     public static final double profiledkD = 0;
 
-    public static final Angle armAngleTolerence = Degrees.of(0);
+    public static final Angle armAngleTolerence = Degrees.of(3);
+
   }
+
   public static class algeaSubsystemConstants{
 
     public static final int angleMotorID = 41;
@@ -263,7 +270,8 @@ public final class Constants {
     public static final Distance sourceDistance = Centimeter.of(0);
 
     public static final int elevatorMotorID = 50;
-    public static final int limitSwitchID = 9;
+    // public static final int limitSwitchID = 9;
+    public static final int limitSwitchID = 4;
 
     public static final double kP = 0;
     public static final double kI = 0;
