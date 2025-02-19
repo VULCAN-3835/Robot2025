@@ -57,114 +57,109 @@ public class EndAccessorySubsystem extends SubsystemBase {
 
     // the SysID routine
     private SysIdRoutine sysIdRoutine;
-    private Config config;
-
-    public EndAccessorySubsystem() {
-        this.angleMotor = new TalonFX(EndAccessoryConstants.angleMotorID);
-        this.powerMotor = new TalonFX(EndAccessoryConstants.powerMotorID);
-
-        this.angleMotor.setNeutralMode(NeutralModeValue.Brake);
-
-        TalonFXConfigurator configurator = angleMotor.getConfigurator();
-
-        MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
-
-        motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
-
-        configurator.apply(motorOutputConfigs);
-        
-
-        this.sound = new Orchestra();
-        sound.addInstrument(powerMotor);
-        sound.loadMusic("output.chrp");
-
-        this.angleEncoder = new DutyCycleEncoder(EndAccessoryConstants.angleEncoderID);
-        angleEncoder.setInverted(false);
-        
-        // angleEncoder.setDutyCycleRange(EndAccessoryConstants.kMinAngle.in(Rotations), EndAccessoryConstants.kMaxAngle.in(Rotations));
-        this.pieceDetector = new AnalogInput(EndAccessoryConstants.pieceDetectorID);
-
-        this.constraints = new Constraints(EndAccessoryConstants.maxVelocity, EndAccessoryConstants.maxAcceleration);
-        this.profiledPIDController = new ProfiledPIDController(EndAccessoryConstants.ProfiledkP,
-                EndAccessoryConstants.profiledkI,
-                EndAccessoryConstants.profiledkD, constraints);
-        this.profiledPIDController.enableContinuousInput(0, 360);
-        profiledPIDController.setGoal(EndAccessoryConstants.targetAngleRest.in(Degrees));
-
-        
-        // the SysID configs, for explanation on it go to the elevator subsystem in lines 77-79
-        this.config = new Config(Volts.of(1).per(Seconds), Volts.of(2), Seconds.of(6));
-        this.sysIdRoutine = new SysIdRoutine(config,
-            new SysIdRoutine.Mechanism(this::setVoltage,
-            Log -> {
-                Log.motor("Angle Motor")
-                .voltage(angleMotor.getMotorVoltage().getValue())
-                .angularPosition(Degrees.of(getAngle().in(Degrees)))
-                .angularVelocity(DegreesPerSecond.of(angleMotor.getVelocity().getValue().in(DegreesPerSecond)));
-                },
-            this));
-
-        profiledPIDController.setTolerance(EndAccessoryConstants.armAngleTolerence.in(Degree));
-    }
-
-    private void setVoltage(Voltage volts) {
-        angleMotor.setVoltage(volts.in(Volts));
-    }
-
-    //sysID command for the quasistatic tests
-    public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-        return this.sysIdRoutine.quasistatic(direction);
-    }
-
-    //sysID command for the Dynamic tests
-    public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-      return this.sysIdRoutine.dynamic(direction);
-    }
-
-    public enum DropAngles {
-        setDropAngleL1, setDropAngleL2, setDropAngleL3, setDropAngleL4, restingAngle, intakeAngle;
-    }
-
-    public WaitUntilCommand waitForCoral() {
-        return new WaitUntilCommand(() -> hasPiece());
-    }
-
-    public void gripperIntake() {
-        powerMotor.set(EndAccessoryConstants.kMotorSpeedIntake);
-    }
-
-    public void gripperRelease(DropAngles angle){
-        switch (angle) {
-            case setDropAngleL1:
-                powerMotor.set(EndAccessoryConstants.kMotorSpeedL1);    
-            case setDropAngleL2:
-                powerMotor.set(EndAccessoryConstants.kMotorSpeedL2);            
-            case setDropAngleL3:
-                powerMotor.set(EndAccessoryConstants.kMotorSpeedL3);    
-            case setDropAngleL4:
-                powerMotor.set(EndAccessoryConstants.kMotorSpeedL4);      
+    private Config config;    
+    
+        public EndAccessorySubsystem() {
+            this.angleMotor = new TalonFX(EndAccessoryConstants.angleMotorID);
+            this.powerMotor = new TalonFX(EndAccessoryConstants.powerMotorID);
+    
+            this.angleMotor.setNeutralMode(NeutralModeValue.Brake);
+    
+            TalonFXConfigurator configurator = angleMotor.getConfigurator();
+    
+            MotorOutputConfigs motorOutputConfigs = new MotorOutputConfigs();
+    
+            motorOutputConfigs.Inverted = InvertedValue.Clockwise_Positive;
+    
+            configurator.apply(motorOutputConfigs);
+            
+    
+            this.sound = new Orchestra();
+            sound.addInstrument(powerMotor);
+            sound.loadMusic("output.chrp");
+    
+            this.angleEncoder = new DutyCycleEncoder(EndAccessoryConstants.angleEncoderID);
+            angleEncoder.setInverted(false);
+            
+            // angleEncoder.setDutyCycleRange(EndAccessoryConstants.kMinAngle.in(Rotations), EndAccessoryConstants.kMaxAngle.in(Rotations));
+            this.pieceDetector = new AnalogInput(EndAccessoryConstants.pieceDetectorID);
+    
+            this.constraints = new Constraints(EndAccessoryConstants.maxVelocity, EndAccessoryConstants.maxAcceleration);
+            this.profiledPIDController = new ProfiledPIDController(EndAccessoryConstants.ProfiledkP,
+                    EndAccessoryConstants.profiledkI,
+                    EndAccessoryConstants.profiledkD, constraints);
+            this.profiledPIDController.enableContinuousInput(0, 360);
+            profiledPIDController.setGoal(EndAccessoryConstants.targetAngleRest.in(Degrees));
+    
+    
+            
+            // the SysID configs, for explanation on it go to the elevator subsystem in lines 77-79
+            this.config = new Config(Volts.of(1).per(Seconds), Volts.of(2), Seconds.of(6));
+            this.sysIdRoutine = new SysIdRoutine(config,
+                new SysIdRoutine.Mechanism(this::setVoltage,
+                Log -> {
+                    Log.motor("Angle Motor")
+                    .voltage(angleMotor.getMotorVoltage().getValue())
+                    .angularPosition(Degrees.of(getAngle().in(Degrees)))
+                    .angularVelocity(DegreesPerSecond.of(angleMotor.getVelocity().getValue().in(DegreesPerSecond)));
+                    },
+                this));
+    
+            profiledPIDController.setTolerance(EndAccessoryConstants.armAngleTolerence.in(Degree));
         }
-    }
-    public void gripperReleaseL1() {
-        powerMotor.set(EndAccessoryConstants.kMotorSpeedL1);
-    }
-    public void gripperReleaseL2() {
-        powerMotor.set(EndAccessoryConstants.kMotorSpeedL2);
-    }    
-    public void gripperReleaseL3() {
-        powerMotor.set(EndAccessoryConstants.kMotorSpeedL3);
-    } 
-    public void gripperReleaseL4() {
-        powerMotor.set(EndAccessoryConstants.kMotorSpeedL4);
-    } 
+    
+        private void setVoltage(Voltage volts) {
+            angleMotor.setVoltage(volts.in(Volts));
+        }
+    
+        //sysID command for the quasistatic tests
+        public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+            return this.sysIdRoutine.quasistatic(direction);
+        }
+    
+        //sysID command for the Dynamic tests
+        public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+          return this.sysIdRoutine.dynamic(direction);
+        }
+    
+        public enum DropAngles {
+            setDropAngleL1, setDropAngleL2, setDropAngleL3, setDropAngleL4, restingAngle, intakeAngle,removeAlgea;
+        }
+    
+        public WaitUntilCommand waitForCoral() {
+            return new WaitUntilCommand(() -> hasPiece());
+        }
+    
+        public void gripperIntake() {
+            powerMotor.set(EndAccessoryConstants.kMotorPowerIntake);
+        }
+    
+        public double getSpeed(DropAngles angle){
+            switch (angle) {
+                case setDropAngleL1:
+                    return EndAccessoryConstants.kMotorPowerL1;    
+                case setDropAngleL2:
+                    return EndAccessoryConstants.kMotorPowerL2;    
+                case setDropAngleL3:
+                    return EndAccessoryConstants.kMotorPowerL3;    
+                case setDropAngleL4:
+                    return EndAccessoryConstants.kMotorPowerL4;   
+                case removeAlgea:
+                    return EndAccessoryConstants.removeAlgeaPower; 
+                default:
+                    return 0;
+            }
+        }
 
-    public void gripperStop() {
-        powerMotor.set(0);
-    }
+    
+        public void gripperStop() {
+            powerMotor.set(0);
+        }
 
-    public void setSpeed(DropAngles dropingLevel){
+        public void setPower(double power){
+            powerMotor.set(power);
+        }
 
-    }
 
     public void setAngle(DropAngles dropingLevel) {
         switch (dropingLevel) {
@@ -185,6 +180,9 @@ public class EndAccessorySubsystem extends SubsystemBase {
                 break;
             case intakeAngle:
                 profiledPIDController.setGoal(EndAccessoryConstants.targetIntakeAngle.in(Degree));
+
+            case removeAlgea:
+                profiledPIDController.setGoal(EndAccessoryConstants.targetRemoveAlgea.in(Degree));
         }
     }
 
@@ -221,26 +219,18 @@ public class EndAccessorySubsystem extends SubsystemBase {
     @Override
     public void periodic() {
 
-        
-        if (RobotController.getBatteryVoltage()<12) {
-            sound.play();
-        } else{
-            sound.pause();
-            sound.stop();
-        }
-
         double profiledPIDOutput = profiledPIDController.calculate(getAngle().in(Degrees));
 
 
-        if (hasPiece()&&profiledPIDController.getGoal().position==EndAccessoryConstants.targetIntakeAngle.in(Degree)) {
-            gripperStop();
-        }
+        // if (hasPiece()&&profiledPIDController.getGoal().position==EndAccessoryConstants.targetIntakeAngle.in(Degree)) {
+        //     gripperStop();
+        // }
 
-        if (getAngle().in(Degrees)<=EndAccessoryConstants.kMinAngle.in(Degrees) && profiledPIDOutput<0) {
+        if (getAngle().in(Degrees)<=EndAccessoryConstants.kMinAngle.in(Degrees) && profiledPIDOutput < 0) {
             angleMotor.set(0);
             System.out.println("error low");
         }
-        else if(getAngle().in(Degrees)>=EndAccessoryConstants.kMaxAngle.in(Degrees) && profiledPIDOutput>0){
+        else if(getAngle().in(Degrees) >= EndAccessoryConstants.kMaxAngle.in(Degrees) && profiledPIDOutput > 0){
             angleMotor.set(0);
             System.out.println("error high ");
         }

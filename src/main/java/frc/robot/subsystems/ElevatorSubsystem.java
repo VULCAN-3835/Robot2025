@@ -54,8 +54,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   // private final SysIdRoutine sysIdRoutine;
   // private final Config config;
 
-  private final double maxVelocity = 4;
-  private final double maxAcceleration = 8;
+
 
   private double currentPosition = 0;
 
@@ -67,10 +66,11 @@ public class ElevatorSubsystem extends SubsystemBase {
 
 
     this.elevatorFeedforward = new ElevatorFeedforward(ElevatorConstant.kS, ElevatorConstant.kG, ElevatorConstant.kV);
-    this.constraints = new Constraints(maxVelocity, maxAcceleration);
+    this.constraints = new Constraints(ElevatorConstant.maxVelocity, ElevatorConstant.maxAcceleration);
 
     this.profiledPIDController = new ProfiledPIDController(ElevatorConstant.ProfiledkP, ElevatorConstant.ProfiledkI,
      ElevatorConstant.ProfiledkD, constraints);
+    this.profiledPIDController.setTolerance(ElevatorConstant.pidTolerence);
 
   //   //SysID configs: the first param is how mach volts will it go up in how much time,
   //   //seconds one is how much for the quastatics tests and
@@ -102,8 +102,10 @@ public class ElevatorSubsystem extends SubsystemBase {
   // }
 
   public void setLevel(ElevatorStates state) {
-    double setPoint = ElevatorConstant.enumDistance(state).in(Centimeter);
-    profiledPIDController.setGoal(setPoint);
+    profiledPIDController.setGoal(ElevatorConstant.enumDistance(state).in(Centimeter));
+  }
+  public boolean isAtSetpoint(){
+    return profiledPIDController.atGoal();
   }
 
   // current height
@@ -144,7 +146,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     // uses the velcity that has been calculated by the trapzoid
     // the sum of the output power by all of the motor controllers
 
-    if (getCloseLimitSwitch() && motorOutput < 0) {
+    if (getCloseLimitSwitch() && motorOutput > 0) {
       elevatorMotor.set(0);
     } else {
       elevatorMotor.set(motorOutput);
@@ -158,6 +160,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("ElevatorSubsystem/distance of elevator", currentPosition);
     SmartDashboard.putBoolean("ElevatorSubsystem/low limit switch pressed", getCloseLimitSwitch());
     SmartDashboard.putNumber("ElevatorSubsystem/ setPoint", profiledPIDController.getGoal().position);
+    SmartDashboard.putBoolean("ElevatorSubsystem/ is at setPoint", isAtSetpoint());
     SmartDashboard.putNumber("ElevatorSubsystem/ output",motorOutput);
 
   }

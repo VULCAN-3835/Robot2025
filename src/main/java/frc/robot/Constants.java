@@ -40,10 +40,11 @@ public final class Constants {
     public static final int driverControllerPort = 0;
     public static final int buttonControllerPort = 1;
     public static final double kDeadband = 0.1;
+
   }
+
   public static class EndAccessoryConstants {
 
-    //TODO: change all values to actual values
     public static final int angleMotorID = 60;
     public static final int powerMotorID = 61;
 
@@ -54,23 +55,27 @@ public final class Constants {
     public static final int angleEncoderID = 5;
     public static final int pieceDetectorID = 1;
 
-    public static final double kMotorSpeedL1 = -0.4;
-    public static final double kMotorSpeedL2 = 0;
-    public static final double kMotorSpeedL3 = 0;
-    public static final double kMotorSpeedL4 = 0;
-    public static final double kMotorSpeedIntake = 0.4;
+    public static final double kMotorPowerL1 = -0.15;
+    public static final double kMotorPowerL2 = 0.4;
+    public static final double kMotorPowerL3 = 0.4;
+    public static final double kMotorPowerL4 = 0.5;
+    public static final double kMotorPowerIntake = 0.4;
 
-    public static final double kHasPieceVoltageThreshold = 1.8;
+    public static final double removeAlgeaPower = 0.5;
+
+    public static final double kHasPieceVoltageThreshold = 1.65;
 
     public static final Angle kMaxAngle = Degrees.of(191);
     public static final Angle kMinAngle = Degrees.of(50);
 
-    public static final Angle targetDropAngleL1 = Degrees.of(64);
+    public static final Angle targetDropAngleL1 = Degrees.of(66);
     public static final Angle targetDropAngleL2 = Degrees.of(162);
     public static final Angle targetDropAngleL3 = Degrees.of(162);
-    public static final Angle targetDropAngleL4 = Degrees.of(188);
+    public static final Angle targetDropAngleL4 = Degrees.of(191);
 
-    public static final Angle targetAngleRest = Degrees.of(52);
+    public static final Angle targetRemoveAlgea = Degrees.of(169);
+ 
+    public static final Angle targetAngleRest = Degrees.of(54);
 
     public static final Angle targetIntakeAngle = Degrees.of(85);
 
@@ -107,11 +112,14 @@ public final class Constants {
 
     public static final double collectTime = 0.3;
 
-    public static final double kP = 0;
+    public static final double kP = 0.01;
     public static final double kI = 0;
     public static final double kD = 0;
 
-    public static final double profiledkP = 0;
+    private final double maxVelocity = 4;
+    private final double maxAcceleration = 8;
+
+    public static final double profiledkP = 0.015;
     public static final double profiledkI = 0;
     public static final double profiledkD = 0;
 
@@ -260,29 +268,30 @@ public final class Constants {
   public static class ElevatorConstant {
 
 
-    //TODO: change values after measuring them
-
     public static final Distance coralL1 = Centimeter.of(0);
     public static final Distance coralL2 = Centimeter.of(0);
-    public static final Distance coralL3 = Centimeter.of(17.52);
-    public static final Distance coralL4 = Centimeter.of(38);
+    public static final Distance coralL3 = Centimeter.of(20.52);
+    public static final Distance coralL4 = Centimeter.of(41);
     public static final Distance restDistance = Centimeter.of(0);
-    public static final Distance sourceDistance = Centimeter.of(11);
+    public static final Distance sourceDistance = Centimeter.of(14);
+    public static final Distance removeAlgea = Centimeter.of(22);
+
+    public static final double pidTolerence = 3;
 
     public static final int elevatorMotorID = 50;
     public static final int limitSwitchID = 7;
-
-    public static final double kP = 0.01;
-    public static final double kI = 0;
-    public static final double kD = 0;
 
     public static final double kS = 0;
     public static final double kG = 0;
     public static final double kV = 0;
 
-    public static final double ProfiledkP = 0.015;
+    public static final double ProfiledkP = 0.05;
     public static final double ProfiledkI = 0;
     public static final double ProfiledkD = 0;
+
+    public static final double maxVelocity = 6;
+    public static final double maxAcceleration = 10;
+
 
 
     public static double restPower = 0;
@@ -311,7 +320,8 @@ public final class Constants {
         case rest:
         System.out.println("rest");
           return restDistance;
-
+        case removeAlgea:
+          return removeAlgea;
       }
       return null;
     }
