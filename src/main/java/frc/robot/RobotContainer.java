@@ -105,10 +105,10 @@ public class RobotContainer {
     xboxControllerDrive.rightBumper().toggleOnTrue(new InstantCommand(()-> LWhichLevel()));
 
     xboxControllerDrive.b().whileTrue(new ShootingAlageaCmd(alageaSubsystem));
-    xboxControllerDrive.x().whileTrue(new CollectingAlageaCmd(alageaSubsystem));
+    xboxControllerDrive.povUp().whileTrue(new CollectingAlageaCmd(alageaSubsystem));
 
-    xboxControllerDrive.y().toggleOnTrue(new ClimbCMD(climbSubsystem));
-    xboxControllerDrive.b().toggleOnTrue(new ResetClimbing(climbSubsystem));
+    xboxControllerDrive.povDown().whileTrue(new ClimbCMD(climbSubsystem));
+    xboxControllerDrive.povDown().toggleOnTrue(new ResetClimbing(climbSubsystem));
 
     xboxControllerDrive.b().toggleOnTrue(elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL1));
     xboxControllerDrive.a().toggleOnTrue(elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.coralL2));
