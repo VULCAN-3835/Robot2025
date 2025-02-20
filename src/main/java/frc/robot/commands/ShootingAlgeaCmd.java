@@ -17,7 +17,6 @@ public class ShootingAlgeaCmd extends SequentialCommandGroup {
   public ShootingAlgeaCmd(AlgeaSubsystem algeaSubsystem) {
     // Add your commands in the addCommands() call, e.g
     // addCommands(new FooCommand(), new BarCommand());
-    addRequirements(algeaSubsystem);
     addCommands(
 
         // 1. sets the subsystem in the predefined shooting angle

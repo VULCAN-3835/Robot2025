@@ -21,7 +21,7 @@ public class CoralCollectCommand extends SequentialCommandGroup {
             endAccessorySubsystem.waitForCoral(),
     
             // 3. Stop the gripper once the piece is successfully collected
-            new InstantCommand(() -> endAccessorySubsystem.gripperStop())
+            new InstantCommand(() -> endAccessorySubsystem.setPower(0))
                 
         );
     }
