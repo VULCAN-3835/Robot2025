@@ -18,14 +18,13 @@ public class CollectingAlgeaCmd extends SequentialCommandGroup {
   public CollectingAlgeaCmd(AlgeaSubsystem algeaSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addRequirements(algeaSubsystem);
 
     addCommands(
         // 1. sets the subsystem in the predefined collecting angle
         new InstantCommand(() -> algeaSubsystem.setCollectAngle()),
 
         // 2. waits until system is at the collecting angle
-        new WaitUntilCommand(()-> algeaSubsystem.isSystemAtCollectingAngle()),
+        new WaitUntilCommand(()-> algeaSubsystem.isAtSetpoint()),
 
         // 3. starts to collect the piece
         new InstantCommand(() -> algeaSubsystem.collectingAlgea()),
@@ -34,7 +33,10 @@ public class CollectingAlgeaCmd extends SequentialCommandGroup {
         algeaSubsystem.waitForCollectionCommand(),
 
         // 5. stops the motor and sets the subsystem in the predefined resting angle
-        new InstantCommand(() -> algeaSubsystem.setRestAngle()
+        new InstantCommand(() -> {
+          algeaSubsystem.setPower(0);
+          algeaSubsystem.setRestAngle();
+        }
         ));
   }
 }

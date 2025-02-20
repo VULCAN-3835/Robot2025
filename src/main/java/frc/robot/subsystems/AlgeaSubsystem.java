@@ -41,12 +41,10 @@ public class AlgeaSubsystem extends SubsystemBase {
   private final Constraints constraints;
   private final ProfiledPIDController profiledPIDController;
 
-  private final double maxVelocity = 0;
-  private final double maxAcceleration = 0;
 
   // SysID objects
-  private final Config config;
-  private final SysIdRoutine sysID;
+  // private final Config config;
+  // private final SysIdRoutine sysID;
 
   public AlgeaSubsystem() {
     this.angleMotor = new TalonFX(algeaSubsystemConstants.angleMotorID);
@@ -56,43 +54,41 @@ public class AlgeaSubsystem extends SubsystemBase {
     this.lowLimitSwitch = new DigitalInput(algeaSubsystemConstants.limitSwitchID);
     this.angleEncoder = new DutyCycleEncoder(algeaSubsystemConstants.angleEncoderID);
 
-    this.constraints = new Constraints(maxVelocity, maxAcceleration);
+    this.constraints = new Constraints(algeaSubsystemConstants.maxVelocity, algeaSubsystemConstants.maxAcceleration);
     this.profiledPIDController = new ProfiledPIDController(algeaSubsystemConstants.profiledkP,
         algeaSubsystemConstants.profiledkI, algeaSubsystemConstants.profiledkD, constraints);
     profiledPIDController.setTolerance(algeaSubsystemConstants.pidTolerence.in(Degrees));
+    profiledPIDController.setGoal(algeaSubsystemConstants.restAngle.in(Degrees));
 
     angleMotor.setNeutralMode(NeutralModeValue.Brake);
 
-    angleEncoder.setDutyCycleRange(algeaSubsystemConstants.minAngle.in(Degrees),
-        algeaSubsystemConstants.maxAngle.in(Degrees));
-
     // the SysID configs, for explenation go to elevator subsystem in lines 77-79
-    this.config = new Config(Volts.of(1.5).per(Second), Volts.of(3.0), Seconds.of(5));
-    this.sysID = new SysIdRoutine(config,
-        new SysIdRoutine.Mechanism(this::setVoltage,
-            Log -> {
-              Log.motor("Angle Motor")
-                  .voltage(Volts.of(angleMotor.getMotorVoltage().getValue().in(Volts)))
-                  .angularPosition(Degrees.of(getAngle().in(Degrees)))
-                  .angularVelocity(DegreesPerSecond.of(angleMotor.getVelocity().getValue().in(DegreesPerSecond)));
-            },
-            this));
+    // this.config = new Config(Volts.of(1.5).per(Second), Volts.of(3.0), Seconds.of(5));
+    // this.sysID = new SysIdRoutine(config,
+    //     new SysIdRoutine.Mechanism(this::setVoltage,
+    //         Log -> {
+    //           Log.motor("Angle Motor")
+    //               .voltage(Volts.of(angleMotor.getMotorVoltage().getValue().in(Volts)))
+    //               .angularPosition(Degrees.of(getAngle().in(Degrees)))
+    //               .angularVelocity(DegreesPerSecond.of(angleMotor.getVelocity().getValue().in(DegreesPerSecond)));
+    //         },
+    //         this));
 
   }
 
   // SysID Quasistatics tests commands
-  public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
-    return this.sysID.quasistatic(direction);
-  }
+  // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+  //   return this.sysID.quasistatic(direction);
+  // }
 
-  // SysID dynamic tests commands
-  public Command sysIdDynamic(SysIdRoutine.Direction direction) {
-    return this.sysID.dynamic(direction);
-  }
+  // // SysID dynamic tests commands
+  // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+  //   return this.sysID.dynamic(direction);
+  // }
 
-  public void setVoltage(Voltage volts) {
-    angleMotor.setVoltage(volts.in(Volts));
-  }
+  // public void setVoltage(Voltage volts) {
+  //   angleMotor.setVoltage(volts.in(Volts));
+  // }
 
   // checks if the system detects the ball
   public boolean hasBall() {
@@ -111,12 +107,11 @@ public class AlgeaSubsystem extends SubsystemBase {
 
   // sets the desired robot angle
   private void setAngle(Angle targetAngle) {
-    double targetDegrees = targetAngle.in(Degrees);
-    if (targetDegrees >= algeaSubsystemConstants.minAngle.in(Degrees)
-        && targetDegrees <= algeaSubsystemConstants.maxAngle.in(Degrees)) {
-
-      profiledPIDController.setGoal(targetDegrees);
-    }
+      profiledPIDController.setGoal(targetAngle.in(Degrees));
+    
+  }
+  public boolean isAtSetpoint(){
+    return profiledPIDController.atGoal();
   }
 
   // sets the robot in the resting angle
@@ -182,28 +177,30 @@ public class AlgeaSubsystem extends SubsystemBase {
     // This method will be called once per scheduler run
 
     // calculates the ouput of the motor
-    double profiledPIDOutput = profiledPIDController.calculate(getAngle().in(Degrees));
 
-    double power = profiledPIDOutput;
+    double power = profiledPIDController.calculate(getAngle().in(Degrees));
+    // angleMotor.set(power);
 
     SmartDashboard.putNumber("AlgeaSubsystem/algea intake encoder", getAngle().in(Degrees));
     SmartDashboard.putBoolean("AlgeaSubsystem/algea intake limit Switch", getLowLimitSwitch());
     SmartDashboard.putNumber("AlgeaSubsystem/piece detector value", ballDetector.getVoltage());
     SmartDashboard.putBoolean("AlgeaSubsystem/has ball?", hasBall());
+    SmartDashboard.putNumber("AlgeaSubsystem/pid output", power);
+    SmartDashboard.putNumber("AlgeaSubsystem/pid setPoint", profiledPIDController.getGoal().position);
+    SmartDashboard.putBoolean("AlgeaSubsystem/is at pid setpoint", profiledPIDController.atGoal());
 
-    if (getLowLimitSwitch() && power > 0) {
-      angleMotor.set(0);
-    } else {
-      angleMotor.set(power);
-    }
 
-    if (hasBall()) {
-      powerMotor.setNeutralMode(NeutralModeValue.Brake);
-    } else {
-      powerMotor.setNeutralMode(NeutralModeValue.Coast);
-    }
-    if (powerMotor.get() < 0 && hasBall()) {
-      setPower(0);
+    // if (getLowLimitSwitch() && power > 0) {
+    //   angleMotor.set(0);
+    // } else {
+    //   angleMotor.set(power);
+    // }
+
+    // if (powerMotor.get() < 0 && hasBall()) {
+    //   setPower(0);
+    // }
+    if (getAngle().in(Degrees)>algeaSubsystemConstants.minAngle.in(Degrees)&&getAngle().in(Degrees)<70&&power<0) {
+      powerMotor.set(0);
     }
   }
 }

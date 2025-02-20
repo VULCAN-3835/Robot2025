@@ -93,33 +93,27 @@ public final class Constants {
     public static final int powerMotorID = 40;
 
     public static final int ballDetectorID = 0;
-    public static final int limitSwitchID = 6;
+    public static final int limitSwitchID = 3;
     public static final int angleEncoderID = 1;
 
     public static final double ballDetectorThreshold =1.8;
 
-    public static final Angle minAngle = Degrees.of(350);
-    public static final Angle maxAngle = Degrees.of(41.824855045621376);
-    public static final Angle restAngle = Degrees.of(350);
-    public static final Angle collectAngle = Degrees.of(41.824855045621376);
-    public static final Angle holdAngle = Degrees.of(350);
-    public static final Angle scoreAngle = Degrees.of(1);
+    public static final Angle minAngle = Degrees.of(101);
+    public static final Angle maxAngle = Degrees.of(151);
+    public static final Angle restAngle = Degrees.of(150);
+    public static final Angle collectAngle = Degrees.of(101);
+    public static final Angle holdAngle = Degrees.of(150);
+    public static final Angle scoreAngle = Degrees.of(137);
 
     public static final Angle pidTolerence = Degrees.of(5); 
 
-    public static final double collectingPower = 0;
-    public static final double shootingPower = 0;
+    public static final double collectingPower = 0.5;
+    public static final double shootingPower = -0.4;
 
-    public static final double collectTime = 0.3;
+    public static final double maxVelocity = 10;
+    public static final double maxAcceleration = 12;
 
-    public static final double kP = 0.01;
-    public static final double kI = 0;
-    public static final double kD = 0;
-
-    private final double maxVelocity = 4;
-    private final double maxAcceleration = 8;
-
-    public static final double profiledkP = 0.015;
+    public static final double profiledkP = 0.005;
     public static final double profiledkI = 0;
     public static final double profiledkD = 0;
 

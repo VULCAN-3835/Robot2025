@@ -37,6 +37,7 @@ import frc.robot.commands.RestElevatorAndGripper;
 import frc.robot.commands.ShootingAlgeaCmd;
 import frc.robot.commands.RestAlgea;
 import frc.robot.Util.FieldLayout.ReefSide;
+
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -53,7 +54,7 @@ public class RobotContainer {
 
   private final AlgeaSubsystem algeaSubsystem = new AlgeaSubsystem();
 
-  private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
+  // private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
 
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
@@ -118,18 +119,18 @@ public class RobotContainer {
 
     // cmdXboxController.y().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL1, DropAngles.setDropAngleL1));
     // cmdXboxController.b().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL2, DropAngles.setDropAngleL2));
-    // cmdXboxController.x().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3));
-    // cmdXboxController.a().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL4, DropAngles.setDropAngleL4));
+    cmdXboxController.x().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3));
+    cmdXboxController.a().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL4, DropAngles.setDropAngleL4));
 
     // cmdXboxController.leftTrigger().whileTrue(new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, false));
     // cmdXboxController.rightTrigger().whileTrue(new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, true));
     // cmdXboxController.a().whileTrue(new ElevatorLevelIntake(elevatorSubsystem, endAccessorySubsystem));
-    // cmdXboxController.rightBumper().whileTrue(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
-  cmdXboxController.a().whileTrue(new CollectingAlgeaCmd(algeaSubsystem));
-  cmdXboxController.a().toggleOnFalse(new RestAlgea(algeaSubsystem));
-  
-  cmdXboxController.b().whileTrue(new ShootingAlgeaCmd(algeaSubsystem));
-  cmdXboxController.b().toggleOnFalse(new RestAlgea(algeaSubsystem));
+    cmdXboxController.rightBumper().whileTrue(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
+  // cmdXboxController.a().whileTrue(new CollectingAlgeaCmd(algeaSubsystem));
+  // cmdXboxController.a().toggleOnFalse(new RestAlgea(algeaSubsystem));
+
+  // cmdXboxController.b().whileTrue(new ShootingAlgeaCmd(algeaSubsystem));
+  // cmdXboxController.b().toggleOnFalse(new RestAlgea(algeaSubsystem));
 
 
   } 

@@ -149,7 +149,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     if (getCloseLimitSwitch() && motorOutput > 0) {
       elevatorMotor.set(0);
     } else {
-      // elevatorMotor.set(motorOutput);
+      elevatorMotor.set(motorOutput);
 
     }
 
