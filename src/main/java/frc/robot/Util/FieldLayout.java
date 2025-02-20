@@ -45,41 +45,25 @@ public final class FieldLayout {
                 tagPose.getRotation());
     }
 
-    //TODO: return the driver station allience to the normal code without a parameter
-    public static Pose2d getBranchPose(ReefSide reefSide, boolean right,  Distance distance,DriverStation.Alliance alliance) {
-        if (alliance == DriverStation.Alliance.Blue) {
+    public static Pose2d getBranchPose(ReefSide reefSide, boolean right,  Distance distance) {
+        boolean isBlue = DriverStation.getAlliance().get() == DriverStation.Alliance.Blue;
             switch (reefSide) {
                 case bottom:
-                    return getReefsSidePose(18, right, distance);
+                    return getReefsSidePose(isBlue?18:7, right, distance);
                 case bottomLeft:
-                    return getReefsSidePose(19, right, distance);
+                    return getReefsSidePose(isBlue?19:6, right, distance);
                 case topLeft:
-                    return getReefsSidePose(20, right, distance);
+                    return getReefsSidePose(isBlue?20:11, right, distance);
                 case top:
-                    return getReefsSidePose(21, right, distance);
+                    return getReefsSidePose(isBlue?21:10, right, distance);
                 case topRight:
-                    return getReefsSidePose(22, right, distance);
+                    return getReefsSidePose(isBlue?22:9, right, distance);
                 case bottomRight:
-                    return getReefsSidePose(17, right, distance);
+                    return getReefsSidePose(isBlue?17:8, right, distance);
+                default:
+                    System.out.println("error in get Branch Pose");
+                    return new Pose2d();
             }
-        }
-
-        switch (reefSide) {
-            case bottom:
-                return getReefsSidePose(7, right, distance);
-            case bottomLeft:
-                return getReefsSidePose(6, right, distance);
-            case topLeft:
-                return getReefsSidePose(11, right, distance);
-            case top:
-                return getReefsSidePose(10, right, distance);
-            case topRight:
-                return getReefsSidePose(9, right, distance);
-            case bottomRight:
-                return getReefsSidePose(8, right, distance);
-            default:
-                return new Pose2d();
-        }
     }
 
     private static Pose2d getCoralSourcePose2d(int ID, Distance distance) {
@@ -88,23 +72,39 @@ public final class FieldLayout {
                 tagPos.getRotation().plus(Rotation2d.fromDegrees(180)));
     }
 
-    //TODO: return the driver station allience to the normal code without a parameter
-    public static Pose2d getCoralSourcePose(Distance distance,Pose2d currentPose2d,DriverStation.Alliance alliance) {
+    public static Pose2d getCoralSourcePose(Distance distance,Pose2d currentPose2d) {
         ArrayList<Pose2d> coralSourceArrayList = new ArrayList<>();
         
-        coralSourceArrayList.add(getCoralSourcePose2d(alliance == DriverStation.Alliance.Blue ? 12 : 2, distance));
-        coralSourceArrayList.add(getCoralSourcePose2d(alliance == DriverStation.Alliance.Blue ? 13 : 1, distance));
-        // @Tal: Nearest to... what..?
+        coralSourceArrayList.add(getCoralSourcePose2d(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue ? 12 : 2, distance));
+        coralSourceArrayList.add(getCoralSourcePose2d(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue ? 13 : 1, distance));
         return currentPose2d.nearest(coralSourceArrayList);
 
     }
-    // @Tal: use the Alliance enum
-    public static Pose2d getProccesorPose2d(Distance distance) {
-        
-        // @Tal: Im pretty sure its +90 in both cases
+    public static Pose2d getProccesorPose2d(Distance distance) {        
         Pose2d tagPos = aprilTagFieldLayout.getTagPose(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue ? 16 : 3).get().toPose2d();
         return new Pose2d(tagPos.getTranslation().plus(new Translation2d(distance.in(Meters), tagPos.getRotation())),
                 tagPos.getRotation().plus(Rotation2d.fromDegrees( 90)));
+    }
+
+    public static Pose2d getBranchMid(ReefSide reefSide,Distance distance){
+        boolean isBlue = DriverStation.getAlliance().get()==DriverStation.Alliance.Blue;
+        switch (reefSide) {
+            case top:
+                return getCoralSourcePose2d(isBlue?21:10, distance);
+            case topRight:
+                return getCoralSourcePose2d(isBlue?22:9, distance);
+            case topLeft:
+                return getCoralSourcePose2d(isBlue?20:11, distance);
+            case bottom:
+                return getCoralSourcePose2d(isBlue?18:7, distance);
+            case bottomLeft:
+                return getCoralSourcePose2d(isBlue?19:6, distance);
+            case bottomRight:
+                return getCoralSourcePose2d(isBlue?17:8, distance);
+            default:
+                return new Pose2d();
+        }      
+          
     }
 }
 
