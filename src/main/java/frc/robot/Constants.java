@@ -63,7 +63,7 @@ public final class Constants {
 
     public static final double removeAlgeaPower = 0.5;
 
-    public static final double kHasPieceVoltageThreshold = 1.65;
+    public static final double kHasPieceVoltageThreshold = 1.85;
 
     public static final Angle kMaxAngle = Degrees.of(191);
     public static final Angle kMinAngle = Degrees.of(50);
@@ -73,7 +73,7 @@ public final class Constants {
     public static final Angle targetDropAngleL3 = Degrees.of(162);
     public static final Angle targetDropAngleL4 = Degrees.of(191);
 
-    public static final Angle targetRemoveAlgea = Degrees.of(169);
+    public static final Angle targetRemoveAlgea = Degrees.of(85);//169
  
     public static final Angle targetAngleRest = Degrees.of(54);
 
@@ -273,10 +273,10 @@ public final class Constants {
     public static final Distance coralL3 = Centimeter.of(20.52);
     public static final Distance coralL4 = Centimeter.of(41);
     public static final Distance restDistance = Centimeter.of(0);
-    public static final Distance sourceDistance = Centimeter.of(14);
+    public static final Distance sourceDistance = Centimeter.of(12);
     public static final Distance removeAlgea = Centimeter.of(22);
 
-    public static final double pidTolerence = 3;
+    public static final double pidTolerence = 1.5;
 
     public static final int elevatorMotorID = 50;
     public static final int limitSwitchID = 7;
@@ -285,12 +285,12 @@ public final class Constants {
     public static final double kG = 0;
     public static final double kV = 0;
 
-    public static final double ProfiledkP = 0.05;
+    public static final double ProfiledkP = 0.16;
     public static final double ProfiledkI = 0;
     public static final double ProfiledkD = 0;
 
-    public static final double maxVelocity = 6;
-    public static final double maxAcceleration = 10;
+    public static final double maxVelocity = 18;
+    public static final double maxAcceleration = 20;
 
 
 

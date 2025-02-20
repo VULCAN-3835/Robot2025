@@ -32,6 +32,8 @@ public class ElevatorLevelScoreCMD extends SequentialCommandGroup {
       new ParallelCommandGroup(
         elevatorSubsystem.setLevelElevatorCommand(elevatorState),
         new InstantCommand(()-> endAccessorySubsystem.setAngle(dropAngle))),
+
+      new InstantCommand(()-> System.out.println(dropAngle + "" + elevatorState)),
         
       new WaitCommand(0.5),
 

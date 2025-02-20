@@ -7,6 +7,8 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Util.ElevatorStates;
 import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -28,6 +30,8 @@ public class ElevatorLevelIntake extends SequentialCommandGroup {
       new ParallelCommandGroup(
         elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.source),
         new InstantCommand(()-> endAccessorySubsystem.setAngle(DropAngles.intakeAngle))),
+
+      new WaitUntilCommand(()->endAccessorySubsystem.isAtPidSetpoint()&&elevatorSubsystem.isAtSetpoint()),
 
       // 3. releases the coral 
       new CoralCollectCommand(endAccessorySubsystem),
