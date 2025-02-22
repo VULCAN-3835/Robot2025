@@ -217,6 +217,25 @@ public final class Constants {
     // the moment of inertia of the robot
     public static final double kMOI = 6.81;
 
+  public static class distanceConstants{
+
+    //TODO: find the right distance
+    public static final Distance source = Centimeter.of(30);
+
+    //TODO: fill the reefs value
+    public static final Distance topReefDistance = Centimeter.of(0);
+    public static final Distance topRightReefDistance = Centimeter.of(0);
+    public static final Distance topLeftReefDistance = Centimeter.of(0);
+
+    public static final Distance bottomReefDistance = Centimeter.of(0);
+    public static final Distance bottomRightReefDistance = Centimeter.of(0);
+    public static final Distance bottomLeftReefDistance = Centimeter.of(0);
+
+    public static final Distance proccesorDistance = Centimeter.of(0);
+
+
+  }
+
     // Swerve Kinematics:
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
         new Translation2d(kWheelBase / 2, kTrackWidth / 2), // Left front

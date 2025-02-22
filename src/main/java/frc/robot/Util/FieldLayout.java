@@ -18,6 +18,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import frc.robot.subsystems.ChassisSubsystem;
+import frc.robot.Constants.ChassisConstants.distanceConstants;
 
 /** Add your docs here. */
 public final class FieldLayout {
@@ -105,6 +106,17 @@ public final class FieldLayout {
                 return new Pose2d();
         }      
           
+    }
+
+    public static Pose2d getNearestBranch(Pose2d currentPose2d,boolean right){
+        ArrayList<Pose2d> list = new ArrayList<>();
+        list.add(getBranchPose(ReefSide.top,right,distanceConstants.topReefDistance));
+        list.add(getBranchPose(ReefSide.topRight,right,distanceConstants.topRightReefDistance));
+        list.add(getBranchPose(ReefSide.topLeft,right,distanceConstants.topLeftReefDistance));
+        list.add(getBranchPose(ReefSide.top,right,distanceConstants.bottomReefDistance));
+        list.add(getBranchPose(ReefSide.topRight,right,distanceConstants.bottomRightReefDistance));
+        list.add(getBranchPose(ReefSide.topLeft,right,distanceConstants.bottomLeftReefDistance));
+        return currentPose2d.nearest(list);
     }
 }
 

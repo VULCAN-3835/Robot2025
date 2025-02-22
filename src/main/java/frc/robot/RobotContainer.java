@@ -23,6 +23,8 @@ import frc.robot.subsystems.ElevatorSubsystem;
 
 import static edu.wpi.first.units.Units.Centimeters;
 
+import java.util.logging.FileHandler;
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
@@ -38,6 +40,7 @@ import frc.robot.commands.RestElevatorAndGripper;
 import frc.robot.commands.ShootingAlgeaCmd;
 import frc.robot.commands.RestAlgea;
 import frc.robot.Util.FieldLayout.ReefSide;
+import frc.robot.Constants.ChassisConstants;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -51,7 +54,6 @@ import frc.robot.Util.FieldLayout.ReefSide;
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
   private static final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
-
 
   // private final AlgeaSubsystem algeaSubsystem = new AlgeaSubsystem();
 
@@ -72,15 +74,69 @@ public class RobotContainer {
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
+
   public RobotContainer() {
+
+    
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
+    //nearest source commadn
+    NamedCommands.registerCommand("drive to nearest source", new DriveToPoseCommand(chassisSubsystem,
+        FieldLayout.getCoralSourcePose(ChassisConstants.distanceConstants.source, chassisSubsystem.getPose())));
+
+    // Bottom side commands
+    NamedCommands.registerCommand("drive to bottom reef right ",
+        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.bottom, true,
+            ChassisConstants.distanceConstants.bottomReefDistance)));
+    NamedCommands.registerCommand("drive to bottom reef left ",
+        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.bottom, false,
+            ChassisConstants.distanceConstants.bottomReefDistance)));
+
+    // Bottom Right side commands
+    NamedCommands.registerCommand("drive to bottom right reef right ",
+        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.bottomRight, true,
+            ChassisConstants.distanceConstants.bottomRightReefDistance)));
+    NamedCommands.registerCommand("drive to bottom right reef left ",
+        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.bottomRight, false,
+            ChassisConstants.distanceConstants.bottomRightReefDistance)));
+
+    // Top Right side commands
+    NamedCommands.registerCommand("drive to top right reef right ",
+        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.topRight, true,
+            ChassisConstants.distanceConstants.topRightReefDistance)));
+    NamedCommands.registerCommand("drive to top right reef left ",
+        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.topRight, false,
+            ChassisConstants.distanceConstants.topRightReefDistance)));
+
+    // Top side commands
+    NamedCommands.registerCommand("drive to top reef right ",
+        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.top, true,
+            ChassisConstants.distanceConstants.topReefDistance)));
+    NamedCommands.registerCommand("drive to top reef left ",
+        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.top, false,
+            ChassisConstants.distanceConstants.topReefDistance)));
+
+    // Top Left side commands
+    NamedCommands.registerCommand("drive to top left reef right ",
+        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.topLeft, true,
+            ChassisConstants.distanceConstants.topLeftReefDistance)));
+    NamedCommands.registerCommand("drive to top left reef left ",
+        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.topLeft, false,
+            ChassisConstants.distanceConstants.topLeftReefDistance)));
+
+    // Bottom Left side commands
+    NamedCommands.registerCommand("drive to bottom left reef right ",
+        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.bottomLeft, true,
+            ChassisConstants.distanceConstants.bottomLeftReefDistance)));
+
+    NamedCommands.registerCommand("drive to bottom left reef left ",
+        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.bottomLeft, false,
+            ChassisConstants.distanceConstants.bottomLeftReefDistance)));
+
     autoChooser.setDefaultOption("EMPTY", null);
 
-
     SmartDashboard.putData("Auto Chooser", autoChooser);
-
 
     configureBindings();
   }
@@ -90,7 +146,8 @@ public class RobotContainer {
 
   }
 
-  // setting up 1 controller that does everything and if 2 are connected then it splits it to two controllers:
+  // setting up 1 controller that does everything and if 2 are connected then it
+  // splits it to two controllers:
   // first one to the chassis
   // the seconds one to the buttons
 
@@ -100,34 +157,42 @@ public class RobotContainer {
           () -> xboxControllerDrive.getLeftY(),
           () -> xboxControllerDrive.getLeftX(),
           () -> -xboxControllerDrive.getRightX()));
-          
 
-      configureXboxBinding(xboxControllerDrive);
+        configureButtonBinding(xboxControllerDrive);
+        configureDriveController(xboxControllerDrive);
       if (xboxControllerDrive.isConnected() && buttonXboxController.isConnected()) {
-        configureXboxBinding(buttonXboxController);
+        configureButtonBinding(buttonXboxController);
       }
     } else {
-    chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(chassisSubsystem,
+      chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(chassisSubsystem,
           () -> xboxControllerDrive.getLeftY(),
           () -> xboxControllerDrive.getLeftX(),
           () -> xboxControllerDrive.getRightX()));
 
-      configureXboxBinding(buttonXboxController);
+      configureButtonBinding(buttonXboxController);
     }
   }
 
-  private void configureXboxBinding(CommandXboxController cmdXboxController) {
+  private void configureButtonBinding(CommandXboxController cmdXboxController) {
 
-    // cmdXboxController.y().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL1, DropAngles.setDropAngleL1));
-    // cmdXboxController.b().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL2, DropAngles.setDropAngleL2));
-    // cmdXboxController.x().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3));
-    // cmdXboxController.a().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL4, DropAngles.setDropAngleL4));
+    // cmdXboxController.y().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
+    // endAccessorySubsystem, ElevatorStates.coralL1, DropAngles.setDropAngleL1));
+    // cmdXboxController.b().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
+    // endAccessorySubsystem, ElevatorStates.coralL2, DropAngles.setDropAngleL2));
+    // cmdXboxController.x().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
+    // endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3));
+    // cmdXboxController.a().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
+    // endAccessorySubsystem, ElevatorStates.coralL4, DropAngles.setDropAngleL4));
 
-    // cmdXboxController.leftTrigger().whileTrue(new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, false));
-    // cmdXboxController.rightTrigger().whileTrue(new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, true));
-    // cmdXboxController.leftBumper().whileTrue(new ElevatorLevelIntake(elevatorSubsystem, endAccessorySubsystem));
+    // cmdXboxController.leftTrigger().whileTrue(new RemoveAlgea(elevatorSubsystem,
+    // endAccessorySubsystem, false));
+    // cmdXboxController.rightTrigger().whileTrue(new RemoveAlgea(elevatorSubsystem,
+    // endAccessorySubsystem, true));
+    // cmdXboxController.leftBumper().whileTrue(new
+    // ElevatorLevelIntake(elevatorSubsystem, endAccessorySubsystem));
 
-    // cmdXboxController.rightBumper().whileTrue(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
+    // cmdXboxController.rightBumper().whileTrue(new
+    // RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
 
     // cmdXboxController.a().whileTrue(new CollectingAlgeaCmd(algeaSubsystem));
     // cmdXboxController.a().toggleOnFalse(new RestAlgea(algeaSubsystem));
@@ -135,15 +200,21 @@ public class RobotContainer {
     // cmdXboxController.b().whileTrue(new ShootingAlgeaCmd(algeaSubsystem));
     // cmdXboxController.b().toggleOnFalse(new RestAlgea(algeaSubsystem));
 
-    // cmdXboxController.leftBumper().whileTrue(new ElevatorLevelIntake(elevatorSubsystem, endAccessorySubsystem,chassisSubsystem));
+    // cmdXboxController.leftBumper().whileTrue(new
+    // ElevatorLevelIntake(elevatorSubsystem,
+    // endAccessorySubsystem,chassisSubsystem));
     cmdXboxController.rightBumper().whileTrue(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
-    xboxControllerDrive.start().onTrue(new InstantCommand(()-> chassisSubsystem.zeroHeading()));
+    xboxControllerDrive.start().onTrue(new InstantCommand(() -> chassisSubsystem.zeroHeading()));
 
-    cmdXboxController.a().whileTrue(new DriveToPoseCommand(chassisSubsystem,FieldLayout.getCoralSourcePose(Centimeters.of(30), chassisSubsystem.getPose())));
+    cmdXboxController.a().whileTrue(new DriveToPoseCommand(chassisSubsystem,
+        FieldLayout.getCoralSourcePose(Centimeters.of(30), chassisSubsystem.getPose())));
 
+  }
+  private void configureDriveController(CommandXboxController cmdXboxController){
+    cmdXboxController.rightBumper().whileTrue(new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranch(chassisSubsystem.getPose(), true)));
+    cmdXboxController.leftBumper().whileTrue(new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranch(chassisSubsystem.getPose(), false)));
+  }
 
-
-  } 
   /**
    * Use this to pass the autonomous command to the main {@link Robot} class.
    *
