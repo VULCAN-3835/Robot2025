@@ -7,6 +7,7 @@ package frc.robot;
 import frc.robot.Constants.OperatorConstants;
 
 import frc.robot.commands.DefaultTeleopCommand;
+import frc.robot.commands.DriveToPoseCommand;
 import frc.robot.commands.ElevatorLevelIntake;
 import frc.robot.commands.CollectingAlgeaCmd;
 import frc.robot.commands.CoralReleaseCommand;
@@ -49,10 +50,10 @@ import frc.robot.Util.FieldLayout.ReefSide;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
+  private static final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
 
 
-  private final AlgeaSubsystem algeaSubsystem = new AlgeaSubsystem();
+  // private final AlgeaSubsystem algeaSubsystem = new AlgeaSubsystem();
 
   // private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
 
@@ -86,6 +87,7 @@ public class RobotContainer {
 
   private void configureBindings() {
     setUpContollers();
+
   }
 
   // setting up 1 controller that does everything and if 2 are connected then it splits it to two controllers:
@@ -94,9 +96,9 @@ public class RobotContainer {
 
   private void setUpContollers() {
     if (xboxControllerDrive.isConnected()) {
-      this.chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(this.chassisSubsystem,
-          () -> -xboxControllerDrive.getLeftY(),
-          () -> -xboxControllerDrive.getLeftX(),
+      chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(chassisSubsystem,
+          () -> xboxControllerDrive.getLeftY(),
+          () -> xboxControllerDrive.getLeftX(),
           () -> -xboxControllerDrive.getRightX()));
           
 
@@ -105,32 +107,40 @@ public class RobotContainer {
         configureXboxBinding(buttonXboxController);
       }
     } else {
-      this.chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(this.chassisSubsystem,
-          () -> -xboxControllerDrive.getLeftY(),
-          () -> -xboxControllerDrive.getLeftX(),
-          () -> -xboxControllerDrive.getRightX()));
+    chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(chassisSubsystem,
+          () -> xboxControllerDrive.getLeftY(),
+          () -> xboxControllerDrive.getLeftX(),
+          () -> xboxControllerDrive.getRightX()));
 
       configureXboxBinding(buttonXboxController);
     }
   }
 
   private void configureXboxBinding(CommandXboxController cmdXboxController) {
-    cmdXboxController.start().onTrue(new InstantCommand(()-> chassisSubsystem.zeroHeading()));
 
     // cmdXboxController.y().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL1, DropAngles.setDropAngleL1));
     // cmdXboxController.b().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL2, DropAngles.setDropAngleL2));
-    cmdXboxController.x().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3));
-    cmdXboxController.a().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL4, DropAngles.setDropAngleL4));
+    // cmdXboxController.x().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3));
+    // cmdXboxController.a().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL4, DropAngles.setDropAngleL4));
 
     // cmdXboxController.leftTrigger().whileTrue(new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, false));
     // cmdXboxController.rightTrigger().whileTrue(new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, true));
-    // cmdXboxController.a().whileTrue(new ElevatorLevelIntake(elevatorSubsystem, endAccessorySubsystem));
-    cmdXboxController.rightBumper().whileTrue(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
-  // cmdXboxController.a().whileTrue(new CollectingAlgeaCmd(algeaSubsystem));
-  // cmdXboxController.a().toggleOnFalse(new RestAlgea(algeaSubsystem));
+    // cmdXboxController.leftBumper().whileTrue(new ElevatorLevelIntake(elevatorSubsystem, endAccessorySubsystem));
 
-  // cmdXboxController.b().whileTrue(new ShootingAlgeaCmd(algeaSubsystem));
-  // cmdXboxController.b().toggleOnFalse(new RestAlgea(algeaSubsystem));
+    // cmdXboxController.rightBumper().whileTrue(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
+
+    // cmdXboxController.a().whileTrue(new CollectingAlgeaCmd(algeaSubsystem));
+    // cmdXboxController.a().toggleOnFalse(new RestAlgea(algeaSubsystem));
+
+    // cmdXboxController.b().whileTrue(new ShootingAlgeaCmd(algeaSubsystem));
+    // cmdXboxController.b().toggleOnFalse(new RestAlgea(algeaSubsystem));
+
+    // cmdXboxController.leftBumper().whileTrue(new ElevatorLevelIntake(elevatorSubsystem, endAccessorySubsystem,chassisSubsystem));
+    cmdXboxController.rightBumper().whileTrue(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
+    xboxControllerDrive.start().onTrue(new InstantCommand(()-> chassisSubsystem.zeroHeading()));
+
+    cmdXboxController.a().whileTrue(new DriveToPoseCommand(chassisSubsystem,FieldLayout.getCoralSourcePose(Centimeters.of(30), chassisSubsystem.getPose())));
+
 
 
   } 

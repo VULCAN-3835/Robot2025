@@ -15,6 +15,7 @@ import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.controller.HolonomicDriveController;
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
+import edu.wpi.first.math.estimator.PoseEstimator;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -48,12 +49,15 @@ import frc.robot.Constants.ChassisConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Util.OVCameraUtil;
 import frc.robot.Util.SwerveModule;
+import frc.robot.Util.LimelightUtil;
 
 import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.MetersPerSecond;
 import static edu.wpi.first.units.Units.Volts;
 
+import java.lang.reflect.Field;
+import java.time.chrono.ThaiBuddhistChronology;
 import java.util.List;
 import java.util.Optional;
 
@@ -88,6 +92,7 @@ public class ChassisSubsystem extends SubsystemBase {
 
   // Field object for presenting position relative to field
   private Field2d field;
+  private Field2d llField;
 
   // The states of the modules
   private SwerveModuleState[] swerveModuleStates = new SwerveModuleState[] {
@@ -97,9 +102,8 @@ public class ChassisSubsystem extends SubsystemBase {
       new SwerveModuleState(0, Rotation2d.fromDegrees(0))
   };
 
-  // april tag camera and field initilazation
-  private OVCameraUtil atCam;;
-  private Field2d atField;
+
+  private LimelightUtil limelightUtil;
 
   // Sysid Rotinue
   SysIdRoutine routine;
@@ -143,14 +147,16 @@ public class ChassisSubsystem extends SubsystemBase {
 
     // Field initlization
     field = new Field2d();
+    this.limelightUtil = new LimelightUtil("limelight-front");
+
+    llField = new Field2d();
+    SmartDashboard.putData("ll field", llField);
 
     this.isAutonomous = false;
 
     // Update swerve position and heading at build
     updateSwervePositions();
     zeroHeading();
-
-    atCam = new OVCameraUtil("limelight-front", ChassisConstants.CAMERA_POSE3D);
 
     // Robot starting position for odometry
     startingPos = new Pose2d(1.3, 5.52, Rotation2d.fromDegrees(0));
@@ -179,8 +185,7 @@ public class ChassisSubsystem extends SubsystemBase {
     PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
     SmartDashboard.putData(field);
 
-    atField = new Field2d();
-    SmartDashboard.putData("Field", atField);
+
 
     routine = new SysIdRoutine(
         new SysIdRoutine.Config(),
@@ -234,6 +239,9 @@ public class ChassisSubsystem extends SubsystemBase {
   public Rotation2d getRotation2d() {
     return Rotation2d.fromDegrees(this.imu.getAngle());
   }
+  public AHRS getGyro() {
+    return imu;
+  }
 
   /**
    * Sets the module's state to given one
@@ -249,16 +257,16 @@ public class ChassisSubsystem extends SubsystemBase {
     SmartDashboard.putNumber("Target Y Velocity", yVelocity);
     SmartDashboard.putNumber("Target rot Velocity", rot);
 
-    var invert = 1;
+    boolean invert = false;
     var alliance = DriverStation.getAlliance();
     if (alliance.isPresent() && alliance.get() == Alliance.Red && fieldRelative)
-      invert = -1;
+      invert = true;
     // Kinematics turns the Chassis speeds to desired swerveModule states depending
     // on if field relative or not
     this.swerveModuleStates = Constants.ChassisConstants.kDriveKinematics.toSwerveModuleStates(
         fieldRelative
-            ? ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity * invert, yVelocity * invert, rot,
-                this.imu.getRotation2d())
+            ? ChassisSpeeds.fromFieldRelativeSpeeds(xVelocity, yVelocity, rot,
+                invert ? getRotation2d().plus(Rotation2d.k180deg) : getRotation2d())
             : new ChassisSpeeds(xVelocity, yVelocity, rot));
 
   }
@@ -347,20 +355,12 @@ public class ChassisSubsystem extends SubsystemBase {
   }
 
   /**
-   * Getter for the Limelight utility used by the subsystem for vision processing
-   * 
-   * @return Limelight utility object used by the subsystem for vision processing
-   */
-  public OVCameraUtil getCamera() {
-    return this.atCam;
-  }
-
-  /**
    * Resets the odometry to a given pose
    * 
    * @param pose The new pose2d of the robot
    */
-  private void resetOdometry(Pose2d pose) {
+  public void resetOdometry(Pose2d pose) {
+    System.out.println("resets");
     this.poseEstimator.resetPosition(getRotation2d().unaryMinus(), getModPositions(), pose);
   }
 
@@ -371,6 +371,9 @@ public class ChassisSubsystem extends SubsystemBase {
    */
   public Pose2d getPose() {
     return this.poseEstimator.getEstimatedPosition();
+  }
+  public PoseEstimator getPoseEstimator(){
+    return this.poseEstimator;
   }
 
   /**
@@ -395,7 +398,7 @@ public class ChassisSubsystem extends SubsystemBase {
    * Update pose estimator using vision data from the limelight
    */
   private void updatePoseEstimatorWithVisionBotPose() {
-    Pose2d visionBotPose = this.atCam.getPoseFromCamera();
+    Pose2d visionBotPose = this.limelightUtil.getPoseFromCamera();
     if (visionBotPose.getX() == 0.0) {
       return;
     }
@@ -404,11 +407,11 @@ public class ChassisSubsystem extends SubsystemBase {
     double poseDifference = poseEstimator.getEstimatedPosition().getTranslation()
         .getDistance(visionBotPose.getTranslation());
 
-    if (this.atCam.hasTarget()) {
+    if (this.limelightUtil.hasValidTarget()) {
       double xyStds;
       double degStds;
 
-      if (this.atCam.hasTarget()) {
+      if (this.limelightUtil.hasValidTarget()) {
         xyStds = 0.5;
         degStds = 6;
       } else {
@@ -418,7 +421,7 @@ public class ChassisSubsystem extends SubsystemBase {
       poseEstimator.setVisionMeasurementStdDevs(
           VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
       poseEstimator.addVisionMeasurement(visionBotPose,
-          Timer.getFPGATimestamp() - (this.atCam.getCameraTimeStampSec()));
+          Timer.getFPGATimestamp() - (this.limelightUtil.getCameraTimeStampSec()));
     }
   }
 
@@ -450,6 +453,7 @@ public class ChassisSubsystem extends SubsystemBase {
   public InstantCommand driveToPose2d(Pose2d pose2d) {
     return new InstantCommand(() -> driveTo(pose2d));
   }
+  
 
   // Chassis SysID to use this paste it in the configureXboxBinding method in
   // robotContainer
@@ -467,7 +471,6 @@ public class ChassisSubsystem extends SubsystemBase {
       
       ChassisSpeeds speeds = controller.calculate(getPose(), goalState.poseMeters, goalState.velocityMetersPerSecond,holonomicSetPoint.getRotation());
       drive(speeds, false);
-      // @Tal:: Change to constant
       if (Meters.of(currentPose2dHolonomic.minus(holonomicSetPoint).getTranslation().getDistance(holonomicSetPoint.getTranslation())).gt(Centimeters.of(0.5))) {
         isAutonomous = false;
       }
@@ -475,15 +478,15 @@ public class ChassisSubsystem extends SubsystemBase {
     setModuleStates(this.swerveModuleStates);
 
     updateSwervePositions();
-    this.poseEstimator.update(getRotation2d().unaryMinus(), this.swerve_positions);
+    this.poseEstimator.update(getRotation2d(), this.swerve_positions);
     updatePoseEstimatorWithVisionBotPose();
 
-    if (this.atCam.hasTarget()) {
-      this.poseEstimator.addVisionMeasurement(this.atCam.getPoseFromCamera(),
-          Timer.getFPGATimestamp() - (this.atCam.getCameraTimeStampSec()));
-    }
+    // if (this.limelightUtil.hasValidTarget()) {
+    //   this.poseEstimator.addVisionMeasurement(this.limelightUtil.getPoseFromCamera(),
+    //       Timer.getFPGATimestamp() - (this.limelightUtil.getCameraTimeStampSec()));
+    // } 
     this.field.setRobotPose(this.poseEstimator.getEstimatedPosition());
-    this.atField.setRobotPose(this.atCam.getPoseFromCamera());
+    // this.llField.setRobotPose(this.limelightUtil.getPoseFromCamera());
 
     SmartDashboard.putNumber("ChassisSubsystem/Gyro Heading", getHeading());
 

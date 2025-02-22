@@ -20,7 +20,7 @@ import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class ElevatorLevelIntake extends SequentialCommandGroup {
   /** Creates a new ElevatorLevelIntake. */
-  public ElevatorLevelIntake(ElevatorSubsystem elevatorSubsystem,EndAccessorySubsystem endAccessorySubsystem) {
+  public ElevatorLevelIntake(ElevatorSubsystem elevatorSubsystem,EndAccessorySubsystem endAccessorySubsystem,ChassisSubsystem chassisSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
@@ -37,6 +37,10 @@ public class ElevatorLevelIntake extends SequentialCommandGroup {
       new CoralCollectCommand(endAccessorySubsystem),
 
       // 4. returns the elevator and the end accessory to their resting state  
+      new InstantCommand(()-> chassisSubsystem.drive(-1, 0, 0, false)),
+
+      new WaitCommand(0.5),
+
       new ParallelCommandGroup(
         new InstantCommand(()-> elevatorSubsystem.setLevel(ElevatorStates.rest)),
         new InstantCommand(()-> endAccessorySubsystem.setAngle(DropAngles.restingAngle))

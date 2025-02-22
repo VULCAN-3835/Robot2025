@@ -19,13 +19,6 @@ public class ShootingAlgeaCmd extends SequentialCommandGroup {
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
 
-        // 1. sets the subsystem in the predefined shooting angle
-        new InstantCommand(() -> algeaSubsystem.setShootingAngle()),
-
-        // 2. waits until the subsystem is at the desired angle
-        new WaitUntilCommand(() -> algeaSubsystem.isSystemAtShootingAngle()),
-
-        // 3. shoots the algea
         new InstantCommand(() -> algeaSubsystem.shootAlgea()),
 
         // 4. checkes if the algea was shot

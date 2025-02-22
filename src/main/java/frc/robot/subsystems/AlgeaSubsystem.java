@@ -179,7 +179,6 @@ public class AlgeaSubsystem extends SubsystemBase {
     // calculates the ouput of the motor
 
     double power = profiledPIDController.calculate(getAngle().in(Degrees));
-    // angleMotor.set(power);
 
     SmartDashboard.putNumber("AlgeaSubsystem/algea intake encoder", getAngle().in(Degrees));
     SmartDashboard.putBoolean("AlgeaSubsystem/algea intake limit Switch", getLowLimitSwitch());
@@ -190,15 +189,15 @@ public class AlgeaSubsystem extends SubsystemBase {
     SmartDashboard.putBoolean("AlgeaSubsystem/is at pid setpoint", profiledPIDController.atGoal());
 
 
-    // if (getLowLimitSwitch() && power > 0) {
-    //   angleMotor.set(0);
-    // } else {
-    //   angleMotor.set(power);
-    // }
+    if (getLowLimitSwitch() && power > 0) {
+      angleMotor.set(0);
+    } else {
+      angleMotor.set(power);
+    }
 
-    // if (powerMotor.get() < 0 && hasBall()) {
-    //   setPower(0);
-    // }
+    if (hasBall()&&profiledPIDController.getGoal().position==algeaSubsystemConstants.restAngle.in(Degrees)) {
+      setPower(algeaSubsystemConstants.holdPower);
+    }
     if (getAngle().in(Degrees)>algeaSubsystemConstants.minAngle.in(Degrees)&&getAngle().in(Degrees)<70&&power<0) {
       powerMotor.set(0);
     }

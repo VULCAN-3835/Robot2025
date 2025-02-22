@@ -24,7 +24,7 @@ public class CollectingAlgeaCmd extends SequentialCommandGroup {
         new InstantCommand(() -> algeaSubsystem.setCollectAngle()),
 
         // 2. waits until system is at the collecting angle
-        new WaitUntilCommand(()-> algeaSubsystem.isAtSetpoint()),
+        new WaitUntilCommand(()-> algeaSubsystem.isAtSetpoint()|| algeaSubsystem.getLowLimitSwitch()),
 
         // 3. starts to collect the piece
         new InstantCommand(() -> algeaSubsystem.collectingAlgea()),

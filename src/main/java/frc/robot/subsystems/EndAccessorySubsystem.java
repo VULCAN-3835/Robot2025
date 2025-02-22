@@ -238,6 +238,11 @@ public class EndAccessorySubsystem extends SubsystemBase {
             angleMotor.set(profiledPIDOutput);
         }
 
+        if (getAngle().in(Degrees) == 136) {
+            angleMotor.set(0);
+            System.out.println("sensor not good");
+        }
+
 
         SmartDashboard.putNumber("EndAccessory Subsystem/end current angle", getAngle().in(Degrees));
         SmartDashboard.putBoolean("EndAccessory Subsystem/end has piece?", hasPiece());

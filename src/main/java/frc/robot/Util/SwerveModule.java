@@ -6,6 +6,8 @@ package frc.robot.Util;
 
 import static edu.wpi.first.units.Units.Degrees;
 import static edu.wpi.first.units.Units.RPM;
+import static edu.wpi.first.units.Units.Rotation;
+import static edu.wpi.first.units.Units.Rotations;
 import static edu.wpi.first.units.Units.Volts;
 
 import com.ctre.phoenix6.BaseStatusSignal;
@@ -189,7 +191,7 @@ public class SwerveModule {
         Measure<AngleUnit> angle_rot =
             BaseStatusSignal.getLatencyCompensatedValue(m_steerPosition, m_steerVelocity);
 
-        swervePosition.distanceMeters = drive_rot.in(Degrees) *ModuleConstants.kWheelCircumference ; // Current module's drive position
+        swervePosition.distanceMeters = drive_rot.in(Rotations) *ModuleConstants.kWheelCircumference ; // Current module's drive position
         swervePosition.angle = Rotation2d.fromDegrees(angle_rot.in(Degrees)); // Current module's angle in Rotation2d
 
         return swervePosition;

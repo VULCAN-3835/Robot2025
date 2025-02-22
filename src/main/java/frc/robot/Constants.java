@@ -55,7 +55,7 @@ public final class Constants {
     public static final int angleEncoderID = 5;
     public static final int pieceDetectorID = 1;
 
-    public static final double kMotorPowerL1 = -0.15;
+    public static final double kMotorPowerL1 = -0.25;
     public static final double kMotorPowerL2 = 0.4;
     public static final double kMotorPowerL3 = 0.4;
     public static final double kMotorPowerL4 = 0.5;
@@ -63,7 +63,7 @@ public final class Constants {
 
     public static final double removeAlgeaPower = 0.5;
 
-    public static final double kHasPieceVoltageThreshold = 1.85;
+    public static final double kHasPieceVoltageThreshold = 1;
 
     public static final Angle kMaxAngle = Degrees.of(191);
     public static final Angle kMinAngle = Degrees.of(50);
@@ -98,29 +98,26 @@ public final class Constants {
 
     public static final double ballDetectorThreshold =1.8;
 
-    public static final Angle minAngle = Degrees.of(101);
-    public static final Angle maxAngle = Degrees.of(151);
-    public static final Angle restAngle = Degrees.of(150);
-    public static final Angle collectAngle = Degrees.of(101);
-    public static final Angle holdAngle = Degrees.of(150);
-    public static final Angle scoreAngle = Degrees.of(137);
+    public static final Angle minAngle = Degrees.of(103);
+    public static final Angle maxAngle = Degrees.of(150);
+    public static final Angle restAngle = Degrees.of(103);
+    public static final Angle collectAngle = Degrees.of(150);
+    public static final Angle holdAngle = Degrees.of(105);
+    public static final Angle scoreAngle = Degrees.of(150);
 
     public static final Angle pidTolerence = Degrees.of(5); 
 
     public static final double collectingPower = 0.5;
-    public static final double shootingPower = -0.4;
+    public static final double shootingPower = -0.6;
+    public static final double holdPower = 0.1;
 
     public static final double maxVelocity = 10;
     public static final double maxAcceleration = 12;
 
-    public static final double profiledkP = 0.005;
+    public static final double profiledkP = 0.008;
     public static final double profiledkI = 0;
     public static final double profiledkD = 0;
 
-
-  }
-
-  public static class OVCameraUtilConstants {
 
   }
 
@@ -169,21 +166,22 @@ public final class Constants {
   }
 
   public static class ChassisConstants {
-    // Ports for driving motors
-    public static final int kLeftFrontDriveID = 11; // CAN ID
-    public static final int kRightFrontDriveID = 13; // CAN ID
-    public static final int kLeftBackDriveID = 12; // CAN ID
-    public static final int kRightBackDriveID = 10; // CAN ID
-    // Ports for angle motors
-    public static final int kLeftFrontSteerID = 21; // CAN ID
-    public static final int kRightFrontSteerID = 23; // CAN ID
-    public static final int kLeftBackSteerID = 22; // CAN ID
-    public static final int kRightBackSteerID = 20; // CAN ID
-    // Ports for encoders
-    public static final int kLeftFrontEncID = 31; // CAN ID
-    public static final int kRightFrontEncID = 33; // CAN ID
-    public static final int kLeftBackEncID = 32; // CAN ID
-    public static final int kRightBackEncID = 30; // CAN ID
+
+        // Ports for driving motors
+        public static final int kLeftFrontDriveID = 12; // CAN ID
+        public static final int kRightFrontDriveID = 10; // CAN ID
+        public static final int kLeftBackDriveID = 13; // CAN ID
+        public static final int kRightBackDriveID =11 ; // CAN ID
+        // Ports for angle motors
+        public static final int kLeftFrontSteerID = 22; // CAN ID
+        public static final int kRightFrontSteerID =20 ; // CAN ID
+        public static final int kLeftBackSteerID = 23; // CAN ID
+        public static final int kRightBackSteerID = 21; // CAN ID
+        // Ports for encoders
+        public static final int kLeftFrontEncID = 32; // CAN ID
+        public static final int kRightFrontEncID =30 ; // CAN ID
+        public static final int kLeftBackEncID =33 ; // CAN ID
+        public static final int kRightBackEncID = 31; // CAN ID
 
     // Offsets for absolute encoders in rotations (i.e: 360 degrees = 1 rotation):
     // public static final double kLeftFrontOffset = -0.029296875;
@@ -191,10 +189,10 @@ public final class Constants {
     // public static final double kLeftBackOffset = 0.406494140625;
     // public static final double kRightBackOffset = -0.228515625;
 
-    public static final double kLeftFrontOffset = -0.17138671875;
-    public static final double kRightFrontOffset = 0.55767578125;
-    public static final double kLeftBackOffset = 0.05662109375;
-    public static final double kRightBackOffset = 0.00244140625;
+    public static final double kLeftFrontOffset = -1.4658203125;
+    public static final double kRightFrontOffset = -0.510986328125;
+    public static final double kLeftBackOffset = 0.04296875;
+    public static final double kRightBackOffset = -0.66259765625;
     // Which motors are inverted: public static final boolean frontLeftDriveInverted
     // = true;
     public static final boolean kLeftFrontInverted = true;
@@ -208,27 +206,16 @@ public final class Constants {
     public static final double kTeleDriveMaxAngulerSpeedRadiansPerSec = Math.PI * 1.5;
 
     // Distance between centers of right and left wheels on robot meters
-    public static final double kTrackWidth = 0.5403;
+    public static final double kTrackWidth = 0.6357;
     // Distance between front and back wheels on robot meters
-    public static final double kWheelBase = 0.5403;
+    public static final double kWheelBase = 0.6357;
     // Distance between middle of robot to module wheel
     public static final double kWheelRadius = 0.38205;
 
     // the mass of the robot in KG
-    public static final double kMassKG = 0;
+    public static final double kMassKG = 51;
     // the moment of inertia of the robot
-    public static final double kMOI = 0;
-
-    public static final double kCameraYaw = 0;
-    public static final double kCameraPitch = 0;
-    public static final double kCameraRoll =0;
-
-    public static final double kCameraZ = 0;
-    public static final double kCameraY = 0;
-    public static final double kCameraX = 0;
-
-    public static final Rotation3d CAM_ROTATION3D = new Rotation3d(kCameraRoll,kCameraPitch,kCameraYaw);
-    public static final Pose3d CAMERA_POSE3D = new Pose3d(kCameraX, kCameraY, kCameraZ, CAM_ROTATION3D);
+    public static final double kMOI = 6.81;
 
     // Swerve Kinematics:
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
@@ -267,7 +254,7 @@ public final class Constants {
     public static final Distance coralL3 = Centimeter.of(20.52);
     public static final Distance coralL4 = Centimeter.of(41);
     public static final Distance restDistance = Centimeter.of(0);
-    public static final Distance sourceDistance = Centimeter.of(12);
+    public static final Distance sourceDistance = Centimeter.of(15);
     public static final Distance removeAlgea = Centimeter.of(22);
 
     public static final double pidTolerence = 1.5;
