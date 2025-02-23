@@ -6,6 +6,7 @@
 package frc.robot;
 
 import static edu.wpi.first.units.Units.Degrees;
+import static edu.wpi.first.units.Units.Meters;
 import static edu.wpi.first.units.Units.Centimeter;
 import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.Rotation;
@@ -220,7 +221,7 @@ public final class Constants {
   public static class distanceConstants{
 
     //TODO: find the right distance
-    public static final Distance source = Centimeter.of(30);
+    public static final Distance source = Meters.of(0.1);
 
     //TODO: fill the reefs value
     public static final Distance topReefDistance = Centimeter.of(0);

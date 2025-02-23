@@ -4,119 +4,110 @@
 
 package frc.robot.Util;
 
-import static edu.wpi.first.units.Units.Inches;
 import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.Centimeters;
 
 import java.util.ArrayList;
+import java.util.Optional;
 
 import edu.wpi.first.apriltag.AprilTagFieldLayout;
 import edu.wpi.first.apriltag.AprilTagFields;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
-import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.Constants.ChassisConstants.distanceConstants;
 
-/** Add your docs here. */
 public final class FieldLayout {
     public static AprilTagFieldLayout aprilTagFieldLayout = AprilTagFieldLayout
             .loadField(AprilTagFields.k2025Reefscape);
 
-    public enum ReefSide {
-        bottom,
-        bottomLeft,
-        topLeft,
-        top,
-        topRight,
-        bottomRight
-    };
+    private static Pose2d getPoseAlignedToDrive(int tagID, Distance offset, Rotation2d rotationOffset) {
+        Optional<Pose3d> optionalTagPose = aprilTagFieldLayout.getTagPose(tagID);
+        if (!optionalTagPose.isPresent()) {
+            DriverStation.reportError("AprilTag " + tagID + " not found.", false);
+            return new Pose2d();
+        }
+        Pose2d tagPose = optionalTagPose.get().toPose2d();
+        Rotation2d tagRotation = tagPose.getRotation();
 
-    private FieldLayout() {
+        // Adjust offset to match the tag's orientation
+        Translation2d offsetTranslation = new Translation2d(offset.in(Meters) + 0.5, tagRotation.plus(rotationOffset));
+        Pose2d adjustedPose = new Pose2d(
+                tagPose.getTranslation().minus(offsetTranslation),
+                tagRotation.plus(rotationOffset));
+        return adjustedPose;
     }
 
-    private static Pose2d getReefsSidePose(int ID, boolean right, Distance distance) {
-        Pose2d tagPose = aprilTagFieldLayout.getTagPose(ID).get().toPose2d();
-        tagPose = new Pose2d(tagPose.getTranslation(), tagPose.getRotation().plus(Rotation2d.fromDegrees(180)));
-        return new Pose2d(
-                tagPose.getTranslation()
-                        .plus(new Translation2d(distance.in(Meters), Rotation2d.fromDegrees(right ? -90 : 90))),
-                tagPose.getRotation());
+    public static Pose2d getDriveToReefPose(int tagID, Distance offset) {
+        return getPoseAlignedToDrive(tagID, offset, Rotation2d.fromDegrees(180));
     }
 
-    public static Pose2d getBranchPose(ReefSide reefSide, boolean right,  Distance distance) {
+    public static Pose2d getDriveToProcessorPose(Distance offset) {
+        boolean isBlue = DriverStation.getAlliance().orElse(Alliance.Blue) == Alliance.Blue;
+        int tagID = isBlue ? 16 : 3;
+        return getPoseAlignedToDrive(tagID, offset, Rotation2d.fromDegrees(90));
+    }
+
+    public static Pose2d getNearestBranchPose(Pose2d currentPose, boolean right) {
+        ArrayList<Pose2d> reefPoses = new ArrayList<>();
+
+        reefPoses.add(getDriveToReefPose(18, distanceConstants.topReefDistance));
+        reefPoses.add(getDriveToReefPose(22, distanceConstants.topRightReefDistance));
+        reefPoses.add(getDriveToReefPose(20, distanceConstants.topLeftReefDistance));
+        reefPoses.add(getDriveToReefPose(19, distanceConstants.bottomLeftReefDistance));
+        reefPoses.add(getDriveToReefPose(17, distanceConstants.bottomRightReefDistance));
+        reefPoses.add(getDriveToReefPose(7, distanceConstants.bottomReefDistance));
+
+        return currentPose.nearest(reefPoses);
+    }
+
+    public static Pose2d getNearestSource(Pose2d currentPose) {
         boolean isBlue = DriverStation.getAlliance().get() == DriverStation.Alliance.Blue;
-            switch (reefSide) {
-                case bottom:
-                    return getReefsSidePose(isBlue?18:7, right, distance);
-                case bottomLeft:
-                    return getReefsSidePose(isBlue?19:6, right, distance);
-                case topLeft:
-                    return getReefsSidePose(isBlue?20:11, right, distance);
-                case top:
-                    return getReefsSidePose(isBlue?21:10, right, distance);
-                case topRight:
-                    return getReefsSidePose(isBlue?22:9, right, distance);
-                case bottomRight:
-                    return getReefsSidePose(isBlue?17:8, right, distance);
-                default:
-                    System.out.println("error in get Branch Pose");
-                    return new Pose2d();
-            }
+        ArrayList<Pose2d> sources = new ArrayList<>();
+        sources.add(getDriveToReefPose(isBlue ? 12 : 2, distanceConstants.source));
+        sources.add(getDriveToReefPose(isBlue ? 13 : 1, distanceConstants.source));
+        return currentPose.nearest(sources);
     }
 
-    private static Pose2d getCoralSourcePose2d(int ID, Distance distance) {
-        Pose2d tagPos = aprilTagFieldLayout.getTagPose(ID).get().toPose2d();
-        return new Pose2d(tagPos.getTranslation().plus(new Translation2d(distance.in(Meters), tagPos.getRotation())),
-                tagPos.getRotation().plus(Rotation2d.fromDegrees(180)));
+    public static Pose2d getDesiredPoseBehindTag(double distanceMeters) {
+
+        // Determine alliance and choose tag ID based on alliance color
+        boolean isBlue = DriverStation.getAlliance().get() == DriverStation.Alliance.Blue;
+        int tagId = isBlue ? 13 : 1;
+
+        // Retrieve the tag's pose from the field layout (returns an Optional)
+        Optional<Pose3d> tagPoseOpt = aprilTagFieldLayout.getTagPose(tagId);
+        if (!tagPoseOpt.isPresent()) {
+            System.err.println("AprilTag with ID " + tagId + " not found!");
+            return new Pose2d(); // Default pose or handle error appropriately
+        }
+
+        // Convert the tag's Pose3d to a Pose2d
+        Pose2d tagPose = tagPoseOpt.get().toPose2d();
+
+        // Retrieve the tag's heading in degrees
+        double thetaDegrees = tagPose.getRotation().getDegrees();
+
+        // Convert the angle to radians for trigonometric calculations
+        double thetaRadians = Math.toRadians(thetaDegrees);
+
+        // Calculate the new position by moving 'distanceMeters' behind the tag
+        // (opposite its heading)
+        double desiredX = tagPose.getX() - distanceMeters * Math.cos(thetaRadians);
+        double desiredY = tagPose.getY() - distanceMeters * Math.sin(thetaRadians);
+
+        // Calculate the desired rotation: face the tag by adding 180 degrees
+        double desiredRotationDegrees = thetaDegrees + 180;
+        Rotation2d desiredRotation = Rotation2d.fromDegrees(desiredRotationDegrees);
+
+        // Return the new pose behind the tag, with position in meters and rotation in
+        // degrees
+        return new Pose2d(desiredX, desiredY, desiredRotation);
     }
 
-    public static Pose2d getCoralSourcePose(Distance distance,Pose2d currentPose2d) {
-        ArrayList<Pose2d> coralSourceArrayList = new ArrayList<>();
-        
-        coralSourceArrayList.add(getCoralSourcePose2d(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue ? 12 : 2, distance));
-        coralSourceArrayList.add(getCoralSourcePose2d(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue ? 13 : 1, distance));
-        return currentPose2d.nearest(coralSourceArrayList);
-
-    }
-    public static Pose2d getProccesorPose2d(Distance distance) {        
-        Pose2d tagPos = aprilTagFieldLayout.getTagPose(DriverStation.getAlliance().get() == DriverStation.Alliance.Blue ? 16 : 3).get().toPose2d();
-        return new Pose2d(tagPos.getTranslation().plus(new Translation2d(distance.in(Meters), tagPos.getRotation())),
-                tagPos.getRotation().plus(Rotation2d.fromDegrees( 90)));
-    }
-
-    public static Pose2d getBranchMid(ReefSide reefSide,Distance distance){
-        boolean isBlue = DriverStation.getAlliance().get()==DriverStation.Alliance.Blue;
-        switch (reefSide) {
-            case top:
-                return getCoralSourcePose2d(isBlue?21:10, distance);
-            case topRight:
-                return getCoralSourcePose2d(isBlue?22:9, distance);
-            case topLeft:
-                return getCoralSourcePose2d(isBlue?20:11, distance);
-            case bottom:
-                return getCoralSourcePose2d(isBlue?18:7, distance);
-            case bottomLeft:
-                return getCoralSourcePose2d(isBlue?19:6, distance);
-            case bottomRight:
-                return getCoralSourcePose2d(isBlue?17:8, distance);
-            default:
-                return new Pose2d();
-        }      
-          
-    }
-
-    public static Pose2d getNearestBranch(Pose2d currentPose2d,boolean right){
-        ArrayList<Pose2d> list = new ArrayList<>();
-        list.add(getBranchPose(ReefSide.top,right,distanceConstants.topReefDistance));
-        list.add(getBranchPose(ReefSide.topRight,right,distanceConstants.topRightReefDistance));
-        list.add(getBranchPose(ReefSide.topLeft,right,distanceConstants.topLeftReefDistance));
-        list.add(getBranchPose(ReefSide.top,right,distanceConstants.bottomReefDistance));
-        list.add(getBranchPose(ReefSide.topRight,right,distanceConstants.bottomRightReefDistance));
-        list.add(getBranchPose(ReefSide.topLeft,right,distanceConstants.bottomLeftReefDistance));
-        return currentPose2d.nearest(list);
-    }
 }
-

@@ -5,17 +5,7 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Centimeter;
-import static edu.wpi.first.units.Units.Centimeters;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Millisecond;
-import static edu.wpi.first.units.Units.Milliseconds;
-import static edu.wpi.first.units.Units.Minute;
-import static edu.wpi.first.units.Units.RPM;
-import static edu.wpi.first.units.Units.Rotations;
-import static edu.wpi.first.units.Units.RotationsPerSecond;
-import static edu.wpi.first.units.Units.Seconds;
-import static edu.wpi.first.units.Units.Volts;
+
 
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.pathplanner.lib.path.ConstraintsZone;
@@ -146,7 +136,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     // uses the velcity that has been calculated by the trapzoid
     // the sum of the output power by all of the motor controllers
 
-    if (getCloseLimitSwitch() && motorOutput > 0) {
+    if (getDistance().in(Centimeter)<1 && motorOutput > 0) {
       elevatorMotor.set(0);
     } else {
       elevatorMotor.set(motorOutput);
