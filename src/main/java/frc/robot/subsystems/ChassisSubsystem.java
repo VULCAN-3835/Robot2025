@@ -103,7 +103,8 @@ public class ChassisSubsystem extends SubsystemBase {
   };
 
 
-  private LimelightUtil limelightUtil;
+  private LimelightUtil limelightReef;
+  private LimelightUtil limelightSource;
 
   // Sysid Rotinue
   SysIdRoutine routine;
@@ -147,7 +148,8 @@ public class ChassisSubsystem extends SubsystemBase {
 
     // Field initlization
     field = new Field2d();
-    this.limelightUtil = new LimelightUtil("limelight-front");
+    this.limelightReef = new LimelightUtil("limelight-front");
+    this.limelightSource = new LimelightUtil("limelight-source");
 
     llField = new Field2d();
     SmartDashboard.putData("ll field", llField);
@@ -393,40 +395,45 @@ public class ChassisSubsystem extends SubsystemBase {
   public SwerveModuleState[] getModStates() {
     return this.swerveModuleStates;
   }
-  public LimelightUtil getCam(){
-    return limelightUtil;
+  public LimelightUtil getCamReef(){
+    return limelightReef;
+  }
+  public LimelightUtil getCamSource(){
+    return limelightSource;
   }
 
   /**
    * Update pose estimator using vision data from the limelight
    */
   private void updatePoseEstimatorWithVisionBotPose() {
-    Pose2d visionBotPose = this.limelightUtil.getPoseFromCamera();
-    if (visionBotPose.getX() == 0.0) {
-      return;
-    }
+    Pose2d visionBotPoseReef = this.limelightReef.getPoseFromCamera();
+    Pose2d visionBotPoseSource = this.limelightSource.getPoseFromCamera();
+    double xyStds;
+    double degStds;
 
-    // distance from current pose to vision estimated pose
-    double poseDifference = poseEstimator.getEstimatedPosition().getTranslation()
-        .getDistance(visionBotPose.getTranslation());
-
-    if (this.limelightUtil.hasValidTarget()) {
-      double xyStds;
-      double degStds;
-
-      if (this.limelightUtil.hasValidTarget()) {
-        xyStds = 0.5;
+      if (visionBotPoseReef.getX() != 0.0 && this.limelightReef.hasValidTarget()) {
+        xyStds = 0.5 * (1/Math.pow(limelightReef.distanceFromTargetMeters(), 2));
         degStds = 6;
-      } else {
-        return;
+
+        poseEstimator.setVisionMeasurementStdDevs(
+          VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
+        poseEstimator.addVisionMeasurement(visionBotPoseReef,
+          Timer.getFPGATimestamp() - (this.limelightReef.getCameraTimeStampSec()));
       }
 
-      poseEstimator.setVisionMeasurementStdDevs(
+      if (visionBotPoseSource.getX() != 0.0 && this.limelightSource.hasValidTarget()){
+        xyStds = 0.5 * (1/Math.pow(limelightSource.distanceFromTargetMeters(), 2));
+        degStds = 6;
+
+        poseEstimator.setVisionMeasurementStdDevs(
           VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
-      poseEstimator.addVisionMeasurement(visionBotPose,
-          Timer.getFPGATimestamp() - (this.limelightUtil.getCameraTimeStampSec()));
+        poseEstimator.addVisionMeasurement(visionBotPoseSource,
+          Timer.getFPGATimestamp() - (this.limelightSource.getCameraTimeStampSec()));
+      }
+
+      
     }
-  }
+
 
   private void initHolonomicDriver() {
     this.controller = new HolonomicDriveController(

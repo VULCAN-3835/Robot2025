@@ -26,15 +26,15 @@ public class AlignToAprilTagCommand extends Command {
     public void execute() {
         // Use the LimelightUtil already declared in the chassis
         // If the Limelight doesn't see a valid target, stop the robot.
-        if (!chassis.getCam().hasValidTarget()) {
+        if (!chassis.getCamReef().hasValidTarget()) {
             chassis.drive(0.0, 0.0, 0.0, true);
             return;
         }
 
         // Get the horizontal offset (tx) from the limelight (in degrees)
-        double tx = chassis.getCam().getX();
+        double tx = chassis.getCamReef().getX();
         // (Optional) Use the vertical offset (ty) for lateral adjustments if desired.
-        double ty = chassis.getCam().getY();
+        double ty = chassis.getCamReef().getY();
 
         // Compute the rotational velocity to reduce the tx error
         double rotVelocity = -kRot * tx;

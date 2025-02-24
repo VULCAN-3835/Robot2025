@@ -81,6 +81,15 @@ public class RobotContainer {
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
+    NamedCommands.registerCommand("drive to nearest right branch", new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranchRight(chassisSubsystem.getPose())));
+    NamedCommands.registerCommand("L1",new ElevatorLevelScoreCMD(elevatorSubsystem,
+    endAccessorySubsystem, ElevatorStates.coralL1, DropAngles.setDropAngleL1));
+    NamedCommands.registerCommand("L2",new ElevatorLevelScoreCMD(elevatorSubsystem,
+    endAccessorySubsystem, ElevatorStates.coralL2, DropAngles.setDropAngleL2));
+    NamedCommands.registerCommand("L3",new ElevatorLevelScoreCMD(elevatorSubsystem,
+    endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3));
+    NamedCommands.registerCommand("go to intake source",new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestSource(chassisSubsystem.getPose())));
+    NamedCommands.registerCommand("inatke from source", new ElevatorLevelIntake(elevatorSubsystem, endAccessorySubsystem, chassisSubsystem));
     //nearest source commadn
     // NamedCommands.registerCommand("drive to nearest source", new DriveToPoseCommand(chassisSubsystem,
     //     FieldLayout.getCoralSourcePose(ChassisConstants.distanceConstants.source, chassisSubsystem.getPose())));
@@ -210,8 +219,7 @@ public class RobotContainer {
     endAccessorySubsystem, ElevatorStates.coralL2, DropAngles.setDropAngleL2));
     cmdXboxController.x().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
     endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3));
-    cmdXboxController.a().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
-    endAccessorySubsystem, ElevatorStates.coralL4, DropAngles.setDropAngleL4));
+
 
     cmdXboxController.povUp().whileTrue(new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranchPose(chassisSubsystem.getPose(), false)));
 
