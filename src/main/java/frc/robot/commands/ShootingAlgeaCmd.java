@@ -17,7 +17,7 @@ public class ShootingAlgeaCmd extends SequentialCommandGroup {
   public ShootingAlgeaCmd(AlgeaSubsystem algeaSubsystem) {
     // Add your commands in the addCommands() call, e.g
     // addCommands(new FooCommand(), new BarCommand());
-    addRequirements(alageaSubsystem);
+    addRequirements(algeaSubsystem);
     addCommands(
 
         new InstantCommand(() -> algeaSubsystem.shootAlgea()),

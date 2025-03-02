@@ -10,8 +10,6 @@ import frc.robot.commands.DefaultTeleopCommand;
 import frc.robot.commands.DriveToPoseCommand;
 import frc.robot.commands.ElevatorLevelIntake;
 import frc.robot.commands.AutoDriveForword;
-import frc.robot.commands.CollectingAlgeaCmd;
-import frc.robot.commands.CoralReleaseCommand;
 import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem;
 import frc.robot.subsystems.AlgeaSubsystem;
@@ -25,7 +23,6 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.Meters;
 
-import java.util.logging.FileHandler;
 
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
