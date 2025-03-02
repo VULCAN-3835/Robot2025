@@ -29,6 +29,7 @@ import edu.wpi.first.math.geometry.Transform2d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.util.Units;
+import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 
@@ -50,13 +51,16 @@ public class OVCameraUtil {
         updateResult();
         this.OVCamera.setPipelineIndex(1);
         this.cameraPose = cameraPose;
+        boolean fieldWork;
         try{
             this.aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.k2025Reefscape);
-            SmartDashboard.putBoolean("field working", true);
+            fieldWork = true;
         } catch (Exception e) {
-            SmartDashboard.putBoolean("field not working",false);
-            this.aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField); 
+            this.aprilTagFieldLayout = AprilTagFieldLayout.loadField(AprilTagFields.kDefaultField);
+            fieldWork = false; 
         }
+        SmartDashboard.putBoolean("filed works?", fieldWork);
+        
     }
 
     public boolean isConnected() {
@@ -74,6 +78,10 @@ public class OVCameraUtil {
             this.result = newResult;
         }
     }
+    public Optional<Pose3d> getTagPose3d(int ID){
+        Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(ID);
+        return tagPose;
+    }
 
     public int getID() {
         if (hasTarget()) {
@@ -81,6 +89,45 @@ public class OVCameraUtil {
         }
         return -1;
     }
+    public Optional<Double> getTargetX() {
+        Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(getID());
+        
+        if (!hasTarget() || tagPose.isEmpty()) {
+            return Optional.empty();
+        }
+        
+        // Get the transformation from the camera to the target
+        Transform3d camToTarget = result.getBestTarget().getBestCameraToTarget();
+    
+        // Compute the X position of the target relative to the camera
+        double targetX = camToTarget.getX();
+    
+        return Optional.of(targetX);
+    }
+
+    public Optional<Double> getTargetY() {
+        Optional<Pose3d> tagPose = aprilTagFieldLayout.getTagPose(getID());
+        
+        if (!hasTarget() || tagPose.isEmpty()) {
+            return Optional.empty();
+        }
+        
+        // Get the transformation from the camera to the target
+        Transform3d camToTarget = result.getBestTarget().getBestCameraToTarget();
+    
+        // Compute the X position of the target relative to the camera
+        double targetY = camToTarget.getY();
+    
+        return Optional.of(targetY);
+    }
+
+    public Optional<Angle> getTargetYaw() {
+        if (hasTarget()) {
+            return Optional.of(Degrees.of(result.getBestTarget().getYaw()));
+        }
+        return Optional.empty();
+    }    
+    
 
     public double getDistance() {
         if (!hasTarget()) {

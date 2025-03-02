@@ -7,34 +7,28 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.subsystems.AlageaSubsystem;
+import frc.robot.subsystems.AlgeaSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ShootingAlageaCmd extends SequentialCommandGroup {
-  /** Creates a new ShootingAlageaCmd. */
-  public ShootingAlageaCmd(AlageaSubsystem alageaSubsystem) {
+public class ShootingAlgeaCmd extends SequentialCommandGroup {
+  /** Creates a new ShootingAlgeaCmd. */
+  public ShootingAlgeaCmd(AlgeaSubsystem algeaSubsystem) {
     // Add your commands in the addCommands() call, e.g
     // addCommands(new FooCommand(), new BarCommand());
-    addRequirements(alageaSubsystem);
+    addRequirements(algeaSubsystem);
     addCommands(
-        // 1. sets the subsystem in the predefined shooting angle
-        new InstantCommand(() -> alageaSubsystem.setShootingAngle()),
 
-        // 2. waits until the subsystem is at the desired angle
-        new WaitUntilCommand(() -> alageaSubsystem.isSystemAtShootingAngle()),
+        new InstantCommand(() -> algeaSubsystem.shootAlgea()),
 
-        // 3. shoots the alagea
-        new InstantCommand(() -> alageaSubsystem.shootAlagea()),
-
-        // 4. checkes if the alagea was shot
-        new WaitUntilCommand(() -> !alageaSubsystem.hasBall()),
-
+        // 4. checkes if the algea was shot
+        new WaitUntilCommand(() -> !algeaSubsystem.hasBall()),
+        
         // 5. stops the motor and sets the subsystem in the predefined resting angle
         new InstantCommand(() -> {
-          alageaSubsystem.setPower(0);
-          alageaSubsystem.setRestAngle();
+          algeaSubsystem.setPower(0);
+          algeaSubsystem.setRestAngle();
         })
 
     );

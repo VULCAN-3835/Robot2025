@@ -18,6 +18,7 @@ public class ClimbCMD extends SequentialCommandGroup {
   public ClimbCMD(ClimbSubsystem climbSubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
+    addRequirements(climbSubsystem);
     
     addCommands(
       // 1. setting the motor to its desired speed so it will climb

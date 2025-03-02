@@ -5,36 +5,40 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.commands.CoralCollectCommand;
+import frc.robot.Constants.ChassisConstants.distanceConstants;
 import frc.robot.commands.DefaultTeleopCommand;
-import frc.robot.commands.CoralReleaseCommand;
+import frc.robot.commands.DriveToPoseCommand;
+import frc.robot.commands.ElevatorLevelIntake;
+import frc.robot.commands.AutoDriveForword;
 import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem;
-import frc.robot.commands.CollectingAlageaCmd;
-import frc.robot.commands.DefaultAlageaCmd;
-import frc.robot.commands.DefaultTeleopCommand;
-import frc.robot.commands.ShootingAlageaCmd;
-import frc.robot.subsystems.AlageaSubsystem;
-import frc.robot.commands.ClimbCMD;
-import frc.robot.commands.CloseClimbCMD;
-import frc.robot.Util.ElevatorStates;
-import frc.robot.commands.DefaultTeleopCommand;
-import frc.robot.commands.ResetClimbing;
-import frc.robot.subsystems.ChassisSubsystem;
-import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.subsystems.AlgeaSubsystem;
 
+import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.Util.ElevatorStates;
+import frc.robot.Util.FieldLayout;
+import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
 import frc.robot.subsystems.ElevatorSubsystem;
+
+import static edu.wpi.first.units.Units.Centimeters;
+import static edu.wpi.first.units.Units.Meters;
+
+
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
-import edu.wpi.first.wpilibj.Joystick;
-import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
-import edu.wpi.first.wpilibj2.command.CommandScheduler;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
+import frc.robot.commands.ElevatorLevelScoreCMD;
+import frc.robot.commands.RemoveAlgea;
+import frc.robot.commands.RestElevatorAndGripper;
+import frc.robot.commands.ShootingAlgeaCmd;
+import frc.robot.commands.RestAlgea;
+import frc.robot.Constants.ChassisConstants;
 
 /**
  * This class is where the bulk of the robot should be declared. Since
@@ -47,53 +51,111 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
  */
 public class RobotContainer {
   // The robot's subsystems and commands are defined here...
-  private final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
-  private final EndAccessorySubsystem endAccessorySubsystem = new EndAccessorySubsystem();
+  private static final ChassisSubsystem chassisSubsystem = new ChassisSubsystem();
 
-  private final AlageaSubsystem alageaSubsystem = new AlageaSubsystem();
-  private final Joystick joystic = new Joystick(0);
+  // private final AlgeaSubsystem algeaSubsystem = new AlgeaSubsystem();
 
-  ClimbSubsystem climbSubsystem;
-  // Replace with CommandPS4Controller or CommandJoystick if needed
+  // private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
+
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
+  private final EndAccessorySubsystem endAccessorySubsystem = new EndAccessorySubsystem();
+
   private final CommandXboxController xboxControllerDrive = new CommandXboxController(
-      OperatorConstants.driverController);
+      OperatorConstants.driverControllerPort);
+
+  private final CommandXboxController buttonXboxController = new CommandXboxController(
+      OperatorConstants.buttonControllerPort);
 
   private SendableChooser<Command> autoChooser = new SendableChooser<>();
 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
+
   public RobotContainer() {
 
-    CommandScheduler.getInstance().setDefaultCommand(alageaSubsystem, new DefaultAlageaCmd(alageaSubsystem));
+    NamedCommands.registerCommand("drive to nearest right branch",
+        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranchRight(chassisSubsystem.getPose())));
+        
+    NamedCommands.registerCommand("L1", new ElevatorLevelScoreCMD(elevatorSubsystem,
+        endAccessorySubsystem, ElevatorStates.coralL1, DropAngles.setDropAngleL1));
+
+    NamedCommands.registerCommand("L2", new ElevatorLevelScoreCMD(elevatorSubsystem,
+        endAccessorySubsystem, ElevatorStates.coralL2, DropAngles.setDropAngleL2));
+
+    NamedCommands.registerCommand("L3", new ElevatorLevelScoreCMD(elevatorSubsystem,
+        endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3));
+
+    NamedCommands.registerCommand("Remove algea from low",
+        (new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, true)));
+
+    NamedCommands.registerCommand("Remove algea from high",
+        (new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, false)));
 
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.setDefaultOption("EMPTY", null);
+    autoChooser.addOption("Drive Forword 1 sec", new AutoDriveForword(chassisSubsystem));
+
     SmartDashboard.putData("Auto Chooser", autoChooser);
+
     configureBindings();
   }
 
   private void configureBindings() {
+    setUpContollers();
+
+  }
+
+  // setting up 1 controller that does everything and if 2 are connected then it
+  // splits it to two controllers:
+  // first one to the chassis
+  // the seconds one to the buttons
+
+  private void setUpContollers() {
     if (xboxControllerDrive.isConnected()) {
-      this.chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(this.chassisSubsystem,
-          () -> -xboxControllerDrive.getLeftY(),//could use the math.pow and 3
-          () -> -xboxControllerDrive.getLeftX(),
+      chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(chassisSubsystem,
+          () -> xboxControllerDrive.getLeftY(),
+          () -> xboxControllerDrive.getLeftX(),
           () -> -xboxControllerDrive.getRightX()));
+
+      configureButtonBinding(xboxControllerDrive);
+      if (xboxControllerDrive.isConnected() && buttonXboxController.isConnected()) {
+        configureButtonBinding(buttonXboxController);
+      }
+    } else {
+      chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(chassisSubsystem,
+          () -> xboxControllerDrive.getLeftY(),
+          () -> xboxControllerDrive.getLeftX(),
+          () -> -xboxControllerDrive.getRightX()));
+
+      configureButtonBinding(buttonXboxController);
     }
+  }
 
-    xboxControllerDrive.povDown().whileTrue(new InstantCommand(()-> climbSubsystem.setMotor(-0.2)));
-    xboxControllerDrive.povDown().toggleOnFalse(new InstantCommand(()-> climbSubsystem.setMotor(0)));
-    
-    xboxControllerDrive.povUp().whileTrue(new InstantCommand(()-> climbSubsystem.setMotor(0.2)));
-    xboxControllerDrive.povUp().toggleOnFalse(new InstantCommand(()-> climbSubsystem.setMotor(0)));
+  private void configureButtonBinding(CommandXboxController cmdXboxController) {
 
-    xboxControllerDrive.leftBumper().whileTrue(new InstantCommand(()->elevatorSubsystem.setPower(0.1)));
-    xboxControllerDrive.leftBumper().toggleOnFalse(new InstantCommand(()-> elevatorSubsystem.setPower(0)));
+    cmdXboxController.leftBumper()
+        .whileTrue(new ElevatorLevelIntake(elevatorSubsystem, endAccessorySubsystem, chassisSubsystem));
+        
+    cmdXboxController.rightBumper().whileTrue(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
+    xboxControllerDrive.start().onTrue(new InstantCommand(() -> chassisSubsystem.zeroHeading()));
 
-    xboxControllerDrive.rightBumper().whileTrue(new InstantCommand(()->elevatorSubsystem.setPower(-0.1)));
-    xboxControllerDrive.rightBumper().toggleOnFalse(new InstantCommand(()-> elevatorSubsystem.setPower(0)));
+    cmdXboxController.y().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
+        endAccessorySubsystem, ElevatorStates.coralL1, DropAngles.setDropAngleL1));
+    cmdXboxController.b().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
+        endAccessorySubsystem, ElevatorStates.coralL2, DropAngles.setDropAngleL2));
+    cmdXboxController.x().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
+        endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3));
+
+    cmdXboxController.rightTrigger().whileTrue(
+        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranchRight(chassisSubsystem.getPose())));
+    cmdXboxController.leftTrigger()
+        .whileTrue(new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestSource(chassisSubsystem.getPose())));
+
+    cmdXboxController.povUp().whileTrue(new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, false));
+    cmdXboxController.povDown().whileTrue(new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, true));
+
   }
 
   /**

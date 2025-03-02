@@ -5,15 +5,12 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Centimeter;
-import static edu.wpi.first.units.Units.Meter;
+import static edu.wpi.first.units.Units.Centimeters;
 
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.Measure;
@@ -26,48 +23,89 @@ import edu.wpi.first.units.measure.AngularVelocity;
 import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.ElevatorConstant;
 import frc.robot.Util.ElevatorStates;
+import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
+
 
 public class ElevatorSubsystem extends SubsystemBase {
   /** Creates a new ElevatorSubsystem. */
-  private final TalonFX ElevatorMotor;
+  private final TalonFX elevatorMotor;
   private final DigitalInput closeLimitSwitch;
-  private Distance disSetLevel;
-  private ProfiledPIDController profilePIDController;
-  private ElevatorFeedforward elevatorFeedforward;
-  
-    public ElevatorSubsystem() {
-     
-      this.ElevatorMotor = new TalonFX(ElevatorConstant.motorID);
-      this.closeLimitSwitch = new DigitalInput(ElevatorConstant.limitSwitchID);
-      this.profilePIDController = new ProfiledPIDController(ElevatorConstant.kP, ElevatorConstant.kI, ElevatorConstant.kD, new TrapezoidProfile.Constraints(5, 10));
-      profilePIDController.setGoal(0);
-      new TrapezoidProfile.Constraints(ElevatorConstant.kMaxVelocity, ElevatorConstant.kMaxAcceleration);
-      this.elevatorFeedforward =  new ElevatorFeedforward(ElevatorConstant.kS, ElevatorConstant.kG, ElevatorConstant.kV);
+  private final ElevatorFeedforward elevatorFeedforward;
+  private final ProfiledPIDController profiledPIDController;
+  private final Constraints constraints;
+
+  //the sysID objects
+  // private final SysIdRoutine sysIdRoutine;
+  // private final Config config;
+
+
+
+  private double currentPosition = 0;
+
+
+
+  public ElevatorSubsystem() {
+    this.elevatorMotor = new TalonFX(ElevatorConstant.elevatorMotorID);
+    this.closeLimitSwitch = new DigitalInput(ElevatorConstant.limitSwitchID);
+
+
+    this.elevatorFeedforward = new ElevatorFeedforward(ElevatorConstant.kS, ElevatorConstant.kG, ElevatorConstant.kV);
+    this.constraints = new Constraints(ElevatorConstant.maxVelocity, ElevatorConstant.maxAcceleration);
+
+    this.profiledPIDController = new ProfiledPIDController(ElevatorConstant.ProfiledkP, ElevatorConstant.ProfiledkI,
+     ElevatorConstant.ProfiledkD, constraints);
+    this.profiledPIDController.setTolerance(ElevatorConstant.pidTolerence);
+
+  //   //SysID configs: the first param is how mach volts will it go up in how much time,
+  //   //seconds one is how much for the quastatics tests and
+  //   //the third one is how many seconds to finish for safety
+
+  //   this.config = new Config( Volts.of(0.05).per(Millisecond), Volts.of(3), Seconds.of(6));
+  //   this.sysIdRoutine = new SysIdRoutine(config,
+  //    new SysIdRoutine.Mechanism(this::setVoltage,
+  //     Log->{
+  //       Log.motor("elevator Motor")
+  //       .voltage(elevatorMotor.getMotorVoltage().getValue())
+  //       .linearPosition(Meters.of(getDistance().in(Meters)))
+  //       .linearVelocity(MetersPerSecond.of(elevatorMotor.getVelocity().getValue().in(RotationsPerSecond)*11.5));
+
+  //   }, this));
   }
+
+  // //SysID command for quasistatics tests
+  // public Command sysIdQuasistatic(SysIdRoutine.Direction direction) {
+  // return this.sysIdRoutine.quasistatic(direction);
+  // }
+  // //SysID command for dynamic tests
+  // public Command sysIdDynamic(SysIdRoutine.Direction direction) {
+  //   return this.sysIdRoutine.dynamic(direction);
+  // }
+
+  // public void setVoltage(Voltage volts){
+  //   elevatorMotor.setVoltage(volts.in(Volts));
+  // }
 
   public void setLevel(ElevatorStates state) {
-    disSetLevel = (ElevatorConstant.enumDistance(state));
-    profilePIDController.setGoal(ElevatorConstant.enumDistance(state).in(Centimeter));
-
+    profiledPIDController.setGoal(ElevatorConstant.enumDistance(state).in(Centimeter));
   }
-  public void setPower(double power){
-    ElevatorMotor.set(power);
+  public boolean isAtSetpoint(){
+    return profiledPIDController.atGoal();
   }
 
-  // current height.
+  // current height
   public Measure<DistanceUnit> getDistance() {
-    Angle angle = (this.ElevatorMotor.getPosition().getValue());
-    return ElevatorConstant.distancePerRotation.timesDivisor(angle);
+    Angle angle = (this.elevatorMotor.getPosition().getValue());
+    return ElevatorConstant.distancePerRotation.timesDivisor(angle).times(-1);
   }
 
   public void setRest() {
-    this.setLevel(ElevatorStates.rest);
+    profiledPIDController.setGoal(ElevatorConstant.restDistance.in(Centimeter));
   }
 
   public boolean getCloseLimitSwitch() {
@@ -78,19 +116,42 @@ public class ElevatorSubsystem extends SubsystemBase {
     return new InstantCommand(() -> this.setLevel(elevatorStates));
   }
 
-  public Command waitForLevel() {
-    return new WaitUntilCommand(
-        () -> this.getDistance().minus(disSetLevel).abs(Centimeter) < ElevatorConstant.errorTollerance.in(Centimeter));
-  }
+  
+  // elevator SysID to use this add this in the configureXboxBinding method in the robotContainter
+  // xboxControllerDrive.a().whileTrue(elevatorSubsystem.sysIdDynamic(SysIdRoutine.Direction.kForward));
+  // xboxControllerDrive.b().whileTrue(elevatorSubsystem.sysIdDynamic(SysIdRoutine.Direction.kReverse));
+  // xboxControllerDrive.y().whileTrue(elevatorSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kForward));
+  // xboxControllerDrive.x().whileTrue(elevatorSubsystem.sysIdQuasistatic(SysIdRoutine.Direction.kReverse));
 
   @Override
   public void periodic() {
-     double power = profilePIDController.calculate(getDistance().in(Centimeter))+ elevatorFeedforward.calculate(profilePIDController.getSetpoint().velocity);
-     if (getCloseLimitSwitch() && power < 0) {
-      setPower(0);
-     } else {
-      setPower(power);
 
-     }
+    //the current position and the velocity of the elevator
+    currentPosition = getDistance().in(Centimeter);
+
+
+    //calculates the controlles output to the motors
+    double motorOutput = -(profiledPIDController.calculate(currentPosition) + elevatorFeedforward.calculate(profiledPIDController.getSetpoint().velocity));
+
+    // uses the velcity that has been calculated by the trapzoid
+    // the sum of the output power by all of the motor controllers
+
+    if (getDistance().in(Centimeter)<1 && motorOutput > 0) {
+      elevatorMotor.set(0);
+    } else {
+      elevatorMotor.set(motorOutput);
+
+    }
+
+    if (getCloseLimitSwitch() || getDistance().in(Centimeters) < Math.abs(0.7)) {
+      currentPosition = 0;
+    }
+
+    SmartDashboard.putNumber("ElevatorSubsystem/distance of elevator", currentPosition);
+    SmartDashboard.putBoolean("ElevatorSubsystem/low limit switch pressed", getCloseLimitSwitch());
+    SmartDashboard.putNumber("ElevatorSubsystem/ setPoint", profiledPIDController.getGoal().position);
+    SmartDashboard.putBoolean("ElevatorSubsystem/ is at setPoint", isAtSetpoint());
+    SmartDashboard.putNumber("ElevatorSubsystem/ output",motorOutput);
+
   }
 }

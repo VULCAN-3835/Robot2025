@@ -10,7 +10,6 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import frc.robot.Constants;
 import frc.robot.Constants.ClimbSubsystemConstants;
 
 public class ClimbSubsystem extends SubsystemBase {
@@ -19,8 +18,8 @@ public class ClimbSubsystem extends SubsystemBase {
   DigitalInput lowClimbLimitSwitch; 
 
   public ClimbSubsystem() {
-    this.climbMotor = new TalonFX(Constants.ClimbSubsystemConstants.climbMotorPort);
-    this.lowClimbLimitSwitch = new DigitalInput(Constants.ClimbSubsystemConstants.limitSwitchPort);
+    this.climbMotor = new TalonFX(ClimbSubsystemConstants.climbMotorPort);
+    this.lowClimbLimitSwitch = new DigitalInput(ClimbSubsystemConstants.limitSwitchPort);
   }
 
   // sets the angle of the motor to 0
@@ -46,8 +45,8 @@ public class ClimbSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    // if (getLimitswitch() && climbMotor.get() < 0) {
-    //   setMotor(0);
-    // }
+    if (getLimitswitch() && climbMotor.get() < 0) {
+      setMotor(0);
+    }
   }
 }

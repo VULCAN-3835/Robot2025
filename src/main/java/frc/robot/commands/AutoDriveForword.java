@@ -7,26 +7,23 @@ package frc.robot.commands;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.Constants.ClimbSubsystemConstants;
-import frc.robot.subsystems.ClimbSubsystem;
+import frc.robot.Constants.ChassisConstants;
+import frc.robot.subsystems.ChassisSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class CloseClimbCMD extends SequentialCommandGroup {
-  /** Creates a new CloseClimbCMD. */
-
-  public CloseClimbCMD(ClimbSubsystem climbSubsystem) {
+public class AutoDriveForword extends SequentialCommandGroup {
+  /** Creates a new AutoDriveForword. */
+  public AutoDriveForword(ChassisSubsystem chassis) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addRequirements(climbSubsystem);
     addCommands(
-      //1. set the motor to the close motor speed
-      new InstantCommand(()-> climbSubsystem.setMotor(ClimbSubsystemConstants.closeClimbMotorPower)),
-      //2. waits until the degrees are the degrees of the closed arm
-      new WaitUntilCommand(() -> climbSubsystem.getPositionAngle().gt(ClimbSubsystemConstants.degreesForOpen)),
-      //3. stops the motor
-      new InstantCommand(()-> climbSubsystem.setMotor(0))
-      );
+      new InstantCommand(()-> System.out.println("works0")),
+    new InstantCommand(()->chassis.drive(1, 0, 0, false), chassis),
+    new WaitUntilCommand(1),
+    new InstantCommand(()->chassis.drive(0, 0, 0, false), chassis),
+    new InstantCommand(()-> System.out.println("works"))
+    );
   }
 }
