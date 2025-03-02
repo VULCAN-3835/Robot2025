@@ -12,12 +12,21 @@ import com.ctre.phoenix6.hardware.TalonFX;
 import edu.wpi.first.math.controller.ElevatorFeedforward;
 import edu.wpi.first.math.controller.ProfiledPIDController;
 import edu.wpi.first.units.DistanceUnit;
+import edu.wpi.first.units.LinearVelocityUnit;
 import edu.wpi.first.units.Measure;
+import edu.wpi.first.units.VelocityUnit;
 import edu.wpi.first.units.measure.Angle;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.units.measure.AngularVelocity;
+import edu.wpi.first.units.measure.Distance;
+import edu.wpi.first.units.measure.Velocity;
 import edu.wpi.first.wpilibj.DigitalInput;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Constants.ElevatorConstant;
 import frc.robot.Util.ElevatorStates;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
@@ -104,7 +113,7 @@ public class ElevatorSubsystem extends SubsystemBase {
   }
 
   public InstantCommand setLevelElevatorCommand(ElevatorStates elevatorStates) {
-      return new InstantCommand(() -> this.setLevel(elevatorStates));
+    return new InstantCommand(() -> this.setLevel(elevatorStates));
   }
 
   

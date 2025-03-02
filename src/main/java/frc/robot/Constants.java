@@ -296,6 +296,9 @@ public final class Constants {
 
 
     public static double restPower = 0;
+    public static Distance errorTollerance = Centimeter.of(0.3);
+    public static double kMaxAcceleration = 0;
+    public static double kMaxVelocity = 0;
 
     // We'll need to know how much we get for every rotation, and use that number
     // here:

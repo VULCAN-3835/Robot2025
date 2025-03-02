@@ -6,31 +6,23 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
-import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
-import frc.robot.subsystems.AlgeaSubsystem;
+import frc.robot.Constants.alageaSubsystemConstants;
+import frc.robot.subsystems.AlageaSubsystem;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class ShootingAlgeaCmd extends SequentialCommandGroup {
-  /** Creates a new ShootingAlgeaCmd. */
-  public ShootingAlgeaCmd(AlgeaSubsystem algeaSubsystem) {
-    // Add your commands in the addCommands() call, e.g
+public class DefaultAlageaCmd extends SequentialCommandGroup {
+  /** Creates a new DefaultAlageaCmd. */
+  public DefaultAlageaCmd(AlageaSubsystem alageaSubsystem) {
+    // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addRequirements(alageaSubsystem);
     addCommands(
-
-        new InstantCommand(() -> algeaSubsystem.shootAlgea()),
-
-        // 4. checkes if the algea was shot
-        new WaitUntilCommand(() -> !algeaSubsystem.hasBall()),
-        
-        // 5. stops the motor and sets the subsystem in the predefined resting angle
         new InstantCommand(() -> {
-          algeaSubsystem.setPower(0);
-          algeaSubsystem.setRestAngle();
-        })
+          alageaSubsystem.setPower(0);
+          alageaSubsystem.setRestAngle();
+        }));
 
-    );
   }
 }

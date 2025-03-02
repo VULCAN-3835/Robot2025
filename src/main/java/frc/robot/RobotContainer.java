@@ -97,7 +97,6 @@ public class RobotContainer {
         (new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, false)));
 
     autoChooser = AutoBuilder.buildAutoChooser();
-
     autoChooser.setDefaultOption("EMPTY", null);
     autoChooser.addOption("Drive Forword 1 sec", new AutoDriveForword(chassisSubsystem));
 
