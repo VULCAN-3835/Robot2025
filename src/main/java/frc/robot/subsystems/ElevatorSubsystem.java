@@ -5,31 +5,22 @@
 package frc.robot.subsystems;
 
 import static edu.wpi.first.units.Units.Centimeter;
-
+import static edu.wpi.first.units.Units.Centimeters;
 
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.pathplanner.lib.path.ConstraintsZone;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
-import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.ProfiledPIDController;
-import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.units.DistanceUnit;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.measure.Angle;
-import edu.wpi.first.units.measure.Voltage;
 import edu.wpi.first.wpilibj.DigitalInput;
-import edu.wpi.first.wpilibj.Encoder;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
-import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine.Config;
 import frc.robot.Constants.ElevatorConstant;
 import frc.robot.Util.ElevatorStates;
 import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 
 
 public class ElevatorSubsystem extends SubsystemBase {
@@ -143,7 +134,7 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     }
 
-    if (getCloseLimitSwitch()) {
+    if (getCloseLimitSwitch() || getDistance().in(Centimeters) < Math.abs(0.7)) {
       currentPosition = 0;
     }
 

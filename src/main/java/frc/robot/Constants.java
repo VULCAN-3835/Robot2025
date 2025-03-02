@@ -49,14 +49,14 @@ public final class Constants {
     public static final int angleMotorID = 60;
     public static final int powerMotorID = 61;
 
-    public static final double maxVelocity = 70;
-    public static final double maxAcceleration = 100;
+    public static final double maxVelocity = 75;
+    public static final double maxAcceleration = 110;
 
 
     public static final int angleEncoderID = 5;
     public static final int pieceDetectorID = 1;
 
-    public static final double kMotorPowerL1 = -0.25;
+    public static final double kMotorPowerL1 = -0.35;
     public static final double kMotorPowerL2 = 0.4;
     public static final double kMotorPowerL3 = 0.4;
     public static final double kMotorPowerL4 = 0.5;
@@ -74,13 +74,13 @@ public final class Constants {
     public static final Angle targetDropAngleL3 = Degrees.of(162);
     public static final Angle targetDropAngleL4 = Degrees.of(191);
 
-    public static final Angle targetRemoveAlgea = Degrees.of(85);//169
+    public static final Angle targetRemoveAlgea = Degrees.of(150);
  
     public static final Angle targetAngleRest = Degrees.of(54);
 
     public static final Angle targetIntakeAngle = Degrees.of(85);
 
-    public static final double ProfiledkP = 0.005;
+    public static final double ProfiledkP = 0.01;
     public static final double profiledkI = 0;
     public static final double profiledkD = 0;
 
@@ -201,9 +201,9 @@ public final class Constants {
     public static final boolean kLeftBackInverted = true;
     public static final boolean kRightBackInverted = true;
 
-    public static final double kMaxDrivingVelocity = 3.5;
+    public static final double kMaxDrivingVelocity = 4;
     public static final double kTeleDriveMaxAccelerationUnitsPerSec = 5;
-    public static final double kTeleDriveMaxSpeedMetersPerSec = 3.5;
+    public static final double kTeleDriveMaxSpeedMetersPerSec = 4;
     public static final double kTeleDriveMaxAngulerSpeedRadiansPerSec = Math.PI * 1.5;
 
     // Distance between centers of right and left wheels on robot meters

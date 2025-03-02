@@ -7,13 +7,13 @@
         {
           "type": "path",
           "data": {
-            "pathName": "mid to right-mid-branch"
+            "pathName": "left to branch"
           }
         },
         {
           "type": "named",
           "data": {
-            "name": "L3"
+            "name": "L1"
           }
         }
       ]

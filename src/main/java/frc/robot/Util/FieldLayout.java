@@ -121,8 +121,11 @@ public final class FieldLayout {
         }
     }
     public static Pose2d getNearestBranchRight(Pose2d currentPose) {
+        
         boolean isBlue = DriverStation.getAlliance().get() == DriverStation.Alliance.Blue;
+
         ArrayList<Pose2d> rightBranches = new ArrayList<>();
+
         if (isBlue) {
             // bottom side
             rightBranches.add(new Pose2d(3.047, 3.850, aprilTagFieldLayout.getTagPose(18 ).get()

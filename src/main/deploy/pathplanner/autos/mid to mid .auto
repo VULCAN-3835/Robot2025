@@ -7,13 +7,7 @@
         {
           "type": "path",
           "data": {
-            "pathName": "mid to right-mid-branch"
-          }
-        },
-        {
-          "type": "named",
-          "data": {
-            "name": "L3"
+            "pathName": "mid to mid path"
           }
         }
       ]

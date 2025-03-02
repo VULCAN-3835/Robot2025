@@ -20,7 +20,7 @@ public class RestElevatorAndGripper extends SequentialCommandGroup {
   public RestElevatorAndGripper(ElevatorSubsystem elevatorSubsystem,EndAccessorySubsystem endAccessorySubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
-    addRequirements(elevatorSubsystem,endAccessorySubsystem);
+    
     addCommands(
       // 1. stops the gripper
       new InstantCommand(()-> endAccessorySubsystem.gripperStop()),

@@ -9,6 +9,7 @@ import frc.robot.Constants.ChassisConstants.distanceConstants;
 import frc.robot.commands.DefaultTeleopCommand;
 import frc.robot.commands.DriveToPoseCommand;
 import frc.robot.commands.ElevatorLevelIntake;
+import frc.robot.commands.AutoDriveForword;
 import frc.robot.commands.CollectingAlgeaCmd;
 import frc.robot.commands.CoralReleaseCommand;
 import frc.robot.subsystems.ChassisSubsystem;
@@ -77,73 +78,28 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    
+    NamedCommands.registerCommand("drive to nearest right branch",
+        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranchRight(chassisSubsystem.getPose())));
+        
+    NamedCommands.registerCommand("L1", new ElevatorLevelScoreCMD(elevatorSubsystem,
+        endAccessorySubsystem, ElevatorStates.coralL1, DropAngles.setDropAngleL1));
+
+    NamedCommands.registerCommand("L2", new ElevatorLevelScoreCMD(elevatorSubsystem,
+        endAccessorySubsystem, ElevatorStates.coralL2, DropAngles.setDropAngleL2));
+
+    NamedCommands.registerCommand("L3", new ElevatorLevelScoreCMD(elevatorSubsystem,
+        endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3));
+
+    NamedCommands.registerCommand("Remove algea from low",
+        (new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, true)));
+
+    NamedCommands.registerCommand("Remove algea from high",
+        (new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, false)));
 
     autoChooser = AutoBuilder.buildAutoChooser();
 
-    NamedCommands.registerCommand("drive to nearest right branch", new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranchRight(chassisSubsystem.getPose())));
-    NamedCommands.registerCommand("L1",new ElevatorLevelScoreCMD(elevatorSubsystem,
-    endAccessorySubsystem, ElevatorStates.coralL1, DropAngles.setDropAngleL1));
-    NamedCommands.registerCommand("L2",new ElevatorLevelScoreCMD(elevatorSubsystem,
-    endAccessorySubsystem, ElevatorStates.coralL2, DropAngles.setDropAngleL2));
-    NamedCommands.registerCommand("L3",new ElevatorLevelScoreCMD(elevatorSubsystem,
-    endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3));
-    NamedCommands.registerCommand("go to intake source",new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestSource(chassisSubsystem.getPose())));
-    NamedCommands.registerCommand("inatke from source", new ElevatorLevelIntake(elevatorSubsystem, endAccessorySubsystem, chassisSubsystem));
-    //nearest source commadn
-    // NamedCommands.registerCommand("drive to nearest source", new DriveToPoseCommand(chassisSubsystem,
-    //     FieldLayout.getCoralSourcePose(ChassisConstants.distanceConstants.source, chassisSubsystem.getPose())));
-
-    // // Bottom side commands
-    // NamedCommands.registerCommand("drive to bottom reef right ",
-    //     new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.bottom, true,
-    //         ChassisConstants.distanceConstants.bottomReefDistance)));
-    // NamedCommands.registerCommand("drive to bottom reef left ",
-    //     new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.bottom, false,
-    //         ChassisConstants.distanceConstants.bottomReefDistance)));
-
-    // // Bottom Right side commands
-    // NamedCommands.registerCommand("drive to bottom right reef right ",
-    //     new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.bottomRight, true,
-    //         ChassisConstants.distanceConstants.bottomRightReefDistance)));
-    // NamedCommands.registerCommand("drive to bottom right reef left ",
-    //     new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.bottomRight, false,
-    //         ChassisConstants.distanceConstants.bottomRightReefDistance)));
-
-    // // Top Right side commands
-    // NamedCommands.registerCommand("drive to top right reef right ",
-    //     new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.topRight, true,
-    //         ChassisConstants.distanceConstants.topRightReefDistance)));
-    // NamedCommands.registerCommand("drive to top right reef left ",
-    //     new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.topRight, false,
-    //         ChassisConstants.distanceConstants.topRightReefDistance)));
-
-    // // Top side commands
-    // NamedCommands.registerCommand("drive to top reef right ",
-    //     new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.top, true,
-    //         ChassisConstants.distanceConstants.topReefDistance)));
-    // NamedCommands.registerCommand("drive to top reef left ",
-    //     new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.top, false,
-    //         ChassisConstants.distanceConstants.topReefDistance)));
-
-    // // Top Left side commands
-    // NamedCommands.registerCommand("drive to top left reef right ",
-    //     new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.topLeft, true,
-    //         ChassisConstants.distanceConstants.topLeftReefDistance)));
-    // NamedCommands.registerCommand("drive to top left reef left ",
-    //     new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.topLeft, false,
-    //         ChassisConstants.distanceConstants.topLeftReefDistance)));
-
-    // // Bottom Left side commands
-    // NamedCommands.registerCommand("drive to bottom left reef right ",
-    //     new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.bottomLeft, true,
-    //         ChassisConstants.distanceConstants.bottomLeftReefDistance)));
-
-    // NamedCommands.registerCommand("drive to bottom left reef left ",
-    //     new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.bottomLeft, false,
-    //         ChassisConstants.distanceConstants.bottomLeftReefDistance)));
-
     autoChooser.setDefaultOption("EMPTY", null);
+    autoChooser.addOption("Drive Forword 1 sec", new AutoDriveForword(chassisSubsystem));
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -167,8 +123,7 @@ public class RobotContainer {
           () -> xboxControllerDrive.getLeftX(),
           () -> -xboxControllerDrive.getRightX()));
 
-        configureButtonBinding(xboxControllerDrive);
-        configureDriveController(xboxControllerDrive);
+      configureButtonBinding(xboxControllerDrive);
       if (xboxControllerDrive.isConnected() && buttonXboxController.isConnected()) {
         configureButtonBinding(buttonXboxController);
       }
@@ -184,62 +139,27 @@ public class RobotContainer {
 
   private void configureButtonBinding(CommandXboxController cmdXboxController) {
 
-    // cmdXboxController.y().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
-    // endAccessorySubsystem, ElevatorStates.coralL1, DropAngles.setDropAngleL1));
-    // cmdXboxController.b().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
-    // endAccessorySubsystem, ElevatorStates.coralL2, DropAngles.setDropAngleL2));
-    // cmdXboxController.x().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
-    // endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3));
-    // cmdXboxController.a().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
-    // endAccessorySubsystem, ElevatorStates.coralL4, DropAngles.setDropAngleL4));
-
-    // cmdXboxController.leftTrigger().whileTrue(new RemoveAlgea(elevatorSubsystem,
-    // endAccessorySubsystem, false));
-    // cmdXboxController.rightTrigger().whileTrue(new RemoveAlgea(elevatorSubsystem,
-    // endAccessorySubsystem, true));
-    // cmdXboxController.leftBumper().whileTrue(new
-    // ElevatorLevelIntake(elevatorSubsystem, endAccessorySubsystem));
-
-    // cmdXboxController.rightBumper().whileTrue(new
-    // RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
-
-    // cmdXboxController.a().whileTrue(new CollectingAlgeaCmd(algeaSubsystem));
-    // cmdXboxController.a().toggleOnFalse(new RestAlgea(algeaSubsystem));
-
-    // cmdXboxController.b().whileTrue(new ShootingAlgeaCmd(algeaSubsystem));
-    // cmdXboxController.b().toggleOnFalse(new RestAlgea(algeaSubsystem));
-
-    cmdXboxController.leftBumper().whileTrue(new ElevatorLevelIntake(elevatorSubsystem,endAccessorySubsystem,chassisSubsystem));
+    cmdXboxController.leftBumper()
+        .whileTrue(new ElevatorLevelIntake(elevatorSubsystem, endAccessorySubsystem, chassisSubsystem));
+        
     cmdXboxController.rightBumper().whileTrue(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
     xboxControllerDrive.start().onTrue(new InstantCommand(() -> chassisSubsystem.zeroHeading()));
 
     cmdXboxController.y().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
-    endAccessorySubsystem, ElevatorStates.coralL1, DropAngles.setDropAngleL1));
+        endAccessorySubsystem, ElevatorStates.coralL1, DropAngles.setDropAngleL1));
     cmdXboxController.b().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
-    endAccessorySubsystem, ElevatorStates.coralL2, DropAngles.setDropAngleL2));
+        endAccessorySubsystem, ElevatorStates.coralL2, DropAngles.setDropAngleL2));
     cmdXboxController.x().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
-    endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3));
+        endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3));
 
+    cmdXboxController.rightTrigger().whileTrue(
+        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranchRight(chassisSubsystem.getPose())));
+    cmdXboxController.leftTrigger()
+        .whileTrue(new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestSource(chassisSubsystem.getPose())));
 
-    cmdXboxController.povUp().whileTrue(new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranchPose(chassisSubsystem.getPose(), false)));
+    cmdXboxController.povUp().whileTrue(new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, false));
+    cmdXboxController.povDown().whileTrue(new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, true));
 
-    // cmdXboxController.a().whileTrue(new DriveToPoseCommand(chassisSubsystem, FieldLayout.getMaybeBottomPose()));
-
-    // cmdXboxController.y().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
-    // endAccessorySubsystem, ElevatorStates.coralL1, DropAngles.setDropAngleL1));
-    // cmdXboxController.a().whileTrue(new DriveToPoseCommand(chassisSubsystem, FieldLayout.getBranchPose(ReefSide.BOTTOM,true,Centimeters.of(-10))));
-    // cmdXboxController.b().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL1, DropAngles.setDropAngleL1));
-    // cmdXboxController.rightBumper().whileTrue(new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranch(chassisSubsystem.getPose(), true)));
-
-
-    // cmdXboxController.a().whileTrue(new DriveToPoseCommand(chassisSubsystem,
-    //     FieldLayout.getCoralSourcePose(Centimeters.of(30), chassisSubsystem.getPose())));
-
-  }
-
-
-
-  private void configureDriveController(CommandXboxController cmdXboxController){
   }
 
   /**
