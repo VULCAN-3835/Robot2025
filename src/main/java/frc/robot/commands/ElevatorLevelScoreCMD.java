@@ -13,7 +13,6 @@ import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Util.ElevatorStates;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem;
-import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -22,29 +21,23 @@ import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
 public class ElevatorLevelScoreCMD extends SequentialCommandGroup {
   /** Creates a new ElevatorLevelScoreCMD. */
   public ElevatorLevelScoreCMD(ElevatorSubsystem elevatorSubsystem, EndAccessorySubsystem endAccessorySubsystem,
-  ElevatorStates elevatorState,DropAngles dropAngle) {
+  ElevatorStates elevatorState) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
     addCommands(
 
-      // 2. sets the angle of the end accessory and the height of the elevator in the same time 
-      new ParallelCommandGroup(
-        elevatorSubsystem.setLevelElevatorCommand(elevatorState),
-        new InstantCommand(()-> endAccessorySubsystem.setAngle(dropAngle))),
+      // 1. sets the height of the elevator to the desired height
+      elevatorSubsystem.setLevelElevatorCommand(elevatorState),
         
-      new WaitCommand(0.5),
-
-      new WaitUntilCommand(()-> elevatorSubsystem.isAtSetpoint() && endAccessorySubsystem.isAtSetpoint()),
+      new WaitUntilCommand(()-> elevatorSubsystem.isAtSetpoint()),
 
       // 3. releases the coral 
-      new CoralReleaseCommand(endAccessorySubsystem,dropAngle),
+      new CoralReleaseCommand(endAccessorySubsystem),
 
-      // 4. returns the elevator and the end accessory to their resting state  
-      new ParallelCommandGroup(
-        new InstantCommand(()-> elevatorSubsystem.setLevel(ElevatorStates.rest)),
-        new InstantCommand(()-> endAccessorySubsystem.setAngle(DropAngles.restingAngle))
-      )
+      // 4. returns the elevator to its resting state  
+      new InstantCommand(()-> elevatorSubsystem.setLevel(ElevatorStates.rest))
+      
     );
   }
 }

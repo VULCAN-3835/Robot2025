@@ -46,45 +46,24 @@ public final class Constants {
 
   public static class EndAccessoryConstants {
 
-    public static final int angleMotorID = 60;
-    public static final int powerMotorID = 61;
-
-    public static final double maxVelocity = 75;
-    public static final double maxAcceleration = 110;
+    // the IDs of the motors
+    public static final int leftMotorID = 60;
+    public static final int rightMotorID = 61;
 
 
-    public static final int angleEncoderID = 5;
+    //the ID of the infrared sensor
     public static final int pieceDetectorID = 1;
 
-    public static final double kMotorPowerL1 = -0.35;
-    public static final double kMotorPowerL2 = 0.4;
-    public static final double kMotorPowerL3 = 0.4;
-    public static final double kMotorPowerL4 = 0.5;
-    public static final double kMotorPowerIntake = 0.4;
+    // the out put speed of the motor to score the coral
+    public static final double outputPower = 0;
 
-    public static final double removeAlgeaPower = 0.5;
+    //the speed to intake the coral
+    public static final double intakePower = 0;
 
-    public static final double kHasPieceVoltageThreshold = 1;
 
-    public static final Angle kMaxAngle = Degrees.of(191);
-    public static final Angle kMinAngle = Degrees.of(50);
+    //the threshold of the sensor to recognize the coral (in Volts)
+    public static final double kHasPieceVoltageThreshold = 0;
 
-    public static final Angle targetDropAngleL1 = Degrees.of(66);
-    public static final Angle targetDropAngleL2 = Degrees.of(162);
-    public static final Angle targetDropAngleL3 = Degrees.of(162);
-    public static final Angle targetDropAngleL4 = Degrees.of(191);
-
-    public static final Angle targetRemoveAlgea = Degrees.of(150);
- 
-    public static final Angle targetAngleRest = Degrees.of(54);
-
-    public static final Angle targetIntakeAngle = Degrees.of(85);
-
-    public static final double ProfiledkP = 0.01;
-    public static final double profiledkI = 0;
-    public static final double profiledkD = 0;
-
-    public static final Angle armAngleTolerence = Degrees.of(3);
 
   }
 

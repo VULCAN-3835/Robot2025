@@ -5,23 +5,18 @@
 package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
-import frc.robot.Constants.ChassisConstants.distanceConstants;
 import frc.robot.commands.DefaultTeleopCommand;
 import frc.robot.commands.DriveToPoseCommand;
 import frc.robot.commands.ElevatorLevelIntake;
 import frc.robot.commands.AutoDriveForword;
 import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem;
-import frc.robot.subsystems.AlgeaSubsystem;
 
-import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.Util.ElevatorStates;
 import frc.robot.Util.FieldLayout;
-import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
 import frc.robot.subsystems.ElevatorSubsystem;
 
-import static edu.wpi.first.units.Units.Centimeters;
-import static edu.wpi.first.units.Units.Meters;
+
 
 
 import com.pathplanner.lib.auto.AutoBuilder;
@@ -34,7 +29,6 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ElevatorLevelScoreCMD;
-import frc.robot.commands.RemoveAlgea;
 import frc.robot.commands.RestElevatorAndGripper;
 import frc.robot.commands.ShootingAlgeaCmd;
 import frc.robot.commands.RestAlgea;
@@ -79,19 +73,14 @@ public class RobotContainer {
         new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranchRight(chassisSubsystem.getPose())));
         
     NamedCommands.registerCommand("L1", new ElevatorLevelScoreCMD(elevatorSubsystem,
-        endAccessorySubsystem, ElevatorStates.coralL1, DropAngles.setDropAngleL1));
+        endAccessorySubsystem, ElevatorStates.coralL1));
 
     NamedCommands.registerCommand("L2", new ElevatorLevelScoreCMD(elevatorSubsystem,
-        endAccessorySubsystem, ElevatorStates.coralL2, DropAngles.setDropAngleL2));
+        endAccessorySubsystem, ElevatorStates.coralL2));
 
     NamedCommands.registerCommand("L3", new ElevatorLevelScoreCMD(elevatorSubsystem,
-        endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3));
+        endAccessorySubsystem, ElevatorStates.coralL3));
 
-    NamedCommands.registerCommand("Remove algea from low",
-        (new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, true)));
-
-    NamedCommands.registerCommand("Remove algea from high",
-        (new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, false)));
 
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.setDefaultOption("EMPTY", null);
@@ -142,19 +131,16 @@ public class RobotContainer {
     xboxControllerDrive.start().onTrue(new InstantCommand(() -> chassisSubsystem.zeroHeading()));
 
     cmdXboxController.y().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
-        endAccessorySubsystem, ElevatorStates.coralL1, DropAngles.setDropAngleL1));
+        endAccessorySubsystem, ElevatorStates.coralL1));
     cmdXboxController.b().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
-        endAccessorySubsystem, ElevatorStates.coralL2, DropAngles.setDropAngleL2));
+        endAccessorySubsystem, ElevatorStates.coralL2));
     cmdXboxController.x().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem,
-        endAccessorySubsystem, ElevatorStates.coralL3, DropAngles.setDropAngleL3));
+        endAccessorySubsystem, ElevatorStates.coralL3));
 
     cmdXboxController.rightTrigger().whileTrue(
         new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranchRight(chassisSubsystem.getPose())));
     cmdXboxController.leftTrigger()
         .whileTrue(new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestSource(chassisSubsystem.getPose())));
-
-    cmdXboxController.povUp().whileTrue(new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, false));
-    cmdXboxController.povDown().whileTrue(new RemoveAlgea(elevatorSubsystem, endAccessorySubsystem, true));
 
   }
 

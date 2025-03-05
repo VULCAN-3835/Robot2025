@@ -10,7 +10,6 @@ import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.Util.ElevatorStates;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem;
-import frc.robot.subsystems.EndAccessorySubsystem.DropAngles;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
@@ -25,11 +24,8 @@ public class RestElevatorAndGripper extends SequentialCommandGroup {
       // 1. stops the gripper
       new InstantCommand(()-> endAccessorySubsystem.gripperStop()),
 
-      //2. returns the gripper angle and the elevator to their resting state
-      new ParallelCommandGroup(
-        elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.rest),
-        new InstantCommand(() -> endAccessorySubsystem.setAngle(DropAngles.restingAngle))
-      )    
+      //2. returns the elevator to its resting state
+        elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.rest)
 
     );
   }
