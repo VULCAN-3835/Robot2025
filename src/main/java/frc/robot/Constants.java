@@ -11,7 +11,7 @@ import static edu.wpi.first.units.Units.Centimeter;
 import static edu.wpi.first.units.Units.Centimeters;
 import static edu.wpi.first.units.Units.Rotation;
 
-
+import java.lang.invoke.SwitchPoint;
 
 import com.ctre.phoenix6.configs.Slot0Configs;
 
@@ -34,6 +34,7 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.measure.MutPer;
 import edu.wpi.first.units.measure.Per;
 import frc.robot.Util.ElevatorStates;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public final class Constants {
 
@@ -50,24 +51,21 @@ public final class Constants {
     public static final int leftMotorID = 60;
     public static final int rightMotorID = 61;
 
-
-    //the ID of the infrared sensor
+    // the ID of the infrared sensor
     public static final int pieceDetectorID = 1;
 
     // the out put speed of the motor to score the coral
     public static final double outputPower = 0;
 
-    //the speed to intake the coral
+    // the speed to intake the coral
     public static final double intakePower = 0;
 
-
-    //the threshold of the sensor to recognize the coral (in Volts)
+    // the threshold of the sensor to recognize the coral (in Volts)
     public static final double kHasPieceVoltageThreshold = 0;
-
 
   }
 
-  public static class algeaSubsystemConstants{
+  public static class algeaSubsystemConstants {
 
     public static final int angleMotorID = 41;
     public static final int powerMotorID = 40;
@@ -76,7 +74,7 @@ public final class Constants {
     public static final int limitSwitchID = 3;
     public static final int angleEncoderID = 1;
 
-    public static final double ballDetectorThreshold =1.8;
+    public static final double ballDetectorThreshold = 1.8;
 
     public static final Angle minAngle = Degrees.of(103);
     public static final Angle maxAngle = Degrees.of(150);
@@ -85,7 +83,7 @@ public final class Constants {
     public static final Angle holdAngle = Degrees.of(105);
     public static final Angle scoreAngle = Degrees.of(150);
 
-    public static final Angle pidTolerence = Degrees.of(5); 
+    public static final Angle pidTolerence = Degrees.of(5);
 
     public static final double collectingPower = 0.5;
     public static final double shootingPower = -0.6;
@@ -97,7 +95,6 @@ public final class Constants {
     public static final double profiledkP = 0.008;
     public static final double profiledkI = 0;
     public static final double profiledkD = 0;
-
 
   }
 
@@ -147,21 +144,21 @@ public final class Constants {
 
   public static class ChassisConstants {
 
-        // Ports for driving motors
-        public static final int kLeftFrontDriveID = 12; // CAN ID
-        public static final int kRightFrontDriveID = 10; // CAN ID
-        public static final int kLeftBackDriveID = 13; // CAN ID
-        public static final int kRightBackDriveID =11 ; // CAN ID
-        // Ports for angle motors
-        public static final int kLeftFrontSteerID = 22; // CAN ID
-        public static final int kRightFrontSteerID =20 ; // CAN ID
-        public static final int kLeftBackSteerID = 23; // CAN ID
-        public static final int kRightBackSteerID = 21; // CAN ID
-        // Ports for encoders
-        public static final int kLeftFrontEncID = 32; // CAN ID
-        public static final int kRightFrontEncID =30 ; // CAN ID
-        public static final int kLeftBackEncID =33 ; // CAN ID
-        public static final int kRightBackEncID = 31; // CAN ID
+    // Ports for driving motors
+    public static final int kLeftFrontDriveID = 12; // CAN ID
+    public static final int kRightFrontDriveID = 10; // CAN ID
+    public static final int kLeftBackDriveID = 13; // CAN ID
+    public static final int kRightBackDriveID = 11; // CAN ID
+    // Ports for angle motors
+    public static final int kLeftFrontSteerID = 22; // CAN ID
+    public static final int kRightFrontSteerID = 20; // CAN ID
+    public static final int kLeftBackSteerID = 23; // CAN ID
+    public static final int kRightBackSteerID = 21; // CAN ID
+    // Ports for encoders
+    public static final int kLeftFrontEncID = 32; // CAN ID
+    public static final int kRightFrontEncID = 30; // CAN ID
+    public static final int kLeftBackEncID = 33; // CAN ID
+    public static final int kRightBackEncID = 31; // CAN ID
 
     // Offsets for absolute encoders in rotations (i.e: 360 degrees = 1 rotation):
     // public static final double kLeftFrontOffset = -0.029296875;
@@ -197,24 +194,58 @@ public final class Constants {
     // the moment of inertia of the robot
     public static final double kMOI = 6.81;
 
-  public static class distanceConstants{
+    public static class FieldLayoutConstants {
 
-    //TODO: find the right distance
-    public static final Distance source = Meters.of(0.1);
+      static boolean isBlue = DriverStation.getAlliance().get() == DriverStation.Alliance.Blue;
 
-    //TODO: fill the reefs value
-    public static final Distance topReefDistance = Centimeter.of(0);
-    public static final Distance topRightReefDistance = Centimeter.of(0);
-    public static final Distance topLeftReefDistance = Centimeter.of(0);
+      // the X and Y poses of the left branches
 
-    public static final Distance bottomReefDistance = Centimeter.of(0);
-    public static final Distance bottomRightReefDistance = Centimeter.of(0);
-    public static final Distance bottomLeftReefDistance = Centimeter.of(0);
+      //bottom
+      public static final double leftBranchBottomX = isBlue ? 0 : 0;
+      public static final double leftBranchBottomY = isBlue ? 0 : 0;
 
-    public static final Distance proccesorDistance = Centimeter.of(0);
+      //bottom right
+      public static final double leftBranchBottomRightX = isBlue ? 0 : 0;
+      public static final double leftBranchBottomRightY = isBlue ? 0 : 0;
+
+      //top right
+      public static final double leftBranchTopRightX = isBlue ? 0 : 0;
+      public static final double leftBranchTopRightY = isBlue ? 0 : 0;
+
+      //top
+      public static final double leftBranchTopX = isBlue ? 0 : 0;
+      public static final double leftBranchTopY = isBlue ? 0 : 0;
+
+      //top left
+      public static final double leftBranchTopLeftX = isBlue ? 0 : 0;
+      public static final double leftBranchTopLeftY = isBlue ? 0 : 0;
+
+      //bottom left
+      public static final double leftBranchBottomLeftX = isBlue ? 0 : 0;
+      public static final double leftBranchBottomLeftY = isBlue ? 0 : 0;
 
 
-  }
+
+      // the right branches of the reef X and Y poses
+      public static final double rightBranchBottomX = isBlue ? 0 : 0;
+      public static final double rightBranchBottomY = isBlue ? 0 : 0;
+
+      public static final double rightBranchBottomRightX = isBlue ? 0 : 0;
+      public static final double rightBranchBottomRightY = isBlue ? 0 : 0;
+
+      public static final double rightBranchTopRightX = isBlue ? 0 : 0;
+      public static final double rightBranchTopRightY = isBlue ? 0 : 0;
+
+      public static final double rightBranchTopX = isBlue ? 0 : 0;
+      public static final double rightBranchTopY = isBlue ? 0 : 0;
+
+      public static final double rightBranchTopLeftX = isBlue ? 0 : 0;
+      public static final double rightBranchTopLeftY = isBlue ? 0 : 0;
+
+      public static final double rightBranchBottomLeftX = isBlue ? 0 : 0;
+      public static final double rightBranchBottomLeftY = isBlue ? 0 : 0;
+
+    }
 
     // Swerve Kinematics:
     public static final SwerveDriveKinematics kDriveKinematics = new SwerveDriveKinematics(
@@ -230,23 +261,21 @@ public final class Constants {
             ModuleConstants.kDriveCurrentLimit, 1),
         kDriveKinematics.getModules());
 
-      public static RobotConfig getConfig(){
-        RobotConfig config;
-        try{
-          config = RobotConfig.fromGUISettings();
-        } catch (Exception e){
-          e.printStackTrace();
-          config = DEFAUL_ROBOT_CONFIG;
-        }
-        return config;
-
+    public static RobotConfig getConfig() {
+      RobotConfig config;
+      try {
+        config = RobotConfig.fromGUISettings();
+      } catch (Exception e) {
+        e.printStackTrace();
+        config = DEFAUL_ROBOT_CONFIG;
       }
-      
+      return config;
+
+    }
+
   }
-  
 
   public static class ElevatorConstant {
-
 
     public static final Distance coralL1 = Centimeter.of(0);
     public static final Distance coralL2 = Centimeter.of(0);
@@ -272,8 +301,6 @@ public final class Constants {
     public static final double maxVelocity = 18;
     public static final double maxAcceleration = 20;
 
-
-
     public static double restPower = 0;
     public static Distance errorTollerance = Centimeter.of(0.3);
     public static double kMaxAcceleration = 0;
@@ -289,19 +316,19 @@ public final class Constants {
           System.out.println("L1");
           return coralL1;
         case coralL2:
-        System.out.println("L2");
+          System.out.println("L2");
           return coralL2;
         case coralL3:
-        System.out.println("L3");
+          System.out.println("L3");
           return coralL3;
         case coralL4:
-        System.out.println("L4");
+          System.out.println("L4");
           return coralL4;
         case source:
-        System.out.println("source");
+          System.out.println("source");
           return sourceDistance;
         case rest:
-        System.out.println("rest");
+          System.out.println("rest");
           return restDistance;
         case removeAlgea:
           return removeAlgea;
@@ -312,9 +339,9 @@ public final class Constants {
   }
 
   public static class ClimbSubsystemConstants {
-    //TODO: change values to actual values
+    // TODO: change values to actual values
 
-    public static final int climbMotorPort = 55; 
+    public static final int climbMotorPort = 55;
     public static final double climbMotorPower = 0.2;
 
     public static final int limitSwitchPort = 0;
