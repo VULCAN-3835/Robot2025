@@ -52,13 +52,13 @@ public final class Constants {
     public static final int rightMotorID = 61;
 
     // the ID of the infrared sensor
-    public static final int pieceDetectorID = 1;
+    public static final int pieceDetectorID = 7;
 
     // the out put speed of the motor to score the coral
-    public static final double outputPower = 0;
+    public static final double outputPower = 0.5;
 
     // the speed to intake the coral
-    public static final double intakePower = 0;
+    public static final double intakePower = 0.3;
 
     // the threshold of the sensor to recognize the coral (in Volts)
     public static final double kHasPieceVoltageThreshold = 0;
@@ -145,20 +145,20 @@ public final class Constants {
   public static class ChassisConstants {
 
     // Ports for driving motors
-    public static final int kLeftFrontDriveID = 12; // CAN ID
-    public static final int kRightFrontDriveID = 10; // CAN ID
-    public static final int kLeftBackDriveID = 13; // CAN ID
-    public static final int kRightBackDriveID = 11; // CAN ID
+    public static final int kLeftFrontDriveID = 13; // CAN ID
+    public static final int kRightFrontDriveID = 12; // CAN ID
+    public static final int kLeftBackDriveID = 11; // CAN ID
+    public static final int kRightBackDriveID = 10; // CAN ID
     // Ports for angle motors
-    public static final int kLeftFrontSteerID = 22; // CAN ID
-    public static final int kRightFrontSteerID = 20; // CAN ID
-    public static final int kLeftBackSteerID = 23; // CAN ID
-    public static final int kRightBackSteerID = 21; // CAN ID
+    public static final int kLeftFrontSteerID = 23; // CAN ID
+    public static final int kRightFrontSteerID = 22; // CAN ID
+    public static final int kLeftBackSteerID = 21; // CAN ID
+    public static final int kRightBackSteerID = 20; // CAN ID
     // Ports for encoders
-    public static final int kLeftFrontEncID = 32; // CAN ID
-    public static final int kRightFrontEncID = 30; // CAN ID
-    public static final int kLeftBackEncID = 33; // CAN ID
-    public static final int kRightBackEncID = 31; // CAN ID
+    public static final int kLeftFrontEncID = 33; // CAN ID
+    public static final int kRightFrontEncID = 32; // CAN ID
+    public static final int kLeftBackEncID = 31; // CAN ID
+    public static final int kRightBackEncID = 30; // CAN ID
 
     // Offsets for absolute encoders in rotations (i.e: 360 degrees = 1 rotation):
     // public static final double kLeftFrontOffset = -0.029296875;
@@ -166,10 +166,10 @@ public final class Constants {
     // public static final double kLeftBackOffset = 0.406494140625;
     // public static final double kRightBackOffset = -0.228515625;
 
-    public static final double kLeftFrontOffset = -1.4658203125;
-    public static final double kRightFrontOffset = -0.510986328125;
-    public static final double kLeftBackOffset = 0.04296875;
-    public static final double kRightBackOffset = -0.66259765625;
+    public static final double kLeftFrontOffset = 0.3134765625;
+    public static final double kRightFrontOffset = -0.2197265625;
+    public static final double kLeftBackOffset = -0.40771484375;
+    public static final double kRightBackOffset = -0.23779296875;
     // Which motors are inverted: public static final boolean frontLeftDriveInverted
     // = true;
     public static final boolean kLeftFrontInverted = true;
@@ -201,49 +201,49 @@ public final class Constants {
       // the X and Y poses of the left branches
 
       //bottom
-      public static final double leftBranchBottomX = isBlue ? 0 : 0;
-      public static final double leftBranchBottomY = isBlue ? 0 : 0;
+      public static final double leftBranchBottomX = 0;
+      public static final double leftBranchBottomY = 0;
 
       //bottom right
-      public static final double leftBranchBottomRightX = isBlue ? 0 : 0;
-      public static final double leftBranchBottomRightY = isBlue ? 0 : 0;
+      public static final double leftBranchBottomRightX = 0;
+      public static final double leftBranchBottomRightY = 0;
 
       //top right
-      public static final double leftBranchTopRightX = isBlue ? 0 : 0;
-      public static final double leftBranchTopRightY = isBlue ? 0 : 0;
+      public static final double leftBranchTopRightX = 0;
+      public static final double leftBranchTopRightY = 0;
 
       //top
-      public static final double leftBranchTopX = isBlue ? 0 : 0;
-      public static final double leftBranchTopY = isBlue ? 0 : 0;
+      public static final double leftBranchTopX = 0;
+      public static final double leftBranchTopY = 0;
 
       //top left
-      public static final double leftBranchTopLeftX = isBlue ? 0 : 0;
-      public static final double leftBranchTopLeftY = isBlue ? 0 : 0;
+      public static final double leftBranchTopLeftX = 0;
+      public static final double leftBranchTopLeftY = 0;
 
       //bottom left
-      public static final double leftBranchBottomLeftX = isBlue ? 0 : 0;
-      public static final double leftBranchBottomLeftY = isBlue ? 0 : 0;
+      public static final double leftBranchBottomLeftX = 4.038;
+      public static final double leftBranchBottomLeftY = 5.326;
 
 
 
       // the right branches of the reef X and Y poses
-      public static final double rightBranchBottomX = isBlue ? 0 : 0;
-      public static final double rightBranchBottomY = isBlue ? 0 : 0;
+      public static final double rightBranchBottomX =0;
+      public static final double rightBranchBottomY = 0;
 
-      public static final double rightBranchBottomRightX = isBlue ? 0 : 0;
-      public static final double rightBranchBottomRightY = isBlue ? 0 : 0;
+      public static final double rightBranchBottomRightX = 0;
+      public static final double rightBranchBottomRightY = 0;
 
-      public static final double rightBranchTopRightX = isBlue ? 0 : 0;
-      public static final double rightBranchTopRightY = isBlue ? 0 : 0;
+      public static final double rightBranchTopRightX = 0;
+      public static final double rightBranchTopRightY = 0;
 
-      public static final double rightBranchTopX = isBlue ? 0 : 0;
-      public static final double rightBranchTopY = isBlue ? 0 : 0;
+      public static final double rightBranchTopX =0;
+      public static final double rightBranchTopY = 0;
 
-      public static final double rightBranchTopLeftX = isBlue ? 0 : 0;
-      public static final double rightBranchTopLeftY = isBlue ? 0 : 0;
+      public static final double rightBranchTopLeftX = 0;
+      public static final double rightBranchTopLeftY = 0;
 
-      public static final double rightBranchBottomLeftX = isBlue ? 0 : 0;
-      public static final double rightBranchBottomLeftY = isBlue ? 0 : 0;
+      public static final double rightBranchBottomLeftX = 0;
+      public static final double rightBranchBottomLeftY = 0;
 
     }
 
@@ -278,9 +278,9 @@ public final class Constants {
   public static class ElevatorConstant {
 
     public static final Distance coralL1 = Centimeter.of(0);
-    public static final Distance coralL2 = Centimeter.of(0);
-    public static final Distance coralL3 = Centimeter.of(20.52);
-    public static final Distance coralL4 = Centimeter.of(41);
+    public static final Distance coralL2 = Centimeter.of(8);
+    public static final Distance coralL3 = Centimeter.of(29);
+    public static final Distance coralL4 = Centimeter.of(62);
     public static final Distance restDistance = Centimeter.of(0);
     public static final Distance sourceDistance = Centimeter.of(15);
     public static final Distance removeAlgea = Centimeter.of(22);
@@ -288,13 +288,13 @@ public final class Constants {
     public static final double pidTolerence = 1.5;
 
     public static final int elevatorMotorID = 50;
-    public static final int limitSwitchID = 7;
+    public static final int limitSwitchID = 3;
 
     public static final double kS = 0;
     public static final double kG = 0;
     public static final double kV = 0;
 
-    public static final double ProfiledkP = 0.16;
+    public static final double ProfiledkP = 0.08;
     public static final double ProfiledkI = 0;
     public static final double ProfiledkD = 0;
 

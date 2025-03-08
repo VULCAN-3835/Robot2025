@@ -5,6 +5,9 @@
 package frc.robot.commands;
 
 
+import java.time.Instant;
+
+import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.ParallelCommandGroup;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
@@ -25,6 +28,7 @@ public class ElevatorLevelScoreCMD extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
 
+
     addCommands(
 
       // 1. sets the height of the elevator to the desired height
@@ -33,7 +37,8 @@ public class ElevatorLevelScoreCMD extends SequentialCommandGroup {
       new WaitUntilCommand(()-> elevatorSubsystem.isAtSetpoint()),
 
       // 3. releases the coral 
-      new CoralReleaseCommand(endAccessorySubsystem),
+      
+      new CoralReleaseCommand(endAccessorySubsystem,elevatorState),
 
       // 4. returns the elevator to its resting state  
       new InstantCommand(()-> elevatorSubsystem.setLevel(ElevatorStates.rest))

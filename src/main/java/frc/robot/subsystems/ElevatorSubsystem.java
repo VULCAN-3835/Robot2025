@@ -7,6 +7,8 @@ package frc.robot.subsystems;
 import static edu.wpi.first.units.Units.Centimeter;
 import static edu.wpi.first.units.Units.Centimeters;
 
+import java.util.zip.Inflater;
+
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.math.controller.ElevatorFeedforward;
@@ -35,10 +37,11 @@ import edu.wpi.first.math.trajectory.TrapezoidProfile.Constraints;
 public class ElevatorSubsystem extends SubsystemBase {
   /** Creates a new ElevatorSubsystem. */
   private final TalonFX elevatorMotor;
-  private final DigitalInput closeLimitSwitch;
   private final ElevatorFeedforward elevatorFeedforward;
   private final ProfiledPIDController profiledPIDController;
   private final Constraints constraints;
+
+  private final DigitalInput elevatorInfrared;
 
   //the sysID objects
   // private final SysIdRoutine sysIdRoutine;
@@ -52,7 +55,6 @@ public class ElevatorSubsystem extends SubsystemBase {
 
   public ElevatorSubsystem() {
     this.elevatorMotor = new TalonFX(ElevatorConstant.elevatorMotorID);
-    this.closeLimitSwitch = new DigitalInput(ElevatorConstant.limitSwitchID);
 
 
     this.elevatorFeedforward = new ElevatorFeedforward(ElevatorConstant.kS, ElevatorConstant.kG, ElevatorConstant.kV);
@@ -61,6 +63,7 @@ public class ElevatorSubsystem extends SubsystemBase {
     this.profiledPIDController = new ProfiledPIDController(ElevatorConstant.ProfiledkP, ElevatorConstant.ProfiledkI,
      ElevatorConstant.ProfiledkD, constraints);
     this.profiledPIDController.setTolerance(ElevatorConstant.pidTolerence);
+    this.elevatorInfrared = new DigitalInput(ElevatorConstant.limitSwitchID);
 
   //   //SysID configs: the first param is how mach volts will it go up in how much time,
   //   //seconds one is how much for the quastatics tests and
@@ -108,8 +111,8 @@ public class ElevatorSubsystem extends SubsystemBase {
     profiledPIDController.setGoal(ElevatorConstant.restDistance.in(Centimeter));
   }
 
-  public boolean getCloseLimitSwitch() {
-    return closeLimitSwitch.get();
+  public boolean getCloseElevator() {
+    return !this.elevatorInfrared.get();
   }
 
   public InstantCommand setLevelElevatorCommand(ElevatorStates elevatorStates) {
@@ -143,12 +146,12 @@ public class ElevatorSubsystem extends SubsystemBase {
 
     }
 
-    if (getCloseLimitSwitch() || getDistance().in(Centimeters) < Math.abs(0.7)) {
+    if (getCloseElevator() || getDistance().in(Centimeters) < Math.abs(0.7)) {
       currentPosition = 0;
     }
 
     SmartDashboard.putNumber("ElevatorSubsystem/distance of elevator", currentPosition);
-    SmartDashboard.putBoolean("ElevatorSubsystem/low limit switch pressed", getCloseLimitSwitch());
+    SmartDashboard.putBoolean("ElevatorSubsystem/low limit switch pressed", getCloseElevator());
     SmartDashboard.putNumber("ElevatorSubsystem/ setPoint", profiledPIDController.getGoal().position);
     SmartDashboard.putBoolean("ElevatorSubsystem/ is at setPoint", isAtSetpoint());
     SmartDashboard.putNumber("ElevatorSubsystem/ output",motorOutput);

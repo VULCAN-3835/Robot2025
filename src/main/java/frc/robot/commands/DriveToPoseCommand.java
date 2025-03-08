@@ -11,11 +11,10 @@ import edu.wpi.first.math.trajectory.Trajectory;
 import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
-import edu.wpi.first.math.trajectory.TrapezoidProfile.State;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.Constants.ChassisConstants;
 import frc.robot.subsystems.ChassisSubsystem;
-import edu.wpi.first.math.trajectory.Trajectory;
 
 public class DriveToPoseCommand extends Command {
   private final ChassisSubsystem chassis;
@@ -27,12 +26,11 @@ public class DriveToPoseCommand extends Command {
   private final double maxVelocity = 0.5;
   private final double maxAcceleration = 0.5;
 
-  // Create a HolonomicDriveController with PID controllers for translation and rotation
+  // Holonomic Drive Controller with PID for translation and rotation
   private final HolonomicDriveController controller = new HolonomicDriveController(
-      new PIDController(1.0, 0, 0),    // X-direction PID
-      new PIDController(1.0, 0, 0),    // Y-direction PID
-      new ProfiledPIDController(1.0, 0, 0,
-          new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration)) // Theta PID
+      new PIDController(1.0, 0, 0), // X-direction PID
+      new PIDController(1.0, 0, 0), // Y-direction PID
+      new ProfiledPIDController(1.0, 0, 0, new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration)) // Theta PID
   );
 
   public DriveToPoseCommand(ChassisSubsystem chassis, Pose2d targetPose) {
@@ -41,55 +39,49 @@ public class DriveToPoseCommand extends Command {
     addRequirements(chassis);
   }
 
-@Override
+  @Override
   public void initialize() {
     // Get the current pose from the chassis subsystem
     Pose2d currentPose = chassis.getPose();
 
-    // Optionally reset odometry here if needed
-    chassis.resetOdometry(currentPose);
+    // Optionally reset odometry if needed
+    // chassis.resetOdometry(currentPose); // Uncomment if odometry drift is an issue
 
     // Configure trajectory settings
-    TrajectoryConfig config = new TrajectoryConfig(maxVelocity, maxAcceleration);
-    
-    // Generate a simple trajectory from current pose to target pose.
-    // Here, we use a two-point trajectory. For more complex paths, add intermediate waypoints.
-    trajectory = TrajectoryGenerator.generateTrajectory(
-        List.of(currentPose, targetPose),
-        config
-    );
+    TrajectoryConfig config = new TrajectoryConfig(maxVelocity, maxAcceleration)
+        .setKinematics(ChassisConstants.kDriveKinematics); // Ensure kinematics are accounted for
 
-    // Reset the timer
+    // Generate a trajectory from the current pose to the target pose
+    trajectory = TrajectoryGenerator.generateTrajectory(List.of(currentPose, targetPose), config);
+
+    // Start the timer
     startTime = Timer.getFPGATimestamp();
   }
 
   @Override
   public void execute() {
     double elapsedTime = Timer.getFPGATimestamp() - startTime;
-    // Ensure we don't sample beyond the trajectory duration.
     double totalTime = trajectory.getTotalTimeSeconds();
-    // Sample the trajectory state and extract the desired pose.
-    var state = trajectory.sample(Math.min(elapsedTime, totalTime));
+
+    // Sample the trajectory to get the desired state
     Trajectory.State desiredState = trajectory.sample(Math.min(elapsedTime, totalTime));
 
-    // Pass the state directly to the calculate() method.
+    // Compute chassis speeds using the controller
     ChassisSpeeds chassisSpeeds = controller.calculate(chassis.getPose(), desiredState, targetPose.getRotation());
 
-
-
-    // Drive the robot. The boolean flag indicates whether speeds are field-relative.
-    chassis.drive(chassisSpeeds, false);
+    // Command the chassis to move
+    chassis.drive(chassisSpeeds.unaryMinus(), false);
   }
 
   @Override
   public boolean isFinished() {
-    // End the command when the trajectory has been fully followed.
+    // End command when the trajectory is complete
     return (Timer.getFPGATimestamp() - startTime) >= trajectory.getTotalTimeSeconds();
   }
 
   @Override
   public void end(boolean interrupted) {
-    // Stop the robot when the command ends or is interrupted.
-    chassis.drive(0, 0, 0, false);
+    // Stop the robot when finished or interrupted
+    chassis.drive(new ChassisSpeeds(0, 0, 0),false);
   }
 }

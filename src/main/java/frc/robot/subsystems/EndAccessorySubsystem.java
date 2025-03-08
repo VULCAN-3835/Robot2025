@@ -15,13 +15,14 @@ import frc.robot.Constants.EndAccessoryConstants;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 import edu.wpi.first.wpilibj.AnalogInput;
+import edu.wpi.first.wpilibj.DigitalInput;
 
 public class EndAccessorySubsystem extends SubsystemBase {
 
     private TalonFX leftMotor;
     private TalonFX rightMotor;
 
-    private AnalogInput pieceDetector;
+    private DigitalInput pieceDetector;
 
     public EndAccessorySubsystem() {
         // init the subsystems motors
@@ -32,7 +33,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
         this.leftMotor.setControl(new Follower(EndAccessoryConstants.rightMotorID, true)); 
 
 
-        this.pieceDetector = new AnalogInput(EndAccessoryConstants.pieceDetectorID);
+        this.pieceDetector = new DigitalInput(EndAccessoryConstants.pieceDetectorID);
 
     }
 
@@ -59,11 +60,13 @@ public class EndAccessorySubsystem extends SubsystemBase {
     // sets the gripper to the power thats in the param
     public void setPower(double power) {
         rightMotor.set(power);
+        
     }
 
     // returns true if there is a piece in the subsystem
     public boolean hasPiece() {
-        return pieceDetector.getVoltage() > EndAccessoryConstants.kHasPieceVoltageThreshold;
+        // return this.pieceDetector.getVoltage() > EndAccessoryConstants.kHasPieceVoltageThreshold;
+        return !this.pieceDetector.get();
 
     }
 
@@ -71,7 +74,7 @@ public class EndAccessorySubsystem extends SubsystemBase {
     public void periodic() {
 
         SmartDashboard.putBoolean("EndAccessory Subsystem/end has piece?", hasPiece());
-        SmartDashboard.putNumber("EndAccessory Subsystem/infrared end value", pieceDetector.getVoltage());
+        // SmartDashboard.putNumber("EndAccessory Subsystem/infrared end value", pieceDetector.getVoltage());
 
     }
 }
