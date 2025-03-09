@@ -2,6 +2,7 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
 import frc.robot.Util.ElevatorStates;
 import frc.robot.subsystems.EndAccessorySubsystem;
@@ -22,8 +23,9 @@ public class CoralReleaseCommand extends SequentialCommandGroup {
 
             // 2. Wait until the piece is no longer detected by the piece sensor
             new WaitUntilCommand(() -> !endAccessorySubsystem.hasPiece()),
+            new InstantCommand(()-> System.out.println("stop!!!!!!!!!!!!!!")),
 
-            new WaitUntilCommand(elevatorStates == ElevatorStates.coralL1 ? 0.5 : 0),
+            new WaitCommand( 0.5),
 
             // 3. Stop the gripper
             new InstantCommand(() -> endAccessorySubsystem.gripperStop())

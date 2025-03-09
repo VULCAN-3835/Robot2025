@@ -33,6 +33,8 @@ import edu.wpi.first.units.measure.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
 import edu.wpi.first.units.measure.Voltage;
+import edu.wpi.first.util.sendable.Sendable;
+import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.Timer;
@@ -49,6 +51,7 @@ import frc.robot.Constants.ChassisConstants;
 import frc.robot.Constants.ModuleConstants;
 import frc.robot.Util.OVCameraUtil;
 import frc.robot.Util.SwerveModule;
+import frc.robot.Util.FieldLayout;
 import frc.robot.Util.LimelightUtil;
 
 import static edu.wpi.first.units.Units.Centimeters;
@@ -74,6 +77,9 @@ public class ChassisSubsystem extends SubsystemBase {
   private boolean isAutonomous;
   private Pose2d currentPose2dHolonomic;
   private Pose2d holonomicSetPoint;
+
+  private Pose2d closestRight;
+  private Pose2d closestLeft;
 
   // An array of the four swerve Modules
   private SwerveModule[] swerve_modules = new SwerveModule[4];
@@ -101,7 +107,6 @@ public class ChassisSubsystem extends SubsystemBase {
       new SwerveModuleState(0, Rotation2d.fromDegrees(0)),
       new SwerveModuleState(0, Rotation2d.fromDegrees(0))
   };
-
 
   private LimelightUtil limelightReef;
   private LimelightUtil limelightSource;
@@ -146,6 +151,9 @@ public class ChassisSubsystem extends SubsystemBase {
     // Imu initlization
     this.imu = new AHRS(NavXComType.kMXP_SPI);
 
+    // Robot starting position for odometry
+    startingPos = new Pose2d(1.3, 5.52, Rotation2d.fromDegrees(0));
+
     // Field initlization
     field = new Field2d();
     this.limelightReef = new LimelightUtil("limelight-front");
@@ -160,9 +168,6 @@ public class ChassisSubsystem extends SubsystemBase {
     updateSwervePositions();
     zeroHeading();
 
-    // Robot starting position for odometry
-    startingPos = new Pose2d(1.3, 5.52, Rotation2d.fromDegrees(0));
-
     // Initilizing a pose estimator
     this.poseEstimator = new SwerveDrivePoseEstimator(ChassisConstants.kDriveKinematics,
         getRotation2d().unaryMinus(),
@@ -176,8 +181,8 @@ public class ChassisSubsystem extends SubsystemBase {
         () -> ChassisConstants.kDriveKinematics.toChassisSpeeds(getModStates()),
         this::runVelc,
         new PPHolonomicDriveController(
-            new PIDConstants(1.75, 0, 0), // Translation PID
-            new PIDConstants(5.0, 0, 0) // Rotation PID
+            new PIDConstants(1.0, 0, 0), // Translation PID
+            new PIDConstants(0.5, 0, 0) // Rotation PID
         ),
         ChassisConstants.getConfig(),
         () -> !(Robot.allianceColor == "BLUE"),
@@ -186,8 +191,6 @@ public class ChassisSubsystem extends SubsystemBase {
     // Set up custom logging to add the current path to a field 2d widget
     PathPlannerLogging.setLogActivePathCallback((poses) -> field.getObject("path").setPoses(poses));
     SmartDashboard.putData(field);
-
-
 
     routine = new SysIdRoutine(
         new SysIdRoutine.Config(),
@@ -203,6 +206,57 @@ public class ChassisSubsystem extends SubsystemBase {
                         LinearVelocity.ofBaseUnits(swerve_modules[wheel.ordinal()].getVelocity(), MetersPerSecond));
               }
             }, this));
+
+    SmartDashboard.putData("Desired swerve state", new Sendable() {
+      @Override
+      public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("SwerveDrive");
+        builder.addDoubleProperty("Front Left Angle",
+            () -> swerveModuleStates[Wheels.LEFT_FRONT.ordinal()].angle.getDegrees(), null);
+        builder.addDoubleProperty("Front Right Angle",
+            () -> swerveModuleStates[Wheels.RIGHT_FRONT.ordinal()].angle.getDegrees(), null);
+        builder.addDoubleProperty("Back Left Angle",
+            () -> swerveModuleStates[Wheels.LEFT_BACK.ordinal()].angle.getDegrees(), null);
+        builder.addDoubleProperty("Back Right Angle",
+            () -> swerveModuleStates[Wheels.RIGHT_BACK.ordinal()].angle.getDegrees(), null);
+
+        builder.addDoubleProperty("Front Left Speed",
+            () -> swerveModuleStates[Wheels.LEFT_FRONT.ordinal()].speedMetersPerSecond, null);
+        builder.addDoubleProperty("Front Right Speed",
+            () -> swerveModuleStates[Wheels.RIGHT_FRONT.ordinal()].speedMetersPerSecond, null);
+        builder.addDoubleProperty("Back Left Speed",
+            () -> swerveModuleStates[Wheels.LEFT_BACK.ordinal()].speedMetersPerSecond, null);
+        builder.addDoubleProperty("Back Right Speed",
+            () -> swerveModuleStates[Wheels.RIGHT_BACK.ordinal()].speedMetersPerSecond, null);
+
+        builder.addDoubleProperty("Robot Angle", () -> getHeading(), null);
+      }
+    });
+    SmartDashboard.putData("Current swerve state", new Sendable() {
+      @Override
+      public void initSendable(SendableBuilder builder) {
+        builder.setSmartDashboardType("SwerveDrive");
+        builder.addDoubleProperty("Front Left Angle",
+            () -> swerve_modules[Wheels.LEFT_FRONT.ordinal()].getPosition().angle.getDegrees(), null);
+        builder.addDoubleProperty("Front Right Angle",
+            () -> swerve_modules[Wheels.RIGHT_FRONT.ordinal()].getPosition().angle.getDegrees(), null);
+        builder.addDoubleProperty("Back Left Angle",
+            () -> swerve_modules[Wheels.LEFT_BACK.ordinal()].getPosition().angle.getDegrees(), null);
+        builder.addDoubleProperty("Back Right Angle",
+            () -> swerve_modules[Wheels.RIGHT_BACK.ordinal()].getPosition().angle.getDegrees(), null);
+
+        builder.addDoubleProperty("Front Left Speed",
+            () -> swerve_modules[Wheels.LEFT_FRONT.ordinal()].getVelocity(), null);
+        builder.addDoubleProperty("Front Right Speed",
+            () -> swerve_modules[Wheels.RIGHT_FRONT.ordinal()].getVelocity(), null);
+        builder.addDoubleProperty("Back Left Speed",
+            () -> swerve_modules[Wheels.LEFT_BACK.ordinal()].getVelocity(), null);
+        builder.addDoubleProperty("Back Right Speed",
+            () -> swerve_modules[Wheels.RIGHT_BACK.ordinal()].getVelocity(), null);
+
+        builder.addDoubleProperty("Robot Angle", () -> getHeading(), null);
+      }
+    });
   }
 
   /**
@@ -241,6 +295,7 @@ public class ChassisSubsystem extends SubsystemBase {
   public Rotation2d getRotation2d() {
     return Rotation2d.fromDegrees(this.imu.getAngle());
   }
+
   public AHRS getGyro() {
     return imu;
   }
@@ -292,7 +347,7 @@ public class ChassisSubsystem extends SubsystemBase {
    * @param speeds The desired chassisSpeeds object for module velocities
    */
   public void runVelc(ChassisSpeeds speeds) {
-    ChassisSpeeds discSpeeds = ChassisSpeeds.discretize(speeds, 0.02);
+    ChassisSpeeds discSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(ChassisSpeeds.discretize(speeds, 0.02), getRotation2d());
 
     this.swerveModuleStates = ChassisConstants.kDriveKinematics.toSwerveModuleStates(discSpeeds);
   }
@@ -374,7 +429,8 @@ public class ChassisSubsystem extends SubsystemBase {
   public Pose2d getPose() {
     return this.poseEstimator.getEstimatedPosition();
   }
-  public PoseEstimator getPoseEstimator(){
+
+  public PoseEstimator getPoseEstimator() {
     return this.poseEstimator;
   }
 
@@ -395,10 +451,12 @@ public class ChassisSubsystem extends SubsystemBase {
   public SwerveModuleState[] getModStates() {
     return this.swerveModuleStates;
   }
-  public LimelightUtil getCamReef(){
+
+  public LimelightUtil getCamReef() {
     return limelightReef;
   }
-  public LimelightUtil getCamSource(){
+
+  public LimelightUtil getCamSource() {
     return limelightSource;
   }
 
@@ -411,29 +469,35 @@ public class ChassisSubsystem extends SubsystemBase {
     double xyStds;
     double degStds;
 
-      if (visionBotPoseReef.getX() != 0.0 && this.limelightReef.hasValidTarget()) {
-        xyStds = 0.5 * (1/Math.pow(limelightReef.distanceFromTargetMeters(), 2));
-        degStds = 6;
+    if (visionBotPoseReef.getX() != 0.0 && this.limelightReef.hasValidTarget()) {
+      xyStds = 0.5 * (1 / Math.pow(limelightReef.distanceFromTargetMeters(), 2));
+      degStds = 6;
 
-        poseEstimator.setVisionMeasurementStdDevs(
+      poseEstimator.setVisionMeasurementStdDevs(
           VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
-        poseEstimator.addVisionMeasurement(visionBotPoseReef,
+      poseEstimator.addVisionMeasurement(visionBotPoseReef,
           Timer.getFPGATimestamp() - (this.limelightReef.getCameraTimeStampSec()));
-      }
-
-      if (visionBotPoseSource.getX() != 0.0 && this.limelightSource.hasValidTarget()){
-        xyStds = 0.5 * (1/Math.pow(limelightSource.distanceFromTargetMeters(), 2));
-        degStds = 6;
-
-        poseEstimator.setVisionMeasurementStdDevs(
-          VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
-        poseEstimator.addVisionMeasurement(visionBotPoseSource,
-          Timer.getFPGATimestamp() - (this.limelightSource.getCameraTimeStampSec()));
-      }
-
-      
     }
 
+    if (visionBotPoseSource.getX() != 0.0 && this.limelightSource.hasValidTarget()) {
+      xyStds = 0.5 * (1 / Math.pow(limelightSource.distanceFromTargetMeters(), 2));
+      degStds = 6;
+
+      poseEstimator.setVisionMeasurementStdDevs(
+          VecBuilder.fill(xyStds, xyStds, Units.degreesToRadians(degStds)));
+      poseEstimator.addVisionMeasurement(visionBotPoseSource,
+          Timer.getFPGATimestamp() - (this.limelightSource.getCameraTimeStampSec()));
+    }
+
+  }
+
+  public Pose2d getNearestLeft() {
+    return this.closestLeft;
+  }
+
+  public Pose2d getNearestRight() {
+    return this.closestRight;
+  }
 
   private void initHolonomicDriver() {
     this.controller = new HolonomicDriveController(
@@ -452,18 +516,19 @@ public class ChassisSubsystem extends SubsystemBase {
     this.holonomicTimer.reset();
     this.holonomicTimer.start();
     this.isAutonomous = true;
-    currentPose2dHolonomic = new Pose2d(this.getPose().getTranslation(),pose2d.getTranslation().minus(getPose().getTranslation()).getAngle());
-    holonomicSetPoint = new Pose2d(pose2d.getTranslation(),pose2d.getTranslation().minus(getPose().getTranslation()).getAngle()); 
-    
+    currentPose2dHolonomic = new Pose2d(this.getPose().getTranslation(),
+        pose2d.getTranslation().minus(getPose().getTranslation()).getAngle());
+    holonomicSetPoint = new Pose2d(pose2d.getTranslation(),
+        pose2d.getTranslation().minus(getPose().getTranslation()).getAngle());
+
     trajectory = Optional.ofNullable(TrajectoryGenerator.generateTrajectory(
-        List.of(currentPose2dHolonomic, holonomicSetPoint ), trajectoryConfig));
+        List.of(currentPose2dHolonomic, holonomicSetPoint), trajectoryConfig));
   }
-  
+
   // @Tal: Either you build a command for every pose2d, or it wouldn't work
   public InstantCommand driveToPose2d(Pose2d pose2d) {
     return new InstantCommand(() -> driveTo(pose2d));
   }
-  
 
   // Chassis SysID to use this paste it in the configureXboxBinding method in
   // robotContainer
@@ -474,27 +539,36 @@ public class ChassisSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-      
-    if (isAutonomous) { 
-      
+
+    if (isAutonomous) {
+
       State goalState = trajectory.get().sample(holonomicTimer.get());
-      
-      ChassisSpeeds speeds = controller.calculate(getPose(), goalState.poseMeters, goalState.velocityMetersPerSecond,holonomicSetPoint.getRotation());
+
+      ChassisSpeeds speeds = controller.calculate(getPose(), goalState.poseMeters, goalState.velocityMetersPerSecond,
+          holonomicSetPoint.getRotation());
       drive(speeds, false);
-      if (Meters.of(currentPose2dHolonomic.minus(holonomicSetPoint).getTranslation().getDistance(holonomicSetPoint.getTranslation())).gt(Centimeters.of(0.5))) {
+      if (Meters.of(currentPose2dHolonomic.minus(holonomicSetPoint).getTranslation()
+          .getDistance(holonomicSetPoint.getTranslation())).gt(Centimeters.of(0.5))) {
         isAutonomous = false;
       }
     }
+
+    this.closestLeft = FieldLayout.getNearestBranchLeft(getPose());
+    this.closestRight = FieldLayout.getNearestBranchRight(getPose());
+
+    SmartDashboard.putString("nearest left", closestLeft.getTranslation().toString());
+    SmartDashboard.putString("nearest right", closestRight.getTranslation().toString());
+
     setModuleStates(this.swerveModuleStates);
-    
+
     updateSwervePositions();
     this.poseEstimator.update(getRotation2d(), getModPositions());
     updatePoseEstimatorWithVisionBotPose();
 
     // if (this.limelightUtil.hasValidTarget()) {
-    //   this.poseEstimator.addVisionMeasurement(this.limelightUtil.getPoseFromCamera(),
-    //       Timer.getFPGATimestamp() - (this.limelightUtil.getCameraTimeStampSec()));
-    // } 
+    // this.poseEstimator.addVisionMeasurement(this.limelightUtil.getPoseFromCamera(),
+    // Timer.getFPGATimestamp() - (this.limelightUtil.getCameraTimeStampSec()));
+    // }
     this.field.setRobotPose(this.poseEstimator.getEstimatedPosition());
     // this.llField.setRobotPose(this.limelightUtil.getPoseFromCamera());
 

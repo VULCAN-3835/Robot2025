@@ -12,13 +12,16 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ChassisConstants;
 import frc.robot.subsystems.ChassisSubsystem;
 
 public class DriveToPoseCommand extends Command {
   private final ChassisSubsystem chassis;
-  private final Pose2d targetPose;
+  private final boolean targetIsLeft;
+
+  private Pose2d targetPose;
   private Trajectory trajectory;
   private double startTime;
 
@@ -33,9 +36,9 @@ public class DriveToPoseCommand extends Command {
       new ProfiledPIDController(1.5, 0, 0, new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration)) // Theta PID
   );
 
-  public DriveToPoseCommand(ChassisSubsystem chassis, Pose2d targetPose) {
+  public DriveToPoseCommand(ChassisSubsystem chassis, boolean left) {
+    this.targetIsLeft = left;
     this.chassis = chassis;
-    this.targetPose = targetPose;
     addRequirements(chassis);
   }
 
@@ -43,7 +46,7 @@ public class DriveToPoseCommand extends Command {
   public void initialize() {
     // Get the current pose from the chassis subsystem
     Pose2d currentPose = chassis.getPose();
-
+    this.targetPose = this.targetIsLeft ? chassis.getNearestLeft() : chassis.getNearestRight();
     // Optionally reset odometry if needed
     // chassis.resetOdometry(currentPose); // Uncomment if odometry drift is an issue
 
@@ -52,6 +55,8 @@ public class DriveToPoseCommand extends Command {
         .setKinematics(ChassisConstants.kDriveKinematics); // Ensure kinematics are accounted for
 
     // Generate a trajectory from the current pose to the target pose
+    System.out.println(currentPose);
+    System.out.println(targetPose);
     trajectory = TrajectoryGenerator.generateTrajectory(List.of(currentPose, targetPose), config);
 
     // Start the timer

@@ -31,6 +31,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ElevatorLevelScoreCMD;
+import frc.robot.commands.MidTo_G_L3;
 import frc.robot.commands.RestElevatorAndGripper;
 import frc.robot.commands.ShootingAlgeaCmd;
 import frc.robot.commands.RestAlgea;
@@ -71,22 +72,23 @@ public class RobotContainer {
 
   public RobotContainer() {
 
-    NamedCommands.registerCommand("drive to nearest right branch",
-        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranchRight(chassisSubsystem.getPose())));
+    NamedCommands.registerCommand("driveRightBranch",
+        new DriveToPoseCommand(chassisSubsystem, false));
         
-    // NamedCommands.registerCommand("L1", new ElevatorLevelScoreCMD(elevatorSubsystem,
-    //     endAccessorySubsystem, ElevatorStates.coralL1));
+    NamedCommands.registerCommand("L1", new ElevatorLevelScoreCMD(elevatorSubsystem,
+        endAccessorySubsystem, ElevatorStates.coralL1));
 
-    // NamedCommands.registerCommand("L2", new ElevatorLevelScoreCMD(elevatorSubsystem,
-    //     endAccessorySubsystem, ElevatorStates.coralL2));
+    NamedCommands.registerCommand("L2", new ElevatorLevelScoreCMD(elevatorSubsystem,
+        endAccessorySubsystem, ElevatorStates.coralL2));
 
-    // NamedCommands.registerCommand("L3", new ElevatorLevelScoreCMD(elevatorSubsystem,
-    //     endAccessorySubsystem, ElevatorStates.coralL3));
+    NamedCommands.registerCommand("L3", new ElevatorLevelScoreCMD(elevatorSubsystem,
+        endAccessorySubsystem, ElevatorStates.coralL3));
 
 
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.setDefaultOption("EMPTY", null);
     autoChooser.addOption("Drive Forword 1 sec", new AutoDriveForword(chassisSubsystem));
+    autoChooser.addOption("mid to G L3", new MidTo_G_L3(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem));
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -127,18 +129,23 @@ public class RobotContainer {
   private void configureButtonBinding(CommandXboxController cmdXboxController) {
         
     cmdXboxController.rightBumper().whileTrue(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
+    cmdXboxController.start().onTrue(new InstantCommand(()-> chassisSubsystem.zeroHeading()));
     
     cmdXboxController.b().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL2));
     cmdXboxController.x().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL3));
-    cmdXboxController.y().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL1));
+    cmdXboxController.y().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL4));
+
     cmdXboxController.leftBumper().whileTrue(new CoralCollectCommand(endAccessorySubsystem));
+    cmdXboxController.leftBumper().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem,endAccessorySubsystem));
+
 
     cmdXboxController.rightTrigger().whileTrue(
-        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranchRight(chassisSubsystem.getPose())));
+        new DriveToPoseCommand(chassisSubsystem, false));
       cmdXboxController.leftTrigger().whileTrue(
-        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranchLeft(chassisSubsystem.getPose())));
+        new DriveToPoseCommand(chassisSubsystem, true));
 
 
+      
   }
 
   /**
