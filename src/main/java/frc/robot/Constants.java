@@ -55,7 +55,7 @@ public final class Constants {
     public static final int pieceDetectorID = 7;
 
     // the out put speed of the motor to score the coral
-    public static final double outputPower = 0.5;
+    public static final double outputPower = 0.3;
 
     // the speed to intake the coral
     public static final double intakePower = 0.3;
@@ -221,8 +221,8 @@ public final class Constants {
       public static final double leftBranchTopLeftY = 0;
 
       //bottom left
-      public static final double leftBranchBottomLeftX = 4.038;
-      public static final double leftBranchBottomLeftY = 5.326;
+      public static final double leftBranchBottomLeftX = 3.96;
+      public static final double leftBranchBottomLeftY = 5.3;
 
 
 
@@ -242,8 +242,8 @@ public final class Constants {
       public static final double rightBranchTopLeftX = 0;
       public static final double rightBranchTopLeftY = 0;
 
-      public static final double rightBranchBottomLeftX = 0;
-      public static final double rightBranchBottomLeftY = 0;
+      public static final double rightBranchBottomLeftX = 3.709;
+      public static final double rightBranchBottomLeftY = 5.127;
 
     }
 
@@ -280,7 +280,7 @@ public final class Constants {
     public static final Distance coralL1 = Centimeter.of(0);
     public static final Distance coralL2 = Centimeter.of(8);
     public static final Distance coralL3 = Centimeter.of(29);
-    public static final Distance coralL4 = Centimeter.of(62);
+    public static final Distance coralL4 = Centimeter.of(63);
     public static final Distance restDistance = Centimeter.of(0);
     public static final Distance sourceDistance = Centimeter.of(15);
     public static final Distance removeAlgea = Centimeter.of(22);
@@ -294,12 +294,12 @@ public final class Constants {
     public static final double kG = 0;
     public static final double kV = 0;
 
-    public static final double ProfiledkP = 0.08;
+    public static final double ProfiledkP = 0.2;
     public static final double ProfiledkI = 0;
     public static final double ProfiledkD = 0;
 
-    public static final double maxVelocity = 18;
-    public static final double maxAcceleration = 20;
+    public static final double maxVelocity = 37;
+    public static final double maxAcceleration = 44;
 
     public static double restPower = 0;
     public static Distance errorTollerance = Centimeter.of(0.3);

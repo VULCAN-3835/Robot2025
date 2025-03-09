@@ -23,14 +23,14 @@ public class DriveToPoseCommand extends Command {
   private double startTime;
 
   // Define maximum velocity and acceleration for the trajectory (in meters per second and m/s^2)
-  private final double maxVelocity = 0.5;
-  private final double maxAcceleration = 0.5;
+  private final double maxVelocity = 2.5;
+  private final double maxAcceleration = 3;
 
   // Holonomic Drive Controller with PID for translation and rotation
   private final HolonomicDriveController controller = new HolonomicDriveController(
-      new PIDController(1.0, 0, 0), // X-direction PID
-      new PIDController(1.0, 0, 0), // Y-direction PID
-      new ProfiledPIDController(1.0, 0, 0, new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration)) // Theta PID
+      new PIDController(2.0, 0, 0), // X-direction PID
+      new PIDController(2.0, 0, 0), // Y-direction PID
+      new ProfiledPIDController(1.5, 0, 0, new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration)) // Theta PID
   );
 
   public DriveToPoseCommand(ChassisSubsystem chassis, Pose2d targetPose) {

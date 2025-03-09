@@ -129,16 +129,15 @@ public class RobotContainer {
     cmdXboxController.rightBumper().whileTrue(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
     
     cmdXboxController.b().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL2));
-    // cmdXboxController.x().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL3));
-    // cmdXboxController.y().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL4));
-    // cmdXboxController.a().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL1));
-    cmdXboxController.a().whileTrue(new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranchLeft(chassisSubsystem.getPose())));
+    cmdXboxController.x().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL3));
+    cmdXboxController.y().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL1));
     cmdXboxController.leftBumper().whileTrue(new CoralCollectCommand(endAccessorySubsystem));
 
     cmdXboxController.rightTrigger().whileTrue(
         new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranchRight(chassisSubsystem.getPose())));
-    cmdXboxController.leftTrigger()
-        .whileTrue(new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestSource(chassisSubsystem.getPose())));
+      cmdXboxController.leftTrigger().whileTrue(
+        new DriveToPoseCommand(chassisSubsystem, FieldLayout.getNearestBranchLeft(chassisSubsystem.getPose())));
+
 
   }
 

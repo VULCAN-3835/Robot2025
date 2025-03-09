@@ -191,7 +191,7 @@ public class SwerveModule {
         Measure<AngleUnit> angle_rot =
             BaseStatusSignal.getLatencyCompensatedValue(m_steerPosition, m_steerVelocity);
 
-        swervePosition.distanceMeters = drive_rot.in(Rotations) *ModuleConstants.kWheelCircumference ; // Current module's drive position
+        swervePosition.distanceMeters = -drive_rot.in(Rotations) *ModuleConstants.kWheelCircumference ; // Current module's drive position
         swervePosition.angle = Rotation2d.fromDegrees(angle_rot.in(Degrees)); // Current module's angle in Rotation2d
 
         return swervePosition;

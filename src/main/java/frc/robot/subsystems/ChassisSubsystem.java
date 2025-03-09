@@ -486,9 +486,9 @@ public class ChassisSubsystem extends SubsystemBase {
       }
     }
     setModuleStates(this.swerveModuleStates);
-
+    
     updateSwervePositions();
-    this.poseEstimator.update(getRotation2d(), this.swerve_positions);
+    this.poseEstimator.update(getRotation2d(), getModPositions());
     updatePoseEstimatorWithVisionBotPose();
 
     // if (this.limelightUtil.hasValidTarget()) {
