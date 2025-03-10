@@ -31,7 +31,7 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ElevatorLevelScoreCMD;
-import frc.robot.commands.MidTo_G_L3;
+import frc.robot.commands.MidTo_G_L4;
 import frc.robot.commands.RestElevatorAndGripper;
 import frc.robot.commands.ShootingAlgeaCmd;
 import frc.robot.commands.RestAlgea;
@@ -88,7 +88,7 @@ public class RobotContainer {
     autoChooser = AutoBuilder.buildAutoChooser();
     autoChooser.setDefaultOption("EMPTY", null);
     autoChooser.addOption("Drive Forword 1 sec", new AutoDriveForword(chassisSubsystem));
-    autoChooser.addOption("mid to G L3", new MidTo_G_L3(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem));
+    autoChooser.addOption("mid to G L3", new MidTo_G_L4(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem));
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -110,7 +110,7 @@ public class RobotContainer {
       chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(chassisSubsystem,
           () -> xboxControllerDrive.getLeftY(),
           () -> xboxControllerDrive.getLeftX(),
-          () -> -xboxControllerDrive.getRightX()));
+          () -> xboxControllerDrive.getRightX()));
 
       configureButtonBinding(xboxControllerDrive);
       if (xboxControllerDrive.isConnected() && buttonXboxController.isConnected()) {
@@ -120,7 +120,7 @@ public class RobotContainer {
       chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(chassisSubsystem,
           () -> xboxControllerDrive.getLeftY(),
           () -> xboxControllerDrive.getLeftX(),
-          () -> -xboxControllerDrive.getRightX()));
+          () -> xboxControllerDrive.getRightX()));
 
       configureButtonBinding(buttonXboxController);
     }

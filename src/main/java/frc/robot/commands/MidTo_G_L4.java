@@ -9,21 +9,23 @@ import frc.robot.Util.ElevatorStates;
 import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem;
+import frc.robot.commands.RestElevatorAndGripper;
 
 // NOTE:  Consider using this command inline, rather than writing a subclass.  For more
 // information, see:
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
-public class MidTo_G_L3 extends SequentialCommandGroup {
+public class MidTo_G_L4 extends SequentialCommandGroup {
   // Creates a new MidTo_G_L3. 
 
-  public MidTo_G_L3(ChassisSubsystem chassisSubsystem, ElevatorSubsystem elevatorSubsystem, EndAccessorySubsystem endAccessorySubsystem) {
+  public MidTo_G_L4(ChassisSubsystem chassisSubsystem, ElevatorSubsystem elevatorSubsystem, EndAccessorySubsystem endAccessorySubsystem) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
       new DriveToPoseCommand(chassisSubsystem, false),
       new DriveToPoseCommand(chassisSubsystem, false),
       new DriveToPoseCommand(chassisSubsystem, false),
-      new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL3)
+      new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL4),
+      new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem)
     );
   }
 }

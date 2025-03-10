@@ -37,6 +37,7 @@ import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.util.sendable.SendableBuilder;
 import edu.wpi.first.units.measure.LinearVelocity;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.RobotController;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj.DriverStation.Alliance;
 import edu.wpi.first.wpilibj.smartdashboard.Field2d;
@@ -181,7 +182,7 @@ public class ChassisSubsystem extends SubsystemBase {
         () -> ChassisConstants.kDriveKinematics.toChassisSpeeds(getModStates()),
         this::runVelc,
         new PPHolonomicDriveController(
-            new PIDConstants(1.0, 0, 0), // Translation PID
+            new PIDConstants(0.3, 0, 0), // Translation PID
             new PIDConstants(0.5, 0, 0) // Rotation PID
         ),
         ChassisConstants.getConfig(),
@@ -348,6 +349,7 @@ public class ChassisSubsystem extends SubsystemBase {
    */
   public void runVelc(ChassisSpeeds speeds) {
     ChassisSpeeds discSpeeds = ChassisSpeeds.fromRobotRelativeSpeeds(ChassisSpeeds.discretize(speeds, 0.02), getRotation2d());
+    // ChassisSpeeds discSpeeds = ChassisSpeeds.discretize(speeds, 0.01);
 
     this.swerveModuleStates = ChassisConstants.kDriveKinematics.toSwerveModuleStates(discSpeeds);
   }
@@ -418,7 +420,8 @@ public class ChassisSubsystem extends SubsystemBase {
    */
   public void resetOdometry(Pose2d pose) {
     System.out.println("resets");
-    this.poseEstimator.resetPosition(getRotation2d().unaryMinus(), getModPositions(), pose);
+    this.poseEstimator.resetPose(pose);
+    // this.poseEstimator.resetPosition(getRotation2d().unaryMinus(), getModPositions(), pose);
   }
 
   /**
@@ -627,6 +630,9 @@ public class ChassisSubsystem extends SubsystemBase {
         swerve_modules[Wheels.RIGHT_FRONT.ordinal()].getModuleDriveOutput());
     SmartDashboard.putNumber("ChassisSubsystem/Right Back Drive Output",
         swerve_modules[Wheels.RIGHT_BACK.ordinal()].getModuleDriveOutput());
+
+    SmartDashboard.putNumber("match time", DriverStation.getMatchTime());
+    SmartDashboard.putNumber("battary voltage", RobotController.getBatteryVoltage());
 
   }
 }
