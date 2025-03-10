@@ -6,7 +6,7 @@ package frc.robot;
 
 import frc.robot.Constants.OperatorConstants;
 import frc.robot.commands.DefaultTeleopCommand;
-import frc.robot.commands.DriveToPoseCommand;
+import frc.robot.commands.DriveToNearestBranchCMD;
 import frc.robot.commands.ElevatorLevelIntake;
 import frc.robot.commands.AutoDriveForword;
 import frc.robot.commands.CollectingAlgeaCmd;
@@ -31,9 +31,9 @@ import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ElevatorLevelScoreCMD;
-import frc.robot.commands.MidTo_G_L4;
 import frc.robot.commands.RestElevatorAndGripper;
 import frc.robot.commands.ShootingAlgeaCmd;
+import frc.robot.commands.Autos.MidTo_G_L4;
 import frc.robot.commands.RestAlgea;
 import frc.robot.Constants.ChassisConstants;
 
@@ -73,7 +73,7 @@ public class RobotContainer {
   public RobotContainer() {
 
     NamedCommands.registerCommand("driveRightBranch",
-        new DriveToPoseCommand(chassisSubsystem, false));
+        new DriveToNearestBranchCMD(chassisSubsystem, false));
         
     NamedCommands.registerCommand("L1", new ElevatorLevelScoreCMD(elevatorSubsystem,
         endAccessorySubsystem, ElevatorStates.coralL1));
@@ -140,9 +140,9 @@ public class RobotContainer {
 
 
     cmdXboxController.rightTrigger().whileTrue(
-        new DriveToPoseCommand(chassisSubsystem, false));
+        new DriveToNearestBranchCMD(chassisSubsystem, false));
       cmdXboxController.leftTrigger().whileTrue(
-        new DriveToPoseCommand(chassisSubsystem, true));
+        new DriveToNearestBranchCMD(chassisSubsystem, true));
 
 
       

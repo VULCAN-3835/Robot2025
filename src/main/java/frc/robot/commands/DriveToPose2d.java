@@ -1,3 +1,7 @@
+// Copyright (c) FIRST and other WPILib contributors.
+// Open Source Software; you can modify and/or share it under the terms of
+// the WPILib BSD license file in the root directory of this project.
+
 package frc.robot.commands;
 
 import java.util.List;
@@ -12,59 +16,56 @@ import edu.wpi.first.math.trajectory.TrajectoryConfig;
 import edu.wpi.first.math.trajectory.TrajectoryGenerator;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.wpilibj.Timer;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.Constants.ChassisConstants;
 import frc.robot.subsystems.ChassisSubsystem;
 
-public class DriveToPoseCommand extends Command {
-  private final ChassisSubsystem chassis;
-  private final boolean targetIsLeft;
+/* You should consider using the more terse Command factories API instead https://docs.wpilib.org/en/stable/docs/software/commandbased/organizing-command-based.html#defining-commands */
+public class DriveToPose2d extends Command {
+  /** Creates a new DriveToPose2d. */
+  private ChassisSubsystem chassis;
 
   private Pose2d targetPose;
   private Trajectory trajectory;
   private double startTime;
 
-  // Define maximum velocity and acceleration for the trajectory (in meters per second and m/s^2)
   private final double maxVelocity = 2.5;
   private final double maxAcceleration = 3;
 
-  // Holonomic Drive Controller with PID for translation and rotation
   private final HolonomicDriveController controller = new HolonomicDriveController(
       new PIDController(2.0, 0, 0), // X-direction PID
       new PIDController(2.0, 0, 0), // Y-direction PID
       new ProfiledPIDController(1.5, 0, 0, new TrapezoidProfile.Constraints(maxVelocity, maxAcceleration)) // Theta PID
   );
-
-  public DriveToPoseCommand(ChassisSubsystem chassis, boolean left) {
-    this.targetIsLeft = left;
+  public DriveToPose2d(ChassisSubsystem chassis, Pose2d targetPose) {
+    // Use addRequirements() here to declare subsystem dependencies.
     this.chassis = chassis;
+    this.targetPose = targetPose;
+
     addRequirements(chassis);
+    
   }
 
+  // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    // Get the current pose from the chassis subsystem
     Pose2d currentPose = chassis.getPose();
-    this.targetPose = this.targetIsLeft ? chassis.getNearestLeft() : chassis.getNearestRight();
-    // Optionally reset odometry if needed
-    // chassis.resetOdometry(currentPose); // Uncomment if odometry drift is an issue
 
-    // Configure trajectory settings
     TrajectoryConfig config = new TrajectoryConfig(maxVelocity, maxAcceleration)
-        .setKinematics(ChassisConstants.kDriveKinematics); // Ensure kinematics are accounted for
+        .setKinematics(ChassisConstants.kDriveKinematics); 
 
-    // Generate a trajectory from the current pose to the target pose
     System.out.println(currentPose);
     System.out.println(targetPose);
     trajectory = TrajectoryGenerator.generateTrajectory(List.of(currentPose, targetPose), config);
 
-    // Start the timer
     startTime = Timer.getFPGATimestamp();
+
   }
 
+  // Called every time the scheduler runs while the command is scheduled.
   @Override
   public void execute() {
+    
     double elapsedTime = Timer.getFPGATimestamp() - startTime;
     double totalTime = trajectory.getTotalTimeSeconds();
 
