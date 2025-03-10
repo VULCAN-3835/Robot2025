@@ -236,8 +236,8 @@ public final class Constants {
       public static final double eBranchX = 5.31;
       public static final double eBranchY = 2.96;
 
-      public static final double gBranchX =5.82;
-      public static final double gBranchY = 4.2;
+      public static final double gBranchX =5.78;
+      public static final double gBranchY = 4.14;
 
       public static final double rightBranchTopLeftX = 0;
       public static final double rightBranchTopLeftY = 0;
@@ -278,9 +278,9 @@ public final class Constants {
   public static class ElevatorConstant {
 
     public static final Distance coralL1 = Centimeter.of(0);
-    public static final Distance coralL2 = Centimeter.of(10);
-    public static final Distance coralL3 = Centimeter.of(31);
-    public static final Distance coralL4 = Centimeter.of(63);
+    public static final Distance coralL2 = Centimeter.of(11.5);
+    public static final Distance coralL3 = Centimeter.of(32.5);
+    public static final Distance coralL4 = Centimeter.of(64.5);
     public static final Distance restDistance = Centimeter.of(0);
     public static final Distance sourceDistance = Centimeter.of(15);
     public static final Distance removeAlgea = Centimeter.of(22);
@@ -341,14 +341,19 @@ public final class Constants {
   public static class ClimbSubsystemConstants {
     // TODO: change values to actual values
 
-    public static final int climbMotorPort = 55;
-    public static final double climbMotorPower = 0.2;
+    public static final int climbMotorPort1 = 40;
+    public static final int climbMotorPort2 = 41;
+    public static final double climbMotorPower = 0.1;
 
-    public static final int limitSwitchPort = 0;
-    public static final double motorRatio = 125;
+    public static final double motorRatio = 230.4;
+
     // the degrees of the arm closed
+
     public static final Angle degreesForOpen = Degrees.of(0);
     public static final Angle degreesForClose = Degrees.of(0);
-    public static final double closeClimbMotorPower = 0;
+
+    public static final Angle maxDegrees = Degrees.of(0);
+    public static final Angle minDegrees = Degrees.of(0);
+
   }
 }

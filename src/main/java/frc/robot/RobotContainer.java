@@ -12,6 +12,7 @@ import frc.robot.commands.AutoDriveForword;
 import frc.robot.commands.CollectingAlgeaCmd;
 import frc.robot.commands.CoralCollectCommand;
 import frc.robot.subsystems.ChassisSubsystem;
+import frc.robot.subsystems.ClimbSubsystem;
 import frc.robot.subsystems.EndAccessorySubsystem;
 
 import frc.robot.Util.ElevatorStates;
@@ -32,6 +33,7 @@ import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 import frc.robot.commands.ElevatorLevelScoreCMD;
 import frc.robot.commands.RestElevatorAndGripper;
+import frc.robot.commands.ScoreL1;
 import frc.robot.commands.ShootingAlgeaCmd;
 import frc.robot.commands.Autos.MidTo_G_L4;
 import frc.robot.commands.RestAlgea;
@@ -52,7 +54,7 @@ public class RobotContainer {
 
   // private final AlgeaSubsystem algeaSubsystem = new AlgeaSubsystem();
 
-  // private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
+  private final ClimbSubsystem climbSubsystem = new ClimbSubsystem();
 
   private final ElevatorSubsystem elevatorSubsystem = new ElevatorSubsystem();
 
@@ -75,14 +77,14 @@ public class RobotContainer {
     NamedCommands.registerCommand("driveRightBranch",
         new DriveToNearestBranchCMD(chassisSubsystem, false));
         
-    NamedCommands.registerCommand("L1", new ElevatorLevelScoreCMD(elevatorSubsystem,
-        endAccessorySubsystem, ElevatorStates.coralL1));
+    // NamedCommands.registerCommand("L1", new ElevatorLevelScoreCMD(elevatorSubsystem,
+    //     endAccessorySubsystem, ElevatorStates.coralL1));
 
-    NamedCommands.registerCommand("L2", new ElevatorLevelScoreCMD(elevatorSubsystem,
-        endAccessorySubsystem, ElevatorStates.coralL2));
+    // NamedCommands.registerCommand("L2", new ElevatorLevelScoreCMD(elevatorSubsystem,
+    //     endAccessorySubsystem, ElevatorStates.coralL2));
 
-    NamedCommands.registerCommand("L3", new ElevatorLevelScoreCMD(elevatorSubsystem,
-        endAccessorySubsystem, ElevatorStates.coralL3));
+    // NamedCommands.registerCommand("L3", new ElevatorLevelScoreCMD(elevatorSubsystem,
+    //     endAccessorySubsystem, ElevatorStates.coralL3));
 
 
     autoChooser = AutoBuilder.buildAutoChooser();
@@ -138,6 +140,14 @@ public class RobotContainer {
     cmdXboxController.leftBumper().whileTrue(new CoralCollectCommand(endAccessorySubsystem));
     cmdXboxController.leftBumper().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem,endAccessorySubsystem));
 
+    cmdXboxController.povUp().whileTrue(new InstantCommand(()->climbSubsystem.setMotor(-0.3)));
+    cmdXboxController.povUp().toggleOnFalse(new InstantCommand(()->climbSubsystem.setMotor(0)));
+
+    cmdXboxController.povDown().whileTrue(new InstantCommand(()->climbSubsystem.setMotor(0.3)));
+    cmdXboxController.povDown().toggleOnFalse(new InstantCommand(()->climbSubsystem.setMotor(0)));
+
+    cmdXboxController.a().whileTrue(new ScoreL1(endAccessorySubsystem));
+    cmdXboxController.a().toggleOnFalse(new InstantCommand(()-> endAccessorySubsystem.gripperStop()));
 
     cmdXboxController.rightTrigger().whileTrue(
         new DriveToNearestBranchCMD(chassisSubsystem, false));

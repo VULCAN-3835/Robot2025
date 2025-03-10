@@ -4,6 +4,8 @@
 
 package frc.robot.commands;
 
+import static edu.wpi.first.units.Units.Degree;
+
 import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.WaitUntilCommand;
@@ -25,13 +27,10 @@ public class ClimbCMD extends SequentialCommandGroup {
       new InstantCommand(() -> climbSubsystem.setMotor(ClimbSubsystemConstants.climbMotorPower)),
 
       //2. waiting until we finish to climb
-      new WaitUntilCommand(()-> climbSubsystem.getLimitswitch()),
+      new WaitUntilCommand(()-> climbSubsystem.getPositionAngle().gt(ClimbSubsystemConstants.degreesForClose)),
 
       //3. stopping the motor when we finish to climb
-      new InstantCommand(()-> climbSubsystem.setMotor(0)),
-
-      //4. resets the position of the endcoder
-      new InstantCommand(()-> climbSubsystem.resetPosition())
+      new InstantCommand(()-> climbSubsystem.setMotor(0))
     );
   }
 }

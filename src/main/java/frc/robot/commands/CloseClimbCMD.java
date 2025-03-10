@@ -22,7 +22,7 @@ public class CloseClimbCMD extends SequentialCommandGroup {
     addRequirements(climbSubsystem);
     addCommands(
       //1. set the motor to the close motor speed
-      new InstantCommand(()-> climbSubsystem.setMotor(ClimbSubsystemConstants.closeClimbMotorPower)),
+      new InstantCommand(()-> climbSubsystem.setMotor(-ClimbSubsystemConstants.climbMotorPower)),
       //2. waits until the degrees are the degrees of the closed arm
       new WaitUntilCommand(() -> climbSubsystem.getPositionAngle().gt(ClimbSubsystemConstants.degreesForOpen)),
       //3. stops the motor

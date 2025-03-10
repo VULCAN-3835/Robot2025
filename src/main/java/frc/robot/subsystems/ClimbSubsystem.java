@@ -4,49 +4,45 @@
 
 package frc.robot.subsystems;
 
+import static edu.wpi.first.units.Units.Degree;
+import static edu.wpi.first.units.Units.Degrees;
+
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.controls.Follower;
 import com.ctre.phoenix6.hardware.TalonFX;
 
 import edu.wpi.first.units.measure.Angle;
 import edu.wpi.first.wpilibj.DigitalInput;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import frc.robot.Constants.ClimbSubsystemConstants;
 
 public class ClimbSubsystem extends SubsystemBase {
   /** Creates a new ClimbSubsystem. */
-  TalonFX climbMotor;
-  DigitalInput lowClimbLimitSwitch; 
-
+  TalonFX climbMotor1;
+  TalonFX climbMotor2;
   public ClimbSubsystem() {
-    this.climbMotor = new TalonFX(ClimbSubsystemConstants.climbMotorPort);
-    this.lowClimbLimitSwitch = new DigitalInput(ClimbSubsystemConstants.limitSwitchPort);
+    this.climbMotor1 = new TalonFX(ClimbSubsystemConstants.climbMotorPort1);
+    this.climbMotor2 = new TalonFX(ClimbSubsystemConstants.climbMotorPort2);
+
+    climbMotor2.setControl(new Follower(ClimbSubsystemConstants.climbMotorPort1, false));
   }
 
-  // sets the angle of the motor to 0
-  public void resetPosition() {
-    climbMotor.setPosition(0);
-  }
+  
 
   // returns the angle of the arm
   public Angle getPositionAngle() {
-    StatusSignal<Angle> currentPosition = climbMotor.getPosition();
+    StatusSignal<Angle> currentPosition = climbMotor1.getPosition();
     return currentPosition.getValue().div(ClimbSubsystemConstants.motorRatio); 
   }
 
   // sets the power of climbMotor
   public void setMotor(double power) {
-    climbMotor.set(power);
-  }
-
-  // returns the value of the limit switch
-  public boolean getLimitswitch() {
-    return lowClimbLimitSwitch.get();
+    climbMotor1.set(power);
   }
 
   @Override
   public void periodic() {
-    if (getLimitswitch() && climbMotor.get() < 0) {
-      setMotor(0);
-    }
+    SmartDashboard.putNumber("Climb Subsystem/ encoder value ", getPositionAngle().in(Degrees));
   }
 }

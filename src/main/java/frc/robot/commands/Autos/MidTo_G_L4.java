@@ -4,7 +4,9 @@
 
 package frc.robot.commands.Autos;
 
+import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+import edu.wpi.first.wpilibj2.command.WaitCommand;
 import frc.robot.Util.ElevatorStates;
 import frc.robot.subsystems.ChassisSubsystem;
 import frc.robot.subsystems.ElevatorSubsystem;
@@ -25,7 +27,9 @@ public class MidTo_G_L4 extends SequentialCommandGroup {
     addCommands(
       new DriveToNearestBranchCMD(chassisSubsystem, false),
       new DriveToNearestBranchCMD(chassisSubsystem, false),
-      new DriveToNearestBranchCMD(chassisSubsystem, false),
+      // new DriveToNearestBranchCMD(chassisSubsystem, false),
+      new InstantCommand(()->chassisSubsystem.drive(-0.3,0.0,0, false)),
+      new WaitCommand(0.5),
       new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL4),// TODO: add race with second coral
       new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem)
     );

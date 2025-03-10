@@ -633,6 +633,7 @@ public class ChassisSubsystem extends SubsystemBase {
 
     SmartDashboard.putNumber("match time", DriverStation.getMatchTime());
     SmartDashboard.putNumber("battary voltage", RobotController.getBatteryVoltage());
+    SmartDashboard.putString("game message", DriverStation.getGameSpecificMessage());
 
   }
 }
