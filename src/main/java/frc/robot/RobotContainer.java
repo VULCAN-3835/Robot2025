@@ -25,6 +25,7 @@ import frc.robot.subsystems.ElevatorSubsystem;
 import com.pathplanner.lib.auto.AutoBuilder;
 import com.pathplanner.lib.auto.NamedCommands;
 
+import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
@@ -35,10 +36,12 @@ import frc.robot.commands.ElevatorLevelScoreCMD;
 import frc.robot.commands.RestElevatorAndGripper;
 import frc.robot.commands.ScoreL1;
 import frc.robot.commands.ShootingAlgeaCmd;
+import frc.robot.commands.Autos.MidToGL1_Stu;
+import frc.robot.commands.Autos.MidToL3_Stu;
 import frc.robot.commands.Autos.MidTo_G_L4;
 import frc.robot.commands.RestAlgea;
 import frc.robot.Constants.ChassisConstants;
-
+import frc.robot.commands.Autos.MidToGL1_Stu;
 /**
  * This class is where the bulk of the robot should be declared. Since
  * Command-based is a
@@ -66,13 +69,17 @@ public class RobotContainer {
   private final CommandXboxController buttonXboxController = new CommandXboxController(
       OperatorConstants.buttonControllerPort);
 
-  private SendableChooser<Command> autoChooser = new SendableChooser<>();
 
+  private SendableChooser<Command> autoChooser = new SendableChooser<>();
+ 
   /**
    * The container for the robot. Contains subsystems, OI devices, and commands.
    */
 
   public RobotContainer() {
+
+    CameraServer.startAutomaticCapture();
+    
 
     NamedCommands.registerCommand("driveRightBranch",
         new DriveToNearestBranchCMD(chassisSubsystem, false));
@@ -91,6 +98,10 @@ public class RobotContainer {
     autoChooser.setDefaultOption("EMPTY", null);
     autoChooser.addOption("Drive Forword 1 sec", new AutoDriveForword(chassisSubsystem));
     autoChooser.addOption("mid to G L3", new MidTo_G_L4(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem));
+    autoChooser.addOption("stupid L1 MID", new MidToGL1_Stu(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem));
+    autoChooser.addOption("stupid L3 MID", new MidToL3_Stu(chassisSubsystem, elevatorSubsystem, endAccessorySubsystem));
+
+    
 
     SmartDashboard.putData("Auto Chooser", autoChooser);
 
@@ -98,7 +109,7 @@ public class RobotContainer {
   }
 
   private void configureBindings() {
-    setUpContollers();
+    setUpContollers(false);
 
   }
 
@@ -107,52 +118,50 @@ public class RobotContainer {
   // first one to the chassis
   // the seconds one to the buttons
 
-  private void setUpContollers() {
-    if (xboxControllerDrive.isConnected()) {
-      chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(chassisSubsystem,
-          () -> xboxControllerDrive.getLeftY(),
-          () -> xboxControllerDrive.getLeftX(),
-          () -> xboxControllerDrive.getRightX()));
+  private void setUpContollers(boolean oneController) {
+    double rightBumberValue = 1 - xboxControllerDrive.getRightTriggerAxis();
 
-      configureButtonBinding(xboxControllerDrive);
-      if (xboxControllerDrive.isConnected() && buttonXboxController.isConnected()) {
-        configureButtonBinding(buttonXboxController);
-      }
-    } else {
-      chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(chassisSubsystem,
-          () -> xboxControllerDrive.getLeftY(),
-          () -> xboxControllerDrive.getLeftX(),
-          () -> xboxControllerDrive.getRightX()));
+    chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(chassisSubsystem,
+          () -> rightBumberValue*xboxControllerDrive.getLeftY(),
+          () -> rightBumberValue*xboxControllerDrive.getLeftX(),
+          () -> rightBumberValue*xboxControllerDrive.getRightX()));
+    // chassisSubsystem.setDefaultCommand(new DefaultTeleopCommand(chassisSubsystem,
+    //       () -> xboxControllerDrive.getLeftY(),
+    //       () -> xboxControllerDrive.getLeftX(),
+    //       () -> xboxControllerDrive.getRightX()));
 
-      configureButtonBinding(buttonXboxController);
-    }
+
+    configureButtonBinding(oneController ? xboxControllerDrive : buttonXboxController);
   }
 
   private void configureButtonBinding(CommandXboxController cmdXboxController) {
         
     cmdXboxController.rightBumper().whileTrue(new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem));
     cmdXboxController.start().onTrue(new InstantCommand(()-> chassisSubsystem.zeroHeading()));
-    
+
+    cmdXboxController.a().whileTrue(new ScoreL1(endAccessorySubsystem));
+    cmdXboxController.a().toggleOnFalse(new InstantCommand(()-> endAccessorySubsystem.gripperStop()));
     cmdXboxController.b().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL2));
     cmdXboxController.x().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL3));
-    cmdXboxController.y().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL4));
+    // cmdXboxController.y().whileTrue(new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL4));
 
     cmdXboxController.leftBumper().whileTrue(new CoralCollectCommand(endAccessorySubsystem));
     cmdXboxController.leftBumper().toggleOnFalse(new RestElevatorAndGripper(elevatorSubsystem,endAccessorySubsystem));
 
-    cmdXboxController.povUp().whileTrue(new InstantCommand(()->climbSubsystem.setMotor(-0.3)));
+    cmdXboxController.povUp().whileTrue(new InstantCommand(()->climbSubsystem.setMotor(-0.5)));
     cmdXboxController.povUp().toggleOnFalse(new InstantCommand(()->climbSubsystem.setMotor(0)));
 
-    cmdXboxController.povDown().whileTrue(new InstantCommand(()->climbSubsystem.setMotor(0.3)));
+    cmdXboxController.povDown().whileTrue(new InstantCommand(()->climbSubsystem.setMotor(0.5)));
     cmdXboxController.povDown().toggleOnFalse(new InstantCommand(()->climbSubsystem.setMotor(0)));
 
-    cmdXboxController.a().whileTrue(new ScoreL1(endAccessorySubsystem));
-    cmdXboxController.a().toggleOnFalse(new InstantCommand(()-> endAccessorySubsystem.gripperStop()));
 
-    cmdXboxController.rightTrigger().whileTrue(
-        new DriveToNearestBranchCMD(chassisSubsystem, false));
-      cmdXboxController.leftTrigger().whileTrue(
-        new DriveToNearestBranchCMD(chassisSubsystem, true));
+
+    // cmdXboxController.rightTrigger().whileTrue(
+    //     new DriveToNearestBranchCMD(chassisSubsystem, false));
+    //   cmdXboxController.leftTrigger().whileTrue(
+    //     new DriveToNearestBranchCMD(chassisSubsystem, true));
+    cmdXboxController.povRight().onTrue(elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.climb));
+
 
 
       

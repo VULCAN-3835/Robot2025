@@ -55,10 +55,10 @@ public final class Constants {
     public static final int pieceDetectorID = 7;
 
     // the out put speed of the motor to score the coral
-    public static final double outputPower = 0.3;
+    public static final double outputPower = 0.4;
 
     // the speed to intake the coral
-    public static final double intakePower = 0.3;
+    public static final double intakePower = 0.25;
 
     // the threshold of the sensor to recognize the coral (in Volts)
     public static final double kHasPieceVoltageThreshold = 0;
@@ -278,12 +278,13 @@ public final class Constants {
   public static class ElevatorConstant {
 
     public static final Distance coralL1 = Centimeter.of(0);
-    public static final Distance coralL2 = Centimeter.of(11.5);
-    public static final Distance coralL3 = Centimeter.of(32.5);
-    public static final Distance coralL4 = Centimeter.of(64.5);
+    public static final Distance coralL2 = Centimeter.of(10.5);
+    public static final Distance coralL3 = Centimeter.of(31);
+    public static final Distance coralL4 = Centimeter.of(63);
     public static final Distance restDistance = Centimeter.of(0);
     public static final Distance sourceDistance = Centimeter.of(15);
     public static final Distance removeAlgea = Centimeter.of(22);
+    public static final Distance climb = Centimeter.of(40);
 
     public static final double pidTolerence = 1.5;
 
@@ -332,6 +333,8 @@ public final class Constants {
           return restDistance;
         case removeAlgea:
           return removeAlgea;
+        case climb:
+          return climb;
       }
       return null;
     }
