@@ -7,8 +7,13 @@ package frc.robot.subsystems;
 import com.studica.frc.AHRS;
 import com.studica.frc.AHRS.NavXComType;
 import com.pathplanner.lib.auto.AutoBuilder;
+import com.pathplanner.lib.commands.PathPlannerAuto;
+import com.pathplanner.lib.commands.PathfindThenFollowPath;
 import com.pathplanner.lib.controllers.PPHolonomicDriveController;
+import com.pathplanner.lib.path.PathPlannerPath;
+import com.pathplanner.lib.trajectory.PathPlannerTrajectory;
 import com.pathplanner.lib.config.PIDConstants;
+import com.pathplanner.lib.util.PPLibTelemetry;
 import com.pathplanner.lib.util.PathPlannerLogging;
 
 import edu.wpi.first.math.VecBuilder;
@@ -154,6 +159,8 @@ public class ChassisSubsystem extends SubsystemBase {
 
     // Robot starting position for odometry
     startingPos = new Pose2d(1.3, 5.52, Rotation2d.fromDegrees(0));
+    
+
 
     // Field initlization
     field = new Field2d();

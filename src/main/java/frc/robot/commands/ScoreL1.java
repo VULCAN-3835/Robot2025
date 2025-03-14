@@ -18,8 +18,13 @@ public class ScoreL1 extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
+      // 1. Sets the power of the end accessory to 45%
       new InstantCommand(()-> endAccessorySubsystem.setPower(0.45)),
+
+      // 2. waits 1.5 until the game piece isn't in the system anymore
       new WaitCommand(1.5),
+
+      // 3. Stops the grippper 
       new InstantCommand(()-> endAccessorySubsystem.gripperStop())
     );
   }

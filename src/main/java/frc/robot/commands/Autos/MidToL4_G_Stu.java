@@ -25,9 +25,17 @@ public class MidToL4_G_Stu extends SequentialCommandGroup {
     this.chassis = chassis;
     addRequirements(chassis);
     addCommands(
+      
+      // 1. Drives 1 meter per second 
       new InstantCommand(()->chassis.drive(-1, 0, 0, false)),
+
+      // 2. Waits 2 seconds until the robot is in frfont of the reef 
       new WaitCommand(2),
+
+      // 3. Stops the robot
       new InstantCommand(()->chassis.drive(0, 0, 0, false)),
+
+      // 4. Scores L4
       new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL4)
     );
   }

@@ -25,12 +25,18 @@ public class MidTo_G_L4 extends SequentialCommandGroup {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
     addCommands(
+
+      // 1. Drives to the nearest branch 
+      new DriveToNearestBranchCMD(chassisSubsystem, false),
+      
+      // 2. Uses the same command to fix its position a few times
       new DriveToNearestBranchCMD(chassisSubsystem, false),
       new DriveToNearestBranchCMD(chassisSubsystem, false),
-      // new DriveToNearestBranchCMD(chassisSubsystem, false),
-      new InstantCommand(()->chassisSubsystem.drive(-0.3,0.0,0, false)),
-      new WaitCommand(0.5),
-      new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL4),// TODO: add race with second coral
+
+      // 3. Do L4 
+      new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL4),
+
+      // 4. after it finished the L4 command it closes the elevator and stops the end accesory
       new RestElevatorAndGripper(elevatorSubsystem, endAccessorySubsystem)
     );
   }

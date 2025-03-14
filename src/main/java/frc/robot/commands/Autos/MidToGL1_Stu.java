@@ -27,9 +27,17 @@ public class MidToGL1_Stu extends SequentialCommandGroup {
     addRequirements(chassis);
 
     addCommands(
+      
+      // 1. Drives forward in 1.5 meters per second 
       new InstantCommand(()->chassis.drive(-1.5, 0, 0, false)),
+
+      // 2. Waits 4 seconds until the robot is in front of the reef
       new WaitCommand(4),
+
+      // 3. Stops the robot
       new InstantCommand(()->chassis.drive(0, 0, 0, false)),
+
+      // 4. Scores L1
       new ScoreL1(endAccessorySubsystem)
     );
   }

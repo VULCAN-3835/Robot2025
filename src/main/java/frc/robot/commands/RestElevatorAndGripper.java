@@ -25,7 +25,7 @@ public class RestElevatorAndGripper extends SequentialCommandGroup {
       new InstantCommand(()-> endAccessorySubsystem.gripperStop()),
 
       //2. returns the elevator to its resting state
-        elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.rest)
+      elevatorSubsystem.setLevelElevatorCommand(ElevatorStates.rest)
 
     );
   }

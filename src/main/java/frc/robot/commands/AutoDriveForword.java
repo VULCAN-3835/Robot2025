@@ -15,15 +15,23 @@ import frc.robot.subsystems.ChassisSubsystem;
 // https://docs.wpilib.org/en/stable/docs/software/commandbased/convenience-features.html
 public class AutoDriveForword extends SequentialCommandGroup {
   /** Creates a new AutoDriveForword. */
+  ChassisSubsystem chassis;
   public AutoDriveForword(ChassisSubsystem chassis) {
     // Add your commands in the addCommands() call, e.g.
     // addCommands(new FooCommand(), new BarCommand());
+    this.chassis = chassis;
+    addRequirements(chassis);
     addCommands(
-      new InstantCommand(()-> System.out.println("works0")),
-    new InstantCommand(()->chassis.drive(1, 0, 0, false), chassis),
+    
+    // 1. Drives 1 meter per secnod 
+    new InstantCommand(()->chassis.drive(1, 0, 0, false)),
+
+    // 2. waits 1 second
     new WaitUntilCommand(1),
-    new InstantCommand(()->chassis.drive(0, 0, 0, false), chassis),
-    new InstantCommand(()-> System.out.println("works"))
+
+    // 3. stops the robot
+    new InstantCommand(()->chassis.drive(0, 0, 0, false))
+
     );
   }
 }

@@ -34,10 +34,10 @@ public class ElevatorLevelScoreCMD extends SequentialCommandGroup {
       // 1. sets the height of the elevator to the desired height
       elevatorSubsystem.setLevelElevatorCommand(elevatorState),
         
+      // 2. Waits until the elevator is at its setpoint
       new WaitUntilCommand(()-> elevatorSubsystem.isAtSetpoint()),
 
       // 3. releases the coral 
-      
       new CoralReleaseCommand(endAccessorySubsystem,elevatorState),
 
       // 4. returns the elevator to its resting state  

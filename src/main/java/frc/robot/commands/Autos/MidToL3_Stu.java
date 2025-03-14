@@ -25,9 +25,17 @@ public class MidToL3_Stu extends SequentialCommandGroup {
     this.chassisSubsystem = chassisSubsystem;
     addRequirements(chassisSubsystem);
     addCommands(
+      
+      // 1. Drives the robot in 1 meters per second 
       new InstantCommand(()->chassisSubsystem.drive(-1, 0, 0, false)),
+
+      // 2. Waits 2 secnods until the robot is infront of the reef
       new WaitCommand(2),
+
+      // 3. Stops the robot 
       new InstantCommand(()->chassisSubsystem.drive(0, 0, 0, false)),
+
+      // 4. Scores L3
       new ElevatorLevelScoreCMD(elevatorSubsystem, endAccessorySubsystem, ElevatorStates.coralL3)
 
     );
